@@ -4,7 +4,8 @@ import { useAuth } from './context/AuthContext';
 import RegisterPage from './pages/RegisterPage';
 import LoginPage from './pages/LoginPage';
 import ProtectedRoute from './components/ProtectedRoute';
-
+import StudentDashboard from './pages/StudentDashboard';
+import TeacherDashboard from './pages/TeacherDashboard';
 
 const Navigation = () => {
     const { user, logout, isLoading } = useAuth();
@@ -23,7 +24,7 @@ const Navigation = () => {
             </header>
         );
     }
-
+ 
     return (
         <header className="bg-gray-800 text-white p-4 flex justify-between items-center">
             <Link to="/" className="text-xl font-bold">Ejada</Link>
@@ -46,16 +47,9 @@ const Navigation = () => {
     );
 };
 
-const Dashboard = () => {
-    const { user } = useAuth();
-    return (
-        <div className="p-10">
-            <h1 className="text-3xl">Dashboard</h1>
-            <p>This is the main page for logged-in users.</p>
-            {user && <pre className="mt-4 bg-gray-200 p-4 rounded">{JSON.stringify(user, null, 2)}</pre>}
-        </div>
-    );
-};
+
+const GenericDashboard = () => <div><h1 className="p-10 text-3xl">Welcome to Ejada</h1></div>;   
+
 
 function App() {
   return (
@@ -63,16 +57,37 @@ function App() {
         <Navigation />
         <main>
             <Routes>
+                {/* --- Public Routes --- */}
+                <Route path="/register" element={<RegisterPage />} />
+                <Route path="/login" element={<LoginPage />} />
+
+                {/* --- Protected Routes --- */}
                 <Route
-                    path="/"
+                    path="/student-dashboard"
                     element={
-                        <ProtectedRoute>
-                            <Dashboard />
+                        <ProtectedRoute allowedRoles={['Student']}>
+                            <StudentDashboard />
                         </ProtectedRoute>
                     }
                 />
-                <Route path="/register" element={<RegisterPage />} />
-                <Route path="/login" element={<LoginPage />} />
+                <Route
+                    path="/teacher-dashboard"
+                    element={
+                        <ProtectedRoute allowedRoles={['Teacher', 'Admin']}> {/* Admins can also see the teacher dash */}
+                            <TeacherDashboard />
+                        </ProtectedRoute>
+                    }
+                />
+                
+                {/* A default route for logged-in users */}
+                <Route
+                    path="/"
+                    element={
+                        <ProtectedRoute allowedRoles={['Student', 'Teacher', 'Admin']}>
+                            <GenericDashboard />
+                        </ProtectedRoute>
+                    }
+                />
             </Routes>
         </main>
     </Router>

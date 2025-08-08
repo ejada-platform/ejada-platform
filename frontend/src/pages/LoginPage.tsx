@@ -31,7 +31,16 @@ const LoginPage = () => {
             const { token, ...userData } = response.data;
             
             login(userData, token);
-            navigate('/');
+           if (userData.role === 'Teacher') {
+                // 2. If they are a Teacher, send them to the teacher dashboard
+                navigate('/teacher-dashboard');
+            } else if (userData.role === 'Student') {
+                // 3. If they are a Student, send them to the student dashboard
+                navigate('/student-dashboard');
+            } else {
+                // 4. As a fallback, send Admins or others to a default page
+                navigate('/');
+            }
 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (error: any) {
