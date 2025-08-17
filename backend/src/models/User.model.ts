@@ -1,30 +1,33 @@
-import mongoose, { Schema, Document } from 'mongoose';
-import * as bcrypt from 'bcryptjs';
+// src/models/User.model.ts
 
-// Define the interface for the User document
+import mongoose, { Schema, Document, Types } from 'mongoose';
+import bcrypt from 'bcryptjs';
+
+// Re-defining the IUser interface for absolute clarity
+// Note the use of Types.ObjectId
 export interface IUser extends Document {
+    _id: Types.ObjectId; // Explicitly define _id type
     username: string;
-    password?: string; // Password is optional when fetching user data
+    password?: string;
     role: 'Student' | 'Teacher' | 'Admin';
-    generatedCode?: string; // Optional, mainly for students
+    generatedCode?: string;
 }
 
-const UserSchema: Schema = new Schema({
+const UserSchema: Schema<IUser> = new Schema({
     username: { type: String, required: true, unique: true },
-    password: { type: String, required: true, select: false }, // 'select: false' prevents password from being sent back in queries by default
+    password: { type: String, required: true, select: false },
     role: { type: String, enum: ['Student', 'Teacher', 'Admin'], required: true },
-    generatedCode: { type: String, unique: true, sparse: true } // 'sparse' allows multiple null values
+    generatedCode: { type: String, unique: true, sparse: true }
 }, {
-    timestamps: true // Adds createdAt and updatedAt timestamps
+    timestamps: true
 });
 
-// Middleware to hash password before saving
 UserSchema.pre<IUser>('save', async function (next) {
-    if (!this.isModified('password')) {
+    if (!this.isModified('password') || !this.password) {
         return next();
     }
     const salt = await bcrypt.genSalt(10);
-    this.password = await bcrypt.hash(this.password!, salt);
+    this.password = await bcrypt.hash(this.password, salt);
     next();
 });
 

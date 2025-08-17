@@ -1,0 +1,297 @@
+// src/pages/CircleDetailPage.tsx
+
+import React, { useState, useEffect, useCallback } from 'react';
+import axios from 'axios';
+import { useParams } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+
+// --- TYPE DEFINITIONS ---
+interface Assignment {
+    _id: string;
+    title: string;
+    description: string;
+    dueDate?: string;
+    createdBy: { _id: string; username: string };
+    createdAt: string;
+}
+
+interface Submission {
+    _id: string;
+    student: { _id: string; username: string };
+    content: string;
+    status: 'Submitted' | 'Reviewed';
+    grade?: string;
+    feedback?: string;
+    createdAt: string;
+}
+
+// ==================================================================
+// --- SUB-COMPONENT: SubmissionForm (for Students) ---
+// ==================================================================
+const SubmissionForm = ({ assignmentId, onSubmissionSuccess }: { assignmentId: string; onSubmissionSuccess: () => void }) => {
+    const { token } = useAuth();
+    const [content, setContent] = useState('');
+    const [message, setMessage] = useState('');
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setMessage('');
+        if (!content) {
+            setMessage('Please provide content for your submission.');
+            return;
+        }
+
+        try {
+            const config = { headers: { Authorization: `Bearer ${token}` } };
+            const payload = { assignmentId, content };
+            await axios.post('http://localhost:5000/api/submissions', payload, config);
+            
+            setMessage('Submission successful!');
+            setContent('');
+            onSubmissionSuccess();
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } catch (err: any) {
+            if (err.response) {
+                setMessage(err.response.data.message || 'Submission failed.');
+            } else {
+                setMessage('An unexpected network error occurred.');
+            }
+        }
+    };
+
+    return (
+        <form onSubmit={handleSubmit} className="mt-4 p-4 bg-gray-50 rounded-md">
+            <h4 className="font-semibold text-gray-700">Submit Your Work</h4>
+            <textarea
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
+                placeholder="Paste a link to your recording or type your response here..."
+                className="w-full mt-2 p-2 border rounded"
+                rows={3}
+            ></textarea>
+            <button type="submit" className="mt-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+                Submit
+            </button>
+            {message && <p className="text-sm mt-2">{message}</p>}
+        </form>
+    );
+};
+
+// ==================================================================
+// --- SUB-COMPONENT: ReviewForm (for Teachers) ---
+// ==================================================================
+const ReviewForm = ({ submission, onReviewSuccess }: { submission: Submission; onReviewSuccess: () => void }) => {
+    const { token } = useAuth();
+    const [grade, setGrade] = useState('');
+    const [feedback, setFeedback] = useState('');
+    const [message, setMessage] = useState('');
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setMessage('');
+
+        try {
+            const config = { headers: { Authorization: `Bearer ${token}` } };
+            const payload = { grade, feedback };
+            await axios.patch(`http://localhost:5000/api/submissions/${submission._id}/review`, payload, config);
+
+            setMessage('Review submitted successfully!');
+            onReviewSuccess();
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } catch (err: any) {
+            if (err.response) {
+                setMessage(err.response.data.message || 'Failed to submit review.');
+            } else {
+                setMessage('An unexpected network error occurred.');
+            }
+        }
+    };
+
+    return (
+        <form onSubmit={handleSubmit} className="mt-3 p-3 bg-yellow-50 rounded-md border border-yellow-200">
+            <h5 className="font-bold text-sm text-gray-700">Provide Feedback</h5>
+            <div className="mt-2">
+                <label htmlFor={`grade-${submission._id}`} className="block text-xs font-medium text-gray-600">Grade</label>
+                <input
+                    type="text"
+                    id={`grade-${submission._id}`}
+                    value={grade}
+                    onChange={(e) => setGrade(e.target.value)}
+                    placeholder="e.g., Excellent, Good"
+                    className="w-full mt-1 p-1 border rounded text-sm"
+                />
+            </div>
+            <div className="mt-2">
+                <label htmlFor={`feedback-${submission._id}`} className="block text-xs font-medium text-gray-600">Feedback</label>
+                <textarea
+                    id={`feedback-${submission._id}`}
+                    value={feedback}
+                    onChange={(e) => setFeedback(e.target.value)}
+                    placeholder="Your comments..."
+                    className="w-full mt-1 p-1 border rounded text-sm"
+                    rows={2}
+                ></textarea>
+            </div>
+            <button type="submit" className="mt-2 px-3 py-1 bg-yellow-500 text-white text-sm rounded hover:bg-yellow-600">
+                Submit Review
+            </button>
+            {message && <p className="text-xs mt-2">{message}</p>}
+        </form>
+    );
+};
+
+// ==================================================================
+// --- SUB-COMPONENT: SubmissionsList (for Teachers) ---
+// ==================================================================
+const SubmissionsList = ({ assignmentId }: { assignmentId: string }) => {
+    const { token } = useAuth();
+    const [submissions, setSubmissions] = useState<Submission[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    const fetchSubmissions = useCallback(async () => {
+        if (!token) return;
+        try {
+            setLoading(true);
+            const config = { headers: { Authorization: `Bearer ${token}` } };
+            const response = await axios.get<Submission[]>(`http://localhost:5000/api/submissions/assignment/${assignmentId}`, config);
+            setSubmissions(response.data);
+        } catch (error) {
+            console.error("Failed to fetch submissions:", error);
+        } finally {
+            setLoading(false);
+        }
+    }, [assignmentId, token]);
+
+    useEffect(() => {
+        fetchSubmissions();
+    }, [fetchSubmissions]);
+
+    if (loading) return <p className="mt-4">Loading submissions...</p>;
+
+    return (
+        <div className="mt-4 p-4 bg-green-50 rounded-md">
+            <h4 className="font-semibold text-gray-700">Submissions for this Assignment</h4>
+            {submissions.length > 0 ? (
+                <ul className="mt-2 space-y-4">
+                    {submissions.map(sub => (
+                        <li key={sub._id} className="p-2 border-b">
+                            <p><strong>Student:</strong> {sub.student.username}</p>
+                            <p><strong>Submission:</strong> {sub.content}</p>
+                            <p className="text-xs text-gray-500">Submitted on: {new Date(sub.createdAt).toLocaleDateString()}</p>
+                            
+                            {sub.status === 'Reviewed' ? (
+                                <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-md">
+                                    <h5 className="font-bold text-sm text-blue-800">Feedback Given</h5>
+                                    <p><strong>Grade:</strong> {sub.grade}</p>
+                                    <p><strong>Comments:</strong> {sub.feedback}</p>
+                                </div>
+                            ) : (
+                                <ReviewForm submission={sub} onReviewSuccess={fetchSubmissions} />
+                            )}
+                        </li>
+                    ))}
+                </ul>
+            ) : (
+                <p>No submissions yet.</p>
+            )}
+        </div>
+    );
+};
+
+
+// ==================================================================
+// --- THE MAIN PAGE COMPONENT ---
+// ==================================================================
+const CircleDetailPage = () => {
+    const { circleId } = useParams<{ circleId: string }>();
+    const { user, token } = useAuth();
+    const [assignments, setAssignments] = useState<Assignment[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+    const [viewingSubmissionsFor, setViewingSubmissionsFor] = useState<string | null>(null);
+
+    const fetchAssignments = useCallback(async () => {
+        if (!token || !circleId) {
+            setError("Missing information to fetch assignments.");
+            setLoading(false);
+            return;
+        }
+        try {
+            setLoading(true);
+            const config = { headers: { Authorization: `Bearer ${token}` } };
+            const response = await axios.get<Assignment[]>(`http://localhost:5000/api/assignments/circle/${circleId}`, config);
+            setAssignments(response.data);
+            setError(null);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } catch (err: any) {
+            if (err.response) {
+                setError(err.response.data.message || "Failed to fetch assignments.");
+            } else {
+                setError("An unexpected network error occurred.");
+            }
+        } finally {
+            setLoading(false);
+        }
+    }, [token, circleId]);
+
+    useEffect(() => {
+        fetchAssignments();
+    }, [fetchAssignments]);
+
+    const handleViewSubmissions = (assignmentId: string) => {
+        setViewingSubmissionsFor(prev => (prev === assignmentId ? null : assignmentId));
+    };
+
+    if (loading) return <div className="p-10">Loading assignments...</div>;
+    if (error) return <div className="p-10 text-red-500">{error}</div>;
+
+    return (
+        <div className="p-8 max-w-4xl mx-auto">
+            <h1 className="text-3xl font-bold mb-6">Assignments</h1>
+            <div className="space-y-4">
+                {assignments.length > 0 ? (
+                    assignments.map((assignment) => (
+                        <div key={assignment._id} className="bg-white p-4 rounded-lg shadow border border-gray-200">
+                            <h2 className="text-xl font-semibold text-gray-800">{assignment.title}</h2>
+                            <p className="text-sm text-gray-500">
+                                Assigned by: {assignment.createdBy.username} on {new Date(assignment.createdAt).toLocaleDateString()}
+                            </p>
+                            {assignment.dueDate && (
+                                <p className="text-sm text-red-600 font-semibold">
+                                    Due by: {new Date(assignment.dueDate).toLocaleDateString()}
+                                </p>
+                            )}
+                            <p className="text-gray-700 mt-2">{assignment.description}</p>
+                            
+                            {user?.role === 'Student' && (
+                                <SubmissionForm 
+                                    assignmentId={assignment._id} 
+                                    onSubmissionSuccess={() => {
+                                        alert('Submission received!');
+                                    }} 
+                                />
+                            )}
+
+                            {user?.role === 'Teacher' && (
+                                <button 
+                                    onClick={() => handleViewSubmissions(assignment._id)} 
+                                    className="mt-4 px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300"
+                                >
+                                    {viewingSubmissionsFor === assignment._id ? 'Hide Submissions' : 'View Submissions'}
+                                </button>
+                            )}
+
+                            {viewingSubmissionsFor === assignment._id && (
+                                <SubmissionsList assignmentId={assignment._id} />
+                            )}
+                        </div>
+                    ))
+                ) : (
+                    <p>No assignments have been posted for this circle yet.</p>
+                )}
+            </div>
+        </div>
+    );
+};
+
+export default CircleDetailPage;
