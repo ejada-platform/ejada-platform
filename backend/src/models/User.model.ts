@@ -3,23 +3,31 @@
 import mongoose, { Schema, Document, Types } from 'mongoose';
 import bcrypt from 'bcryptjs';
 
-// Re-defining the IUser interface for absolute clarity
-// Note the use of Types.ObjectId
 export interface IUser extends Document {
-    _id: Types.ObjectId; // Explicitly define _id type
+    _id: Types.ObjectId;
     username: string;
     password?: string;
     role: 'Student' | 'Teacher' | 'Admin';
     generatedCode?: string;
+    isFeatured?: boolean;
 }
 
+// THIS IS THE CORRECTED SCHEMA
 const UserSchema: Schema<IUser> = new Schema({
     username: { type: String, required: true, unique: true },
     password: { type: String, required: true, select: false },
     role: { type: String, enum: ['Student', 'Teacher', 'Admin'], required: true },
-    generatedCode: { type: String, unique: true, sparse: true }
+    generatedCode: { type: String, unique: true, sparse: true },
+    isFeatured: {
+        type: Boolean,
+        default: false,
+        required: false // Explicitly state it's not required
+    }
 }, {
-    timestamps: true
+    timestamps: true,
+    // This option ensures that even if a field is not in the schema, it's not an error.
+    // It's a good safety net, but the main fix is the 'required: false' above.
+    strict: false 
 });
 
 UserSchema.pre<IUser>('save', async function (next) {

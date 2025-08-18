@@ -11,6 +11,11 @@ interface SelectOption {
     label: string;
 }
 
+interface ScheduleEntry {
+    day: string;
+    time: string;
+}
+
 const CreateCirclePage = () => {
     const { token } = useAuth();
     const [users, setUsers] = useState<User[]>([]);
@@ -21,6 +26,22 @@ const CreateCirclePage = () => {
     const [students, setStudents] = useState<SelectOption[]>([]);
     const [message, setMessage] = useState('');
     const [liveClassUrl, setLiveClassUrl] = useState('');
+      const [schedule, setSchedule] = useState<ScheduleEntry[]>([{ day: 'Monday', time: '17:00' }]);
+
+    const handleScheduleChange = (index: number, field: 'day' | 'time', value: string) => {
+        const newSchedule = [...schedule];
+        newSchedule[index][field] = value;
+        setSchedule(newSchedule);
+    };
+
+    const addScheduleEntry = () => {
+        setSchedule([...schedule, { day: 'Wednesday', time: '17:00' }]);
+    };
+
+    const removeScheduleEntry = (index: number) => {
+        const newSchedule = schedule.filter((_, i) => i !== index);
+        setSchedule(newSchedule);
+    };
 
     useEffect(() => {
         const fetchUsers = async () => {
@@ -53,6 +74,7 @@ const CreateCirclePage = () => {
                 teacher: teacher.value,
                 students: students.map(s => s.value),
                 liveClassUrl,
+                schedule,
             };
             await axios.post('http://localhost:5000/api/circles', payload, config);
             setMessage('Circle created successfully!');
@@ -61,6 +83,7 @@ const CreateCirclePage = () => {
             setTeacher(null);
             setStudents([]);
             setLiveClassUrl('');
+             setSchedule([{ day: 'Monday', time: '17:00' }]);
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (err: any) {
             setMessage(err.response?.data?.message || 'Failed to create circle.');
@@ -98,6 +121,26 @@ const CreateCirclePage = () => {
                 <div className="mb-4">
                     <label className="block font-bold mb-1">Description</label>
                     <textarea value={description} onChange={e => setDescription(e.target.value)} className="w-full p-2 border rounded" />
+                </div>
+                {/* --- NEW SCHEDULE SECTION --- */}
+                <div className="mb-4">
+                    <label className="block font-bold mb-2">Class Schedule</label>
+                    {schedule.map((entry, index) => (
+                        <div key={index} className="flex items-center space-x-2 mb-2">
+                            <select value={entry.day} onChange={e => handleScheduleChange(index, 'day', e.target.value)} className="p-2 border rounded w-1/2">
+                                <option>Monday</option>
+                                <option>Tuesday</option>
+                                <option>Wednesday</option>
+                                <option>Thursday</option>
+                                <option>Friday</option>
+                                <option>Saturday</option>
+                                <option>Sunday</option>
+                            </select>
+                            <input type="time" value={entry.time} onChange={e => handleScheduleChange(index, 'time', e.target.value)} className="p-2 border rounded w-1/2" />
+                            <button type="button" onClick={() => removeScheduleEntry(index)} className="px-2 py-1 bg-red-500 text-white rounded">&times;</button>
+                        </div>
+                    ))}
+                    <button type="button" onClick={addScheduleEntry} className="text-sm text-blue-600 hover:underline">+ Add another day</button>
                 </div>
                 <div className="mb-4">
                     <label className="block font-bold mb-1">Select Teacher</label>

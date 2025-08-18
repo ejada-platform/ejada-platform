@@ -1,6 +1,6 @@
 // src/pages/admin/UserManagementPage.tsx
 
-import React, { useState, useEffect, useCallback } from 'react'; // THIS LINE IS NOW CORRECT
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { useAuth } from '../../context/AuthContext';
 import type { User } from '../../context/AuthContext';
@@ -12,12 +12,9 @@ const UserManagementPage = () => {
     const [users, setUsers] = useState<User[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-
-    // State for managing the Edit User modal
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
-    // Function to fetch all users from the backend
     const fetchUsers = useCallback(async () => {
         if (!token) return;
         try {
@@ -34,20 +31,17 @@ const UserManagementPage = () => {
         }
     }, [token]);
 
-    // Fetch users when the component first loads
     useEffect(() => {
         fetchUsers();
     }, [fetchUsers]);
 
-    // Function to handle deleting a user
     const handleDelete = async (userId: string) => {
         if (window.confirm('Are you sure you want to delete this user? This action cannot be undone.')) {
             try {
                 const config = { headers: { Authorization: `Bearer ${token}` } };
                 await axios.delete(`http://localhost:5000/api/users/${userId}`, config);
                 alert('User deleted successfully.');
-                fetchUsers(); // Refresh the list after deleting
-            // We can ignore the unused 'err' warning here as a simple alert is sufficient
+                fetchUsers();
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
             } catch (err) {
                 alert('Failed to delete user.');
@@ -55,8 +49,47 @@ const UserManagementPage = () => {
         }
     };
 
-    // --- Modal Handling Functions ---
-    const handleEditClick = (user: User) => {
+/*    const handleFeature = async (userToFeature: User) => {
+        if (!token) return;
+        try {
+            const config = { headers: { Authorization: `Bearer ${token}` } };
+            setUsers(currentUsers =>
+                currentUsers.map(u => ({
+                    ...u,
+                    isFeatured: u._id === userToFeature._id
+                }))
+            );
+            const currentFeatured = users.find(u => u.isFeatured && u._id !== userToFeature._id);
+            if (currentFeatured) {
+                await axios.put(`http://localhost:5000/api/users/${currentFeatured._id}`, { isFeatured: false }, config);
+            }
+            await axios.put(`http://localhost:5000/api/users/${userToFeature._id}`, { isFeatured: true }, config);
+            alert(`${userToFeature.username} is now the Star Student!`);
+        // This is the corrected catch block
+        } catch (error) {
+            alert('Failed to update featured student. Refreshing page.');
+            fetchUsers();
+        }
+    };
+*/
+  
+ const handleFeature = async (userToFeature: User) => {
+        if (!token) return;
+        try {
+            const config = { headers: { Authorization: `Bearer ${token}` } };
+            // We only need to make ONE API call now.
+            // The backend will handle un-featuring anyone else.
+            await axios.put(`http://localhost:5000/api/users/${userToFeature._id}`, { isFeatured: true }, config);
+            
+            alert(`${userToFeature.username} is now the Star Student!`);
+            fetchUsers(); // Refresh the list to get the definitive state from the server
+        } catch {
+            alert('Failed to update featured student.');
+        }
+    };
+
+
+const handleEditClick = (user: User) => {
         setSelectedUser(user);
         setIsModalOpen(true);
     };
@@ -68,7 +101,7 @@ const UserManagementPage = () => {
 
     const handleUpdateSuccess = () => {
         handleCloseModal();
-        fetchUsers(); // Refresh the user list after a successful update
+        fetchUsers();
     };
 
     if (loading) return <div className="p-8">Loading users...</div>;
@@ -83,6 +116,7 @@ const UserManagementPage = () => {
                         <tr>
                             <th className="py-2">Username</th>
                             <th className="py-2">Role</th>
+                            <th className="py-2">Status</th>
                             <th className="py-2 text-right">Actions</th>
                         </tr>
                     </thead>
@@ -99,7 +133,20 @@ const UserManagementPage = () => {
                                         {user.role}
                                     </span>
                                 </td>
+                                <td className="py-2">
+                                    {user.isFeatured && (
+                                        <span className="text-yellow-500 font-bold">★ Star Student</span>
+                                    )}
+                                </td>
                                 <td className="py-2 space-x-2 text-right">
+                                    {user.role === 'Student' && !user.isFeatured && (
+                                        <button 
+                                            onClick={() => handleFeature(user)}
+                                            className="px-3 py-1 bg-green-500 text-white text-sm rounded hover:bg-green-600"
+                                        >
+                                            Feature
+                                        </button>
+                                    )}
                                     <button 
                                         onClick={() => handleEditClick(user)}
                                         className="px-3 py-1 bg-yellow-500 text-white text-sm rounded hover:bg-yellow-600"
@@ -118,7 +165,6 @@ const UserManagementPage = () => {
                     </tbody>
                 </table>
             </div>
-
             {selectedUser && (
                 <Modal 
                     isOpen={isModalOpen} 

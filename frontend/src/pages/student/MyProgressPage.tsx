@@ -3,8 +3,9 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { useAuth } from '../../context/AuthContext';
+import StarStudent from '../../components/StartStudent';
 
-// Define the shape of the evaluation data
+// --- Type Definitions for the data we expect from the API ---
 interface Evaluation {
     _id: string;
     teacher: { _id: string; username: string };
@@ -13,42 +14,46 @@ interface Evaluation {
     date: string;
 }
 
+interface StudentStats {
+    averageRating: number;
+    totalEvaluations: number;
+    totalSubmissions: number;
+}
+
 const MyProgressPage = () => {
     const { user, token } = useAuth();
     const [evaluations, setEvaluations] = useState<Evaluation[]>([]);
+    const [stats, setStats] = useState<StudentStats | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
-    const fetchEvaluations = useCallback(async () => {
+    const fetchData = useCallback(async () => {
         if (!user || !token) {
             setError("You must be logged in to view your progress.");
             setLoading(false);
             return;
         }
-
         try {
             setLoading(true);
             const config = { headers: { Authorization: `Bearer ${token}` } };
-            // We use the student's own ID from the context to fetch their evaluations
-            const response = await axios.get<Evaluation[]>(`http://localhost:5000/api/evaluations/student/${user._id}`, config);
-            setEvaluations(response.data);
+            const evaluationsPromise = axios.get<Evaluation[]>(`http://localhost:5000/api/evaluations/student/${user._id}`, config);
+            const statsPromise = axios.get<StudentStats>(`http://localhost:5000/api/stats/student/${user._id}`, config);
+            const [evaluationsResponse, statsResponse] = await Promise.all([evaluationsPromise, statsPromise]);
+            setEvaluations(evaluationsResponse.data);
+            setStats(statsResponse.data);
             setError(null);
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (err: any) {
-            setError(err.response?.data?.message || "Failed to fetch evaluations.");
+            setError(err.response?.data?.message || "Failed to fetch your progress data.");
         } finally {
             setLoading(false);
         }
     }, [user, token]);
 
     useEffect(() => {
-        fetchEvaluations();
-    }, [fetchEvaluations]);
+        fetchData();
+    }, [fetchData]);
 
-    if (loading) return <div className="p-10">Loading your progress...</div>;
-    if (error) return <div className="p-10 text-red-500">{error}</div>;
-
-    // Helper to render stars for the rating
     const renderStars = (rating: number) => {
         return Array.from({ length: 5 }, (_, index) => (
             <span key={index} className={index < rating ? 'text-yellow-400' : 'text-gray-300'}>
@@ -57,9 +62,35 @@ const MyProgressPage = () => {
         ));
     };
 
+    if (loading) return <div className="p-10 text-center">Loading your progress...</div>;
+    if (error) return <div className="p-10 text-center text-red-500">{error}</div>;
+
     return (
         <div className="p-8 max-w-4xl mx-auto">
-            <h1 className="text-3xl font-bold mb-6">My Daily Progress</h1>
+            <div className="mb-8">
+                <StarStudent />
+            </div>
+            
+            <h1 className="text-3xl font-bold mb-6">My Progress Overview</h1>
+
+            {stats && (
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                    <div className="bg-white p-4 rounded-lg shadow text-center">
+                        <h3 className="text-lg font-bold text-gray-500">Average Rating</h3>
+                        <p className="text-3xl font-bold text-blue-600">{stats.averageRating} / 5</p>
+                    </div>
+                    <div className="bg-white p-4 rounded-lg shadow text-center">
+                        <h3 className="text-lg font-bold text-gray-500">Total Submissions</h3>
+                        <p className="text-3xl font-bold text-green-600">{stats.totalSubmissions}</p>
+                    </div>
+                    <div className="bg-white p-4 rounded-lg shadow text-center">
+                        <h3 className="text-lg font-bold text-gray-500">Daily Evaluations</h3>
+                        <p className="text-3xl font-bold text-yellow-600">{stats.totalEvaluations}</p>
+                    </div>
+                </div>
+            )}
+
+            <h2 className="text-2xl font-bold mb-4">Daily Evaluation History</h2>
             <div className="space-y-4">
                 {evaluations.length > 0 ? (
                     evaluations.map((evaluation) => (
@@ -71,15 +102,17 @@ const MyProgressPage = () => {
                                     </p>
                                     <p className="text-lg font-semibold text-gray-800 mt-1">{evaluation.notes || "No notes provided."}</p>
                                 </div>
-                                <div className="text-right">
+                                <div className="text-right flex-shrink-0 ml-4">
                                     <p className="text-sm font-bold">{new Date(evaluation.date).toLocaleDateString()}</p>
-                                    <div className="text-xl">{renderStars(evaluation.rating)}</div>
+                                    <div className="text-xl mt-1">{renderStars(evaluation.rating)}</div>
                                 </div>
                             </div>
                         </div>
                     ))
                 ) : (
-                    <p>You have no evaluations yet.</p>
+                    <div className="bg-white p-4 rounded-lg shadow text-center text-gray-500">
+                        <p>You have no evaluations yet.</p>
+                    </div>
                 )}
             </div>
         </div>

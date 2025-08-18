@@ -10,18 +10,23 @@ interface PopulatedUser {
     _id: string;
     username: string;
 }
-
+interface ScheduleEntry {
+    day: string;
+    time: string;
+}
 interface CircleData {
     _id: string;
     name: string;
     description?: string;
     teacher?: PopulatedUser;
     students?: PopulatedUser[];
-    liveClassUrl?: string; // The new field for the class link
+    liveClassUrl?: string;
+    schedule?: ScheduleEntry[];
 }
 
 // ==================================================================
 // --- SUB-COMPONENT: EvaluationForm (for Teachers) ---
+// This component remains unchanged.
 // ==================================================================
 const EvaluationForm = ({ studentId, circleId, onEvaluationSuccess }: { studentId: string; circleId: string; onEvaluationSuccess: () => void }) => {
     const { token } = useAuth();
@@ -32,7 +37,6 @@ const EvaluationForm = ({ studentId, circleId, onEvaluationSuccess }: { studentI
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setMessage('');
-
         try {
             const config = { headers: { Authorization: `Bearer ${token}` } };
             const payload = { studentId, circleId, rating, notes };
@@ -81,7 +85,7 @@ const EvaluationForm = ({ studentId, circleId, onEvaluationSuccess }: { studentI
 
 
 // ==================================================================
-// --- THE MAIN PAGE COMPONENT ---
+// --- THE MAIN PAGE COMPONENT (WITH UPDATES) ---
 // ==================================================================
 const MyCirclesPage = () => {
     const { user, token } = useAuth();
@@ -115,7 +119,7 @@ const MyCirclesPage = () => {
     }, [fetchMyCircles]);
 
     const handleEvaluateClick = (studentId: string) => {
-        setEvaluatingStudentId(prevId => (prevId === studentId ? null : studentId));
+        setEvaluatingStudentId(prevId => (prevId === studentId ? null : prevId));
     };
 
     if (loading) return <div className="p-10">Loading your circles...</div>;
@@ -128,62 +132,70 @@ const MyCirclesPage = () => {
                 {circles.length > 0 ? (
                     circles.map((circle) => (
                         <div key={circle._id} className="bg-white p-6 rounded-lg shadow border border-gray-200">
-                            <Link to={`/circle/${circle._id}`}>
-                                <h2 className="text-2xl font-semibold text-gray-800 hover:text-blue-600">{circle.name}</h2>
-                            </Link>
+                            <div className="flex justify-between items-start mb-2">
+                                <Link to={`/circle/${circle._id}`}>
+                                    <h2 className="text-2xl font-semibold text-gray-800 hover:text-blue-600">{circle.name}</h2>
+                                </Link>
+                                {user?.role === 'Teacher' && (
+                                    <Link to={`/teacher/edit-circle/${circle._id}`} className="px-3 py-1 bg-yellow-500 text-white text-sm rounded hover:bg-yellow-600">
+                                        Edit
+                                    </Link>
+                                )}
+                            </div>
+
                             {circle.description && <p className="text-gray-600 my-2">{circle.description}</p>}
-                            
-                            {/* --- Student's View with Live Class Button --- */}
-                            {user?.role === 'Student' && (
-                                <div className="mt-4">
-                                    {circle.teacher && (
-                                        <p className="text-gray-700 mb-4"><strong>Teacher:</strong> {circle.teacher.username}</p>
-                                    )}
-                                    {circle.liveClassUrl ? (
-                                        <a
-                                            href={circle.liveClassUrl}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="inline-block px-6 py-2 bg-blue-500 text-white font-bold rounded-lg hover:bg-blue-600 transition-colors"
-                                        >
-                                            Join Live Class (Zoom)
-                                        </a>
-                                    ) : (
-                                        <p className="text-sm text-gray-400">No live class link has been added yet.</p>
-                                    )}
+
+                            {circle.schedule && circle.schedule.length > 0 && (
+                                <div className="my-3">
+                                    {circle.schedule.map((s, index) => (
+                                        <p key={index} className="text-sm text-gray-700 font-semibold">
+                                            - Every {s.day} at {s.time}
+                                        </p>
+                                    ))}
                                 </div>
                             )}
                             
-                            {/* --- Teacher's View with Evaluation Forms --- */}
-                            {user?.role === 'Teacher' && circle.students && (
-                                <div>
-                                    <h3 className="text-lg font-semibold mt-4 mb-2">Students in this circle:</h3>
-                                    <ul className="space-y-2">
-                                        {circle.students.map(student => (
-                                            <li key={student._id} className="p-2 border-t">
-                                                <div className="flex justify-between items-center">
-                                                    <span>{student.username}</span>
-                                                    <button
-                                                        onClick={() => handleEvaluateClick(student._id)}
-                                                        className="px-3 py-1 bg-gray-200 text-gray-800 text-sm rounded hover:bg-gray-300"
-                                                    >
-                                                        {evaluatingStudentId === student._id ? 'Close' : 'Evaluate'}
-                                                    </button>
-                                                </div>
-                                                {evaluatingStudentId === student._id && (
-                                                    <EvaluationForm 
-                                                        studentId={student._id} 
-                                                        circleId={circle._id} 
-                                                        onEvaluationSuccess={() => {
-                                                            alert('Evaluation saved!');
-                                                            setEvaluatingStudentId(null);
-                                                        }}
-                                                    />
-                                                )}
-                                            </li>
-                                        ))}
-                                    </ul>
-                                </div>
+                            {/* Student's view can be added here if needed */}
+                            
+                            {/* --- THIS IS THE UPDATED TEACHER'S VIEW --- */}
+                            {user?.role === 'Teacher' && (
+                                <>
+                                    <div className="mt-4">
+                                        <Link to={`/teacher/attendance/${circle._id}`} className="inline-block px-4 py-2 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700">
+                                            Take Attendance
+                                        </Link>
+                                    </div>
+                                    {circle.students && circle.students.length > 0 && (
+                                        <div>
+                                            <h3 className="text-lg font-semibold mt-4 mb-2">Students in this circle:</h3>
+                                            <ul className="space-y-2">
+                                                {circle.students.map(student => (
+                                                    <li key={student._id} className="p-2 border-t">
+                                                        <div className="flex justify-between items-center">
+                                                            <span>{student.username}</span>
+                                                            <button
+                                                                onClick={() => handleEvaluateClick(student._id)}
+                                                                className="px-3 py-1 bg-gray-200 text-gray-800 text-sm rounded hover:bg-gray-300"
+                                                            >
+                                                                {evaluatingStudentId === student._id ? 'Close' : 'Evaluate'}
+                                                            </button>
+                                                        </div>
+                                                        {evaluatingStudentId === student._id && (
+                                                            <EvaluationForm 
+                                                                studentId={student._id} 
+                                                                circleId={circle._id} 
+                                                                onEvaluationSuccess={() => {
+                                                                    alert('Evaluation saved!');
+                                                                    setEvaluatingStudentId(null);
+                                                                }}
+                                                            />
+                                                        )}
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </div>
+                                    )}
+                                </>
                             )}
                         </div>
                     ))

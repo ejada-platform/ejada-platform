@@ -31,7 +31,7 @@ export const getUserById = async (req: Request, res: Response) => {
     }
 };
 
-// @desc    Update a user's details (e.g., their role)
+// @desc    Update a user's details (e.g., their role or featured status)
 // @route   PUT /api/users/:id
 // @access  Private (Admin)
 export const updateUser = async (req: Request, res: Response) => {
@@ -41,16 +41,36 @@ export const updateUser = async (req: Request, res: Response) => {
             return res.status(404).json({ message: 'User not found' });
         }
 
-        // Update fields if they are provided in the request body
+        // Standard field updates
         user.username = req.body.username || user.username;
         user.role = req.body.role || user.role;
 
+        // --- THIS IS THE NEW, SAFER LOGIC FOR THE FEATURED STATUS ---
+        if (req.body.isFeatured === true) {
+            // If we are setting this user to be featured...
+            // First, un-feature ALL other students in the database.
+            await User.updateMany({ role: 'Student' }, { $set: { isFeatured: false } });
+            // Then, set this user to be featured.
+            user.isFeatured = true;
+        } else if (req.body.isFeatured === false) {
+            // If we are explicitly un-featuring this user
+            user.isFeatured = false;
+        }
+        // If isFeatured is not mentioned in the request body, we don't change it.
+        // --- END OF NEW LOGIC ---
+
         const updatedUser = await user.save();
-        res.status(200).json({
+        
+        // Respond with the full user object, including the new status
+        const responseUser = {
             _id: updatedUser._id,
             username: updatedUser.username,
             role: updatedUser.role,
-        });
+            isFeatured: updatedUser.isFeatured
+        };
+
+        res.status(200).json(responseUser);
+
     } catch (error: any) {
         res.status(500).json({ message: 'Server Error', error: error.message });
     }
@@ -66,8 +86,7 @@ export const deleteUser = async (req: Request, res: Response) => {
             return res.status(404).json({ message: 'User not found' });
         }
 
-        // We should also consider deleting related data (circles, submissions) in a real-world scenario,
-        // but for now, we will just delete the user document.
+        // In a real-world scenario, consider what happens to the user's submissions, etc.
         await user.deleteOne();
 
         res.status(200).json({ message: 'User removed successfully' });

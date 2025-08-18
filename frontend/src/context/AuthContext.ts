@@ -7,6 +7,7 @@ export interface User {
     _id: string;
     username: string;
     role: string;
+    isFeatured?: boolean; // Optional property for featured users
 }
 
 // Define the shape of the context's value

@@ -6,7 +6,7 @@ import Circle, { ICircle } from '../models/Circle.model';
 
 export const createCircle = async (req: Request, res: Response) => {
     // Admins will provide the name, teacher ID, and an array of student IDs
-    const { name, description, teacher, students, liveClassUrl } = req.body;
+    const { name, description, teacher, students, liveClassUrl, schedule } = req.body;
 
     try {
         const circle = await Circle.create({
@@ -14,7 +14,8 @@ export const createCircle = async (req: Request, res: Response) => {
             description,
             teacher,
             students,
-            liveClassUrl 
+            liveClassUrl,
+            schedule // <-- Include the schedule in the circle creation
         });
         res.status(201).json(circle);
     } catch (error: any) {
@@ -57,7 +58,7 @@ export const getMyCircles = async (req: Request, res: Response) => {
 export const updateCircle = async (req: Request, res: Response) => {
     const user = req.user!;
     const { circleId } = req.params;
-    const { name, description, liveClassUrl } = req.body;
+    const { name, description, liveClassUrl, schedule } = req.body;
 
     try {
         const circle = await Circle.findById(circleId);
@@ -74,7 +75,9 @@ export const updateCircle = async (req: Request, res: Response) => {
         circle.name = name || circle.name;
         circle.description = description || circle.description;
         circle.liveClassUrl = liveClassUrl || circle.liveClassUrl;
-
+        if (schedule) {
+            circle.schedule = schedule; // Update the schedule if provided
+        }
         const updatedCircle = await circle.save();
         res.status(200).json(updatedCircle);
 

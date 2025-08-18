@@ -25,6 +25,15 @@ interface Submission {
     createdAt: string;
 }
 
+interface LessonLog {
+    _id: string;
+    date: string;
+    specialization: 'Quran' | 'Arabic Language' | 'Islamic Lessons';
+    topic: string;
+    notes?: string;
+    teacher: { _id: string, username: string };
+}
+
 // ==================================================================
 // --- SUB-COMPONENT: SubmissionForm (for Students) ---
 // ==================================================================
@@ -199,6 +208,114 @@ const SubmissionsList = ({ assignmentId }: { assignmentId: string }) => {
 };
 
 
+
+
+// ==================================================================
+// --- THE MAIN PAGE COMPONENT ---
+// ==================================================================
+const LessonLogForm = ({ circleId, onLogSuccess }: { circleId: string; onLogSuccess: () => void }) => {
+    const { token } = useAuth();
+    const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
+    const [specialization, setSpecialization] = useState<'Quran' | 'Arabic Language' | 'Islamic Lessons'>('Quran');
+    const [topic, setTopic] = useState('');
+    const [notes, setNotes] = useState('');
+    const [message, setMessage] = useState('');
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setMessage('');
+        try {
+            const config = { headers: { Authorization: `Bearer ${token}` } };
+            const payload = { circleId, date, specialization, topic, notes };
+            await axios.post('http://localhost:5000/api/lessonlogs', payload, config);
+            setMessage('Lesson logged successfully!');
+            setTopic('');
+            setNotes('');
+            onLogSuccess();
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } catch (err: any) {
+            setMessage(err.response?.data?.message || 'Failed to log lesson.');
+        }
+    };
+
+    return (
+        <div className="bg-white p-6 rounded-lg shadow border my-8">
+            <h2 className="text-2xl font-bold mb-4">Log a New Lesson</h2>
+            <form onSubmit={handleSubmit}>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label className="block font-bold mb-1">Date</label>
+                        <input type="date" value={date} onChange={e => setDate(e.target.value)} className="w-full p-2 border rounded" required />
+                    </div>
+                    <div>
+                        <label className="block font-bold mb-1">Specialization</label>
+                        <select value={specialization} onChange={e => setSpecialization(e.target.value as any)} className="w-full p-2 border rounded">
+                            <option>Quran</option>
+                            <option>Arabic Language</option>
+                            <option>Islamic Lessons</option>
+                        </select>
+                    </div>
+                </div>
+                <div className="mt-4">
+                    <label className="block font-bold mb-1">Topic Covered</label>
+                    <input type="text" value={topic} onChange={e => setTopic(e.target.value)} className="w-full p-2 border rounded" required placeholder="e.g., Surah Al-Baqarah, Ayahs 1-10" />
+                </div>
+                <div className="mt-4">
+                    <label className="block font-bold mb-1">Notes (Optional)</label>
+                    <textarea value={notes} onChange={e => setNotes(e.target.value)} className="w-full p-2 border rounded" rows={3}></textarea>
+                </div>
+                <button type="submit" className="w-full mt-4 py-2 px-4 bg-indigo-600 text-white font-bold rounded hover:bg-indigo-700">
+                    Save Lesson Log
+                </button>
+                {message && <p className="mt-2 text-center">{message}</p>}
+            </form>
+        </div>
+    );
+};
+
+const LessonLogList = ({ circleId }: { circleId: string }) => {
+    const { token } = useAuth();
+    const [logs, setLogs] = useState<LessonLog[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    const fetchLogs = useCallback(async () => {
+        if (!token) return;
+        try {
+            setLoading(true);
+            const config = { headers: { Authorization: `Bearer ${token}` } };
+            const { data } = await axios.get<LessonLog[]>(`http://localhost:5000/api/lessonlogs/circle/${circleId}`, config);
+            setLogs(data);
+        } catch (error) {
+            console.error('Failed to fetch lesson logs', error);
+        } finally {
+            setLoading(false);
+        }
+    }, [token, circleId]);
+
+    useEffect(() => {
+        fetchLogs();
+    }, [fetchLogs]);
+
+    if (loading) return <p className="mt-8">Loading lesson history...</p>;
+
+    return (
+        <div className="mt-8">
+            <h2 className="text-2xl font-bold mb-4">Lesson History</h2>
+            <div className="space-y-4">
+                {logs.length > 0 ? logs.map(log => (
+                    <div key={log._id} className="bg-white p-4 rounded-lg shadow border">
+                        <p className="text-sm text-gray-500">{new Date(log.date).toLocaleDateString()}</p>
+                        <p className="font-bold">{log.topic}</p>
+                        <p className="text-sm"><span className="font-semibold">Category:</span> {log.specialization}</p>
+                        {log.notes && <p className="text-sm mt-1"><span className="font-semibold">Notes:</span> {log.notes}</p>}
+                    </div>
+                )) : <p>No lessons have been logged for this circle yet.</p>}
+            </div>
+        </div>
+    );
+};
+
+
 // ==================================================================
 // --- THE MAIN PAGE COMPONENT ---
 // ==================================================================
@@ -206,31 +323,28 @@ const CircleDetailPage = () => {
     const { circleId } = useParams<{ circleId: string }>();
     const { user, token } = useAuth();
     const [assignments, setAssignments] = useState<Assignment[]>([]);
-    const [loading, setLoading] = useState(true);
+    const [loadingAssignments, setLoadingAssignments] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [viewingSubmissionsFor, setViewingSubmissionsFor] = useState<string | null>(null);
+    const [logCount, setLogCount] = useState(0); // This state is used to trigger a refresh
 
     const fetchAssignments = useCallback(async () => {
         if (!token || !circleId) {
-            setError("Missing information to fetch assignments.");
-            setLoading(false);
+            setError("Missing information.");
+            setLoadingAssignments(false);
             return;
         }
         try {
-            setLoading(true);
+            setLoadingAssignments(true);
             const config = { headers: { Authorization: `Bearer ${token}` } };
             const response = await axios.get<Assignment[]>(`http://localhost:5000/api/assignments/circle/${circleId}`, config);
             setAssignments(response.data);
             setError(null);
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (err: any) {
-            if (err.response) {
-                setError(err.response.data.message || "Failed to fetch assignments.");
-            } else {
-                setError("An unexpected network error occurred.");
-            }
+            setError(err.response?.data?.message || "Failed to fetch assignments.");
         } finally {
-            setLoading(false);
+            setLoadingAssignments(false);
         }
     }, [token, circleId]);
 
@@ -242,54 +356,68 @@ const CircleDetailPage = () => {
         setViewingSubmissionsFor(prev => (prev === assignmentId ? null : assignmentId));
     };
 
-    if (loading) return <div className="p-10">Loading assignments...</div>;
-    if (error) return <div className="p-10 text-red-500">{error}</div>;
+    if (loadingAssignments) return <div className="p-10 text-center">Loading...</div>;
+    if (error) return <div className="p-10 text-center text-red-500">{error}</div>;
 
     return (
         <div className="p-8 max-w-4xl mx-auto">
-            <h1 className="text-3xl font-bold mb-6">Assignments</h1>
-            <div className="space-y-4">
-                {assignments.length > 0 ? (
-                    assignments.map((assignment) => (
-                        <div key={assignment._id} className="bg-white p-4 rounded-lg shadow border border-gray-200">
-                            <h2 className="text-xl font-semibold text-gray-800">{assignment.title}</h2>
-                            <p className="text-sm text-gray-500">
-                                Assigned by: {assignment.createdBy.username} on {new Date(assignment.createdAt).toLocaleDateString()}
-                            </p>
-                            {assignment.dueDate && (
-                                <p className="text-sm text-red-600 font-semibold">
-                                    Due by: {new Date(assignment.dueDate).toLocaleDateString()}
+            {/* THIS IS THE MISSING PIECE: The Lesson Log Form for Teachers */}
+            {user?.role === 'Teacher' && circleId && (
+                <LessonLogForm 
+                    circleId={circleId} 
+                    onLogSuccess={() => setLogCount(count => count + 1)} 
+                />
+            )}
+            
+            {/* The rest of the page layout */}
+            <div className="my-8">
+                <h1 className="text-3xl font-bold mb-6">Assignments</h1>
+                <div className="space-y-4">
+                    {assignments.length > 0 ? (
+                        assignments.map((assignment) => (
+                            <div key={assignment._id} className="bg-white p-4 rounded-lg shadow border">
+                                <h2 className="text-xl font-semibold">{assignment.title}</h2>
+                                <p className="text-sm text-gray-500">
+                                    Assigned by: {assignment.createdBy.username} on {new Date(assignment.createdAt).toLocaleDateString()}
                                 </p>
-                            )}
-                            <p className="text-gray-700 mt-2">{assignment.description}</p>
-                            
-                            {user?.role === 'Student' && (
-                                <SubmissionForm 
-                                    assignmentId={assignment._id} 
-                                    onSubmissionSuccess={() => {
-                                        alert('Submission received!');
-                                    }} 
-                                />
-                            )}
+                                {assignment.dueDate && (
+                                    <p className="text-sm text-red-600 font-semibold">
+                                        Due by: {new Date(assignment.dueDate).toLocaleDateString()}
+                                    </p>
+                                )}
+                                <p className="text-gray-700 mt-2">{assignment.description}</p>
+                                
+                                {user?.role === 'Student' && (
+                                    <SubmissionForm 
+                                        assignmentId={assignment._id} 
+                                        onSubmissionSuccess={() => alert('Submission received!')} 
+                                    />
+                                )}
 
-                            {user?.role === 'Teacher' && (
-                                <button 
-                                    onClick={() => handleViewSubmissions(assignment._id)} 
-                                    className="mt-4 px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300"
-                                >
-                                    {viewingSubmissionsFor === assignment._id ? 'Hide Submissions' : 'View Submissions'}
-                                </button>
-                            )}
+                                {user?.role === 'Teacher' && (
+                                    <button 
+                                        onClick={() => handleViewSubmissions(assignment._id)} 
+                                        className="mt-4 px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300"
+                                    >
+                                        {viewingSubmissionsFor === assignment._id ? 'Hide Submissions' : 'View Submissions'}
+                                    </button>
+                                )}
 
-                            {viewingSubmissionsFor === assignment._id && (
-                                <SubmissionsList assignmentId={assignment._id} />
-                            )}
-                        </div>
-                    ))
-                ) : (
-                    <p>No assignments have been posted for this circle yet.</p>
-                )}
+                                {viewingSubmissionsFor === assignment._id && (
+                                    <SubmissionsList assignmentId={assignment._id} />
+                                )}
+                            </div>
+                        ))
+                    ) : (
+                        <p>No assignments have been posted for this circle yet.</p>
+                    )}
+                </div>
             </div>
+
+            <hr className="my-8" />
+            
+            {/* The Lesson History, which is visible to everyone */}
+            {circleId && <LessonLogList key={logCount} circleId={circleId} />}
         </div>
     );
 };
