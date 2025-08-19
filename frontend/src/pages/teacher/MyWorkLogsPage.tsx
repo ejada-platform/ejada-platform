@@ -1,9 +1,8 @@
-// src/pages/teacher/MyWorkLogsPage.tsx
-
 import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import Select from 'react-select';
 import { useAuth } from '../../context/AuthContext';
+import { useTranslation } from 'react-i18next';
 
 // --- Type Definitions ---
 interface Circle {
@@ -23,6 +22,7 @@ interface SelectOption {
 }
 
 const MyWorkLogsPage = () => {
+    const { t } = useTranslation();
     const { token } = useAuth();
     const [logs, setLogs] = useState<WorkLog[]>([]);
     const [totalHours, setTotalHours] = useState(0);
@@ -32,7 +32,7 @@ const MyWorkLogsPage = () => {
 
     // --- Form State ---
     const [selectedCircle, setSelectedCircle] = useState<SelectOption | null>(null);
-    const [date, setDate] = useState(new Date().toISOString().split('T')[0]); // Default to today
+    const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
     const [duration, setDuration] = useState(1);
     const [notes, setNotes] = useState('');
 
@@ -44,7 +44,7 @@ const MyWorkLogsPage = () => {
             setLogs(data.workLogs);
             setTotalHours(data.totalHours);
         } catch (error) {
-            setMessage('Failed to load work logs.');
+            setMessage('Failed to load work logs.'); // This could also be translated
         } finally {
             setLoading(false);
         }
@@ -82,13 +82,13 @@ const MyWorkLogsPage = () => {
                 notes,
             };
             await axios.post('http://localhost:5000/api/worklogs', payload, config);
-            setMessage('Work log saved successfully!');
+            setMessage(t('my_work_logs_page.success_message'));
             setSelectedCircle(null);
             setNotes('');
-            fetchWorkLogs(); // Refresh the list
+            fetchWorkLogs();
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (err: any) {
-            setMessage(err.response?.data?.message || 'Failed to save work log.');
+            setMessage(err.response?.data?.message || t('my_work_logs_page.error_generic'));
         }
     };
 
@@ -100,33 +100,33 @@ const MyWorkLogsPage = () => {
         <div className="p-8 max-w-4xl mx-auto">
             {/* --- Summary Section --- */}
             <div className="bg-white p-6 rounded-lg shadow mb-8 text-center">
-                <h3 className="text-lg font-bold text-gray-500">Total Hours Logged</h3>
+                <h3 className="text-lg font-bold text-gray-500">{t('my_work_logs_page.total_hours')}</h3>
                 <p className="text-4xl font-bold text-blue-600">{totalHours}</p>
             </div>
 
             {/* --- Form to Add New Log --- */}
             <div className="bg-white p-6 rounded-lg shadow mb-8">
-                <h2 className="text-2xl font-bold mb-4">Log New Work Hours</h2>
+                <h2 className="text-2xl font-bold mb-4">{t('my_work_logs_page.log_new_hours')}</h2>
                 <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-4 gap-4">
                     <div className="md:col-span-2">
-                        <label className="block font-bold mb-1">Circle</label>
+                        <label className="block font-bold mb-1">{t('my_work_logs_page.circle_label')}</label>
                         <Select options={circleOptions} value={selectedCircle} onChange={setSelectedCircle} required />
                     </div>
                     <div>
-                        <label className="block font-bold mb-1">Date</label>
+                        <label className="block font-bold mb-1">{t('my_work_logs_page.date_label')}</label>
                         <input type="date" value={date} onChange={e => setDate(e.target.value)} className="w-full p-2 border rounded" required />
                     </div>
                     <div>
-                        <label className="block font-bold mb-1">Duration (Hrs)</label>
+                        <label className="block font-bold mb-1">{t('my_work_logs_page.duration_label')}</label>
                         <input type="number" step="0.5" min="0.5" value={duration} onChange={e => setDuration(parseFloat(e.target.value))} className="w-full p-2 border rounded" required />
                     </div>
                     <div className="md:col-span-4">
-                        <label className="block font-bold mb-1">Notes (Optional)</label>
+                        <label className="block font-bold mb-1">{t('my_work_logs_page.notes_label')}</label>
                         <input type="text" value={notes} onChange={e => setNotes(e.target.value)} className="w-full p-2 border rounded" />
                     </div>
                     <div className="md:col-span-4">
                         <button type="submit" className="w-full py-2 px-4 bg-blue-600 text-white font-bold rounded hover:bg-blue-700">
-                            Save Log
+                            {t('my_work_logs_page.submit_button')}
                         </button>
                     </div>
                     {message && <p className="md:col-span-4 mt-2 text-center">{message}</p>}
@@ -135,13 +135,13 @@ const MyWorkLogsPage = () => {
 
             {/* --- List of Existing Logs --- */}
             <div>
-                <h2 className="text-2xl font-bold mb-4">Work Log History</h2>
+                <h2 className="text-2xl font-bold mb-4">{t('my_work_logs_page.history_title')}</h2>
                 <div className="space-y-2">
                     {logs.map(log => (
                         <div key={log._id} className="bg-white p-3 rounded-lg shadow-sm flex justify-between items-center">
                             <div>
                                 <p className="font-bold">{log.circle.name}</p>
-                                <p className="text-sm text-gray-600">{log.notes || 'No notes'}</p>
+                                <p className="text-sm text-gray-600">{log.notes || t('my_work_logs_page.no_notes')}</p>
                             </div>
                             <div className="text-right">
                                 <p className="font-bold">{log.duration} hrs</p>

@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { useAuth } from '../../context/AuthContext';
+import { useTranslation } from 'react-i18next';
 
 interface Badge {
     _id: string;
@@ -12,6 +13,7 @@ interface Badge {
 }
 
 const ManageBadgesPage = () => {
+    const { t } = useTranslation();
     const { token } = useAuth();
     const [badges, setBadges] = useState<Badge[]>([]);
     const [loading, setLoading] = useState(true);
@@ -47,11 +49,11 @@ const ManageBadgesPage = () => {
             const payload = { name, description, iconUrl };
             await axios.post('http://localhost:5000/api/badges', payload, config);
             
-            setMessage('Badge created successfully!');
+            setMessage(t('admin_pages.manage_badges.success_message'));
             setName('');
             setDescription('');
             setIconUrl('');
-            fetchBadges(); // Refresh the list
+            fetchBadges();
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (err: any) {
             setMessage(err.response?.data?.message || 'Failed to create badge.');
@@ -64,33 +66,35 @@ const ManageBadgesPage = () => {
         <div className="p-8 max-w-4xl mx-auto">
             {/* --- Form to Create New Badge --- */}
             <div className="bg-white p-6 rounded-lg shadow mb-8">
-                <h2 className="text-2xl font-bold mb-4">Create New Badge</h2>
+                <h2 className="text-2xl font-bold mb-4">{t('admin_pages.manage_badges.add_title')}</h2>
                 <form onSubmit={handleSubmit}>
                     <div className="mb-4">
-                        <label className="block font-bold mb-1">Badge Name</label>
+                        <label className="block font-bold mb-1">{t('admin_pages.manage_badges.name_label')}</label>
                         <input type="text" value={name} onChange={e => setName(e.target.value)} className="w-full p-2 border rounded" required />
                     </div>
                     <div className="mb-4">
-                        <label className="block font-bold mb-1">Icon URL</label>
+                        <label className="block font-bold mb-1">{t('admin_pages.manage_badges.icon_url_label')}</label>
                         <input type="url" value={iconUrl} onChange={e => setIconUrl(e.target.value)} className="w-full p-2 border rounded" placeholder="https://example.com/icon.png" required />
                     </div>
                     <div className="mb-4">
-                        <label className="block font-bold mb-1">Description</label>
+                        <label className="block font-bold mb-1">{t('admin_pages.manage_badges.description_label')}</label>
                         <textarea value={description} onChange={e => setDescription(e.target.value)} className="w-full p-2 border rounded" rows={2} required />
                     </div>
-                    <button type="submit" className="w-full py-2 px-4 bg-blue-600 text-white font-bold rounded hover:bg-blue-700">Create Badge</button>
+                    <button type="submit" className="w-full py-2 px-4 bg-blue-600 text-white font-bold rounded hover:bg-blue-700">
+                        {t('admin_pages.manage_badges.submit_button')}
+                    </button>
                     {message && <p className="mt-4 text-center">{message}</p>}
                 </form>
             </div>
 
             {/* --- List of Existing Badges --- */}
             <div>
-                <h2 className="text-2xl font-bold mb-4">Available Badges</h2>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <h2 className="text-2xl font-bold mb-4">{t('admin_pages.manage_badges.existing_title')}</h2>
+                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
                     {badges.map(badge => (
-                        <div key={badge._id} className="bg-white p-4 rounded-lg shadow text-center">
-                            <img src={badge.iconUrl} alt={badge.name} className="w-20 h-20 mx-auto" />
-                            <h3 className="font-bold mt-2">{badge.name}</h3>
+                        <div key={badge._id} className="bg-white p-4 rounded-lg shadow text-center border">
+                            <img src={badge.iconUrl} alt={badge.name} className="w-20 h-20 mx-auto object-contain" />
+                            <h3 className="font-bold mt-2 text-sm">{badge.name}</h3>
                             <p className="text-xs text-gray-500">{badge.description}</p>
                         </div>
                     ))}

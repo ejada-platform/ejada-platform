@@ -6,8 +6,11 @@ import { useAuth } from '../../context/AuthContext';
 import type { User } from '../../context/AuthContext';
 import Modal from '../../components/Modal';
 import EditUserForm from './EditUserForm';
+import { useTranslation } from 'react-i18next';
+
 
 const UserManagementPage = () => {
+    const { t } = useTranslation();
     const { token } = useAuth();
     const [users, setUsers] = useState<User[]>([]);
     const [loading, setLoading] = useState(true);
@@ -49,30 +52,6 @@ const UserManagementPage = () => {
         }
     };
 
-/*    const handleFeature = async (userToFeature: User) => {
-        if (!token) return;
-        try {
-            const config = { headers: { Authorization: `Bearer ${token}` } };
-            setUsers(currentUsers =>
-                currentUsers.map(u => ({
-                    ...u,
-                    isFeatured: u._id === userToFeature._id
-                }))
-            );
-            const currentFeatured = users.find(u => u.isFeatured && u._id !== userToFeature._id);
-            if (currentFeatured) {
-                await axios.put(`http://localhost:5000/api/users/${currentFeatured._id}`, { isFeatured: false }, config);
-            }
-            await axios.put(`http://localhost:5000/api/users/${userToFeature._id}`, { isFeatured: true }, config);
-            alert(`${userToFeature.username} is now the Star Student!`);
-        // This is the corrected catch block
-        } catch (error) {
-            alert('Failed to update featured student. Refreshing page.');
-            fetchUsers();
-        }
-    };
-*/
-  
  const handleFeature = async (userToFeature: User) => {
         if (!token) return;
         try {
@@ -109,15 +88,15 @@ const handleEditClick = (user: User) => {
 
     return (
         <div className="p-8 max-w-4xl mx-auto">
-            <h1 className="text-3xl font-bold mb-6">User Management</h1>
+            <h1 className="text-3xl font-bold mb-6">{t('admin_pages.manage_users.title')}</h1>
             <div className="bg-white p-6 rounded-lg shadow">
                 <table className="w-full text-left">
                     <thead className="border-b">
                         <tr>
-                            <th className="py-2">Username</th>
-                            <th className="py-2">Role</th>
-                            <th className="py-2">Status</th>
-                            <th className="py-2 text-right">Actions</th>
+                            <th className="py-2">{t('admin_pages.manage_users.username_header')}</th>
+                            <th className="py-2">{t('admin_pages.manage_users.role_header')}</th>
+                            <th className="py-2">{t('admin_pages.manage_users.status_header')}</th>
+                            <th className="py-2 text-right">{t('admin_pages.manage_users.actions_header')}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -144,20 +123,20 @@ const handleEditClick = (user: User) => {
                                             onClick={() => handleFeature(user)}
                                             className="px-3 py-1 bg-green-500 text-white text-sm rounded hover:bg-green-600"
                                         >
-                                            Feature
+                                            {t('admin_pages.manage_users.star_student_status')}
                                         </button>
                                     )}
                                     <button 
                                         onClick={() => handleEditClick(user)}
                                         className="px-3 py-1 bg-yellow-500 text-white text-sm rounded hover:bg-yellow-600"
                                     >
-                                        Edit
+                                        {t('admin_pages.manage_users.edit_button')}
                                     </button>
                                     <button 
                                         onClick={() => handleDelete(user._id)}
                                         className="px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700"
                                     >
-                                        Delete
+                                        {t('admin_pages.manage_users.delete_button')}
                                     </button>
                                 </td>
                             </tr>

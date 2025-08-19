@@ -4,6 +4,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useTranslation } from 'react-i18next';
 
 // --- TYPE DEFINITIONS ---
 interface PopulatedUser {
@@ -88,6 +89,7 @@ const EvaluationForm = ({ studentId, circleId, onEvaluationSuccess }: { studentI
 // --- THE MAIN PAGE COMPONENT (WITH UPDATES) ---
 // ==================================================================
 const MyCirclesPage = () => {
+    const {t} = useTranslation();
     const { user, token } = useAuth();
     const [circles, setCircles] = useState<CircleData[]>([]);
     const [loading, setLoading] = useState(true);
@@ -122,12 +124,12 @@ const MyCirclesPage = () => {
         setEvaluatingStudentId(prevId => (prevId === studentId ? null : prevId));
     };
 
-    if (loading) return <div className="p-10">Loading your circles...</div>;
+    if (loading) return <div className="p-10">{t('my_circles_page.loading')}</div>;
     if (error) return <div className="p-10 text-red-500">{error}</div>;
 
     return (
         <div className="p-8 max-w-4xl mx-auto">
-            <h1 className="text-3xl font-bold mb-6">My Educational Circles</h1>
+            <h1 className="text-3xl font-bold mb-6">{t('my_circles_page.title')}</h1>
             <div className="space-y-6">
                 {circles.length > 0 ? (
                     circles.map((circle) => (
@@ -138,7 +140,7 @@ const MyCirclesPage = () => {
                                 </Link>
                                 {user?.role === 'Teacher' && (
                                     <Link to={`/teacher/edit-circle/${circle._id}`} className="px-3 py-1 bg-yellow-500 text-white text-sm rounded hover:bg-yellow-600">
-                                        Edit
+                                        {t('my_circles_page.edit_button')}
                                     </Link>
                                 )}
                             </div>
@@ -156,18 +158,32 @@ const MyCirclesPage = () => {
                             )}
                             
                             {/* Student's view can be added here if needed */}
+                            {user?.role === 'Student' && (
+                            <div className="mt-4">
+                                {circle.teacher && (
+                                    <p><strong>{t('my_circles_page.teacher_label')}</strong> {circle.teacher.username}</p>
+                                )}
+                                {circle.liveClassUrl ? (
+                                    <a href={circle.liveClassUrl} /* ... */>
+                                        {t('my_circles_page.join_class_button')}
+                                    </a>
+                                ) : (
+                                    <p>{t('my_circles_page.no_link_message')}</p>
+                                )}
+                            </div>
+                        )}
                             
                             {/* --- THIS IS THE UPDATED TEACHER'S VIEW --- */}
                             {user?.role === 'Teacher' && (
                                 <>
                                     <div className="mt-4">
                                         <Link to={`/teacher/attendance/${circle._id}`} className="inline-block px-4 py-2 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700">
-                                            Take Attendance
+                                            {t('my_circles_page.take_attendance_button')}
                                         </Link>
                                     </div>
                                     {circle.students && circle.students.length > 0 && (
                                         <div>
-                                            <h3 className="text-lg font-semibold mt-4 mb-2">Students in this circle:</h3>
+                                            <h3 className="text-lg font-semibold mt-4 mb-2">{t('my_circles_page.students_in_circle')}</h3>
                                             <ul className="space-y-2">
                                                 {circle.students.map(student => (
                                                     <li key={student._id} className="p-2 border-t">
@@ -177,7 +193,7 @@ const MyCirclesPage = () => {
                                                                 onClick={() => handleEvaluateClick(student._id)}
                                                                 className="px-3 py-1 bg-gray-200 text-gray-800 text-sm rounded hover:bg-gray-300"
                                                             >
-                                                                {evaluatingStudentId === student._id ? 'Close' : 'Evaluate'}
+                                                                {evaluatingStudentId === student._id ?  t('my_circles_page.close_button') : t('my_circles_page.evaluate_button')}
                                                             </button>
                                                         </div>
                                                         {evaluatingStudentId === student._id && (
@@ -185,7 +201,7 @@ const MyCirclesPage = () => {
                                                                 studentId={student._id} 
                                                                 circleId={circle._id} 
                                                                 onEvaluationSuccess={() => {
-                                                                    alert('Evaluation saved!');
+                                                                    alert(t('my_circles_page.evaluation_saved'));
                                                                     setEvaluatingStudentId(null);
                                                                 }}
                                                             />

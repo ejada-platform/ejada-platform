@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { useAuth } from '../../context/AuthContext';
+import { useTranslation } from 'react-i18next';
 
 interface Resource {
     _id: string;
@@ -13,6 +14,7 @@ interface Resource {
 }
 
 const ManageLibraryPage = () => {
+   const { t } = useTranslation();
     const { token } = useAuth();
     const [resources, setResources] = useState<Resource[]>([]);
     const [loading, setLoading] = useState(true);
@@ -80,19 +82,19 @@ const ManageLibraryPage = () => {
         <div className="p-8 max-w-4xl mx-auto">
             {/* --- Form to Add New Resource --- */}
             <div className="bg-white p-6 rounded-lg shadow mb-8">
-                <h2 className="text-2xl font-bold mb-4">Add New Resource</h2>
+                <h2 className="text-2xl font-bold mb-4">{t('admin_pages.manage_library.add_title')}</h2>
                 <form onSubmit={handleSubmit}>
                     {/* Form fields... */}
                     <div className="mb-4">
-                        <label className="block font-bold mb-1">Title</label>
+                        <label className="block font-bold mb-1">{t('admin_pages.manage_library.title_label')}</label>
                         <input type="text" value={title} onChange={e => setTitle(e.target.value)} className="w-full p-2 border rounded" required />
                     </div>
                     <div className="mb-4">
-                        <label className="block font-bold mb-1">Resource URL</label>
+                        <label className="block font-bold mb-1">{t('admin_pages.manage_library.url_label')}</label>
                         <input type="url" value={resourceUrl} onChange={e => setResourceUrl(e.target.value)} className="w-full p-2 border rounded" placeholder="https://..." required />
                     </div>
                     <div className="mb-4">
-                        <label className="block font-bold mb-1">Category</label>
+                        <label className="block font-bold mb-1">{t('admin_pages.manage_library.category_label')}</label>
                         <select value={category} onChange={e => setCategory(e.target.value as Resource['category'])} className="w-full p-2 border rounded">
                             <option value="Quran">Quran</option>
                             <option value="Hadith">Hadith</option>
@@ -102,17 +104,17 @@ const ManageLibraryPage = () => {
                         </select>
                     </div>
                     <div className="mb-4">
-                        <label className="block font-bold mb-1">Description</label>
+                        <label className="block font-bold mb-1">{t('admin_pages.manage_library.description_label')}</label>
                         <textarea value={description} onChange={e => setDescription(e.target.value)} className="w-full p-2 border rounded" rows={3} required />
                     </div>
-                    <button type="submit" className="w-full py-2 px-4 bg-blue-600 text-white font-bold rounded hover:bg-blue-700">Add Resource</button>
+                    <button type="submit" className="w-full py-2 px-4 bg-blue-600 text-white font-bold rounded hover:bg-blue-700">{t('admin_pages.manage_library.submit_button')}</button>
                     {message && <p className="mt-4 text-center">{message}</p>}
                 </form>
             </div>
 
             {/* --- List of Existing Resources --- */}
             <div>
-                <h2 className="text-2xl font-bold mb-4">Manage Existing Resources</h2>
+                <h2 className="text-2xl font-bold mb-4">{t('admin_pages.manage_library.existing_title')}</h2>
                 <div className="space-y-4">
                     {resources.map(resource => (
                         <div key={resource._id} className="bg-white p-4 rounded-lg shadow flex justify-between items-center">
@@ -121,7 +123,7 @@ const ManageLibraryPage = () => {
                                 <p className="text-sm text-gray-500">{resource.category}</p>
                             </div>
                             <button onClick={() => handleDelete(resource._id)} className="px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700">
-                                Delete
+                                {t('admin_pages.manage_library.delete_button')}
                             </button>
                         </div>
                     ))}

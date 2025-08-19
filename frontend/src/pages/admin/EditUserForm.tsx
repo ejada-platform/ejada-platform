@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useAuth } from '../../context/AuthContext';
 import type { User } from '../../context/AuthContext';
+import { useTranslation } from 'react-i18next';
 
 interface EditUserFormProps {
     user: User;
@@ -12,6 +13,7 @@ interface EditUserFormProps {
 }
 
 const EditUserForm = ({ user, onSuccess, onCancel }: EditUserFormProps) => {
+    const {t} = useTranslation();
     const { token } = useAuth();
     const [username, setUsername] = useState(user.username);
     const [role, setRole] = useState(user.role);
@@ -51,23 +53,23 @@ const EditUserForm = ({ user, onSuccess, onCancel }: EditUserFormProps) => {
                 />
             </div>
             <div className="mb-6">
-                <label className="block font-bold mb-1">Role</label>
+                <label className="block font-bold mb-1">{t('admin_pages.manage_users.role_header')}</label>
                 <select 
                     value={role} 
                     onChange={e => setRole(e.target.value as User['role'])} 
                     className="w-full p-2 border rounded"
                 >
-                    <option value="Student">Student</option>
-                    <option value="Teacher">Teacher</option>
+                    <option value="Student">{t('register_page.role_student')}</option>
+                    <option value="Teacher">{t('register_page.role_teacher')}</option>
                     <option value="Admin">Admin</option>
                 </select>
             </div>
             <div className="flex justify-end space-x-4">
                 <button type="button" onClick={onCancel} className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">
-                    Cancel
+                    {t('admin_pages.manage_users.cancel_button')}
                 </button>
                 <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
-                    Save Changes
+                    {t('admin_pages.manage_users.save_button')}
                 </button>
             </div>
             {message && <p className="mt-4 text-red-500">{message}</p>}

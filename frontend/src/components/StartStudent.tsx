@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useTranslation } from 'react-i18next';
 
 // The shape of the data we expect from the '/api/users/featured' endpoint
 interface FeaturedStudent {
@@ -11,6 +12,7 @@ interface FeaturedStudent {
 
 const StarStudent = () => {
     // State to hold the student's data. It starts as null.
+    const { t } = useTranslation();
     const [student, setStudent] = useState<FeaturedStudent | null>(null);
 
     // This useEffect runs once when the component is first displayed on the screen
@@ -42,7 +44,7 @@ const StarStudent = () => {
     // This is the code for the gold banner you see.
     return (
         <div className="p-4 bg-gradient-to-r from-yellow-400 to-orange-500 text-white rounded-lg shadow-lg text-center">
-            <h3 className="text-xl font-bold">★ Star Student of the Month ★</h3>
+            <h3 className="text-xl font-bold">{t('star_student_component.title')}</h3>
             <p className="text-2xl mt-2">{student.username}</p>
         </div>
     );

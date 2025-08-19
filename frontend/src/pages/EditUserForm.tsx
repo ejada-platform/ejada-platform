@@ -2,16 +2,17 @@
 
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-//import { useAuth, User } from '../../context/AuthContext';
 import { useAuth, type User } from '../context/AuthContext';
+import { useTranslation } from 'react-i18next';
 
 interface EditUserFormProps {
     user: User;
-    onSuccess: () => void; // A function to call when the update is successful
+    onSuccess: () => void;
     onCancel: () => void;
 }
 
 const EditUserForm = ({ user, onSuccess, onCancel }: EditUserFormProps) => {
+    const { t } = useTranslation();
     const { token } = useAuth();
     const [username, setUsername] = useState(user.username);
     const [role, setRole] = useState(user.role);
@@ -31,8 +32,9 @@ const EditUserForm = ({ user, onSuccess, onCancel }: EditUserFormProps) => {
             const payload = { username, role };
             await axios.put(`http://localhost:5000/api/users/${user._id}`, payload, config);
             
+            // This alert can also be translated if desired
             alert('User updated successfully!');
-            onSuccess(); // Close the modal and refresh the list
+            onSuccess();
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (err: any) {
             setMessage(err.response?.data?.message || 'Failed to update user.');
@@ -42,7 +44,7 @@ const EditUserForm = ({ user, onSuccess, onCancel }: EditUserFormProps) => {
     return (
         <form onSubmit={handleSubmit}>
             <div className="mb-4">
-                <label className="block font-bold mb-1">Username</label>
+                <label className="block font-bold mb-1">{t('admin_pages.manage_users.username_header')}</label>
                 <input 
                     type="text" 
                     value={username} 
@@ -51,23 +53,24 @@ const EditUserForm = ({ user, onSuccess, onCancel }: EditUserFormProps) => {
                 />
             </div>
             <div className="mb-6">
-                <label className="block font-bold mb-1">Role</label>
+                <label className="block font-bold mb-1">{t('admin_pages.manage_users.role_header')}</label>
                 <select 
                     value={role} 
                     onChange={e => setRole(e.target.value as User['role'])} 
                     className="w-full p-2 border rounded"
                 >
-                    <option value="Student">Student</option>
-                    <option value="Teacher">Teacher</option>
+                    <option value="Student">{t('register_page.role_student')}</option>
+                    <option value="Teacher">{t('register_page.role_teacher')}</option>
+                    {/* The "Admin" role is usually not translated */}
                     <option value="Admin">Admin</option>
                 </select>
             </div>
             <div className="flex justify-end space-x-4">
                 <button type="button" onClick={onCancel} className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">
-                    Cancel
+                    {t('admin_pages.manage_users.cancel_button')}
                 </button>
                 <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
-                    Save Changes
+                    {t('admin_pages.manage_users.save_button')}
                 </button>
             </div>
             {message && <p className="mt-4 text-red-500">{message}</p>}

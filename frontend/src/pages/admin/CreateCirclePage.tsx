@@ -4,7 +4,7 @@ import Select from 'react-select';
 import { useAuth } from '../../context/AuthContext';
 // This is the fix: we add the 'type' keyword because User is an interface, not a value.
 import type { User } from '../../context/AuthContext'; 
-
+import { useTranslation } from 'react-i18next';
 
 interface SelectOption {
     value: string;
@@ -17,6 +17,7 @@ interface ScheduleEntry {
 }
 
 const CreateCirclePage = () => {
+    const { t } = useTranslation();
     const { token } = useAuth();
     const [users, setUsers] = useState<User[]>([]);
     
@@ -95,10 +96,10 @@ const CreateCirclePage = () => {
 
     return (
         <div className="p-8 max-w-2xl mx-auto">
-            <h1 className="text-3xl font-bold mb-6">Create New Educational Circle</h1>
+            <h1 className="text-3xl font-bold mb-6">{t('admin_pages.create_circle.title')}</h1>
             <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow">
               <div className="mb-4">
-                    <label className="block font-bold mb-1">Circle Name</label>
+                    <label className="block font-bold mb-1">{t('admin_pages.create_circle.name_label')}</label>
                     <input 
                         type="text" 
                         value={name} 
@@ -109,7 +110,7 @@ const CreateCirclePage = () => {
                 </div>
               
                 <div className="mb-4">
-                    <label className="block font-bold mb-1">Live Class URL (Zoom Link)</label>
+                    <label className="block font-bold mb-1">{t('admin_pages.create_circle.url_label')}</label>
                     <input 
                         type="url" 
                         value={liveClassUrl} 
@@ -119,12 +120,12 @@ const CreateCirclePage = () => {
                     />
                 </div>
                 <div className="mb-4">
-                    <label className="block font-bold mb-1">Description</label>
+                    <label className="block font-bold mb-1">{t('admin_pages.create_circle.description_label')}</label>
                     <textarea value={description} onChange={e => setDescription(e.target.value)} className="w-full p-2 border rounded" />
                 </div>
                 {/* --- NEW SCHEDULE SECTION --- */}
                 <div className="mb-4">
-                    <label className="block font-bold mb-2">Class Schedule</label>
+                    <label className="block font-bold mb-2">{t('admin_pages.create_circle.schedule_label')}</label>
                     {schedule.map((entry, index) => (
                         <div key={index} className="flex items-center space-x-2 mb-2">
                             <select value={entry.day} onChange={e => handleScheduleChange(index, 'day', e.target.value)} className="p-2 border rounded w-1/2">
@@ -143,15 +144,15 @@ const CreateCirclePage = () => {
                     <button type="button" onClick={addScheduleEntry} className="text-sm text-blue-600 hover:underline">+ Add another day</button>
                 </div>
                 <div className="mb-4">
-                    <label className="block font-bold mb-1">Select Teacher</label>
+                    <label className="block font-bold mb-1">{t('admin_pages.create_circle.teacher_label')}</label>
                     <Select options={teacherOptions} value={teacher} onChange={setTeacher} />
                 </div>
                 <div className="mb-6">
-                    <label className="block font-bold mb-1">Select Students</label>
+                    <label className="block font-bold mb-1">{t('admin_pages.create_circle.students_label')}</label>
                     <Select options={studentOptions} value={students} onChange={newValue => setStudents(newValue as SelectOption[])} isMulti />
                 </div>
                 <button type="submit" className="w-full py-2 px-4 bg-blue-600 text-white font-bold rounded hover:bg-blue-700">
-                    Create Circle
+                   {t('admin_pages.create_circle.submit_button')}
                 </button>
                 {message && <p className="mt-4 text-center">{message}</p>}
             </form>

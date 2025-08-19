@@ -4,6 +4,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useTranslation } from 'react-i18next';
 
 // --- TYPE DEFINITIONS ---
 interface Assignment {
@@ -38,6 +39,7 @@ interface LessonLog {
 // --- SUB-COMPONENT: SubmissionForm (for Students) ---
 // ==================================================================
 const SubmissionForm = ({ assignmentId, onSubmissionSuccess }: { assignmentId: string; onSubmissionSuccess: () => void }) => {
+    const { t } = useTranslation();
     const { token } = useAuth();
     const [content, setContent] = useState('');
     const [message, setMessage] = useState('');
@@ -90,6 +92,7 @@ const SubmissionForm = ({ assignmentId, onSubmissionSuccess }: { assignmentId: s
 // --- SUB-COMPONENT: ReviewForm (for Teachers) ---
 // ==================================================================
 const ReviewForm = ({ submission, onReviewSuccess }: { submission: Submission; onReviewSuccess: () => void }) => {
+    const { t } = useTranslation();
     const { token } = useAuth();
     const [grade, setGrade] = useState('');
     const [feedback, setFeedback] = useState('');
@@ -118,7 +121,7 @@ const ReviewForm = ({ submission, onReviewSuccess }: { submission: Submission; o
 
     return (
         <form onSubmit={handleSubmit} className="mt-3 p-3 bg-yellow-50 rounded-md border border-yellow-200">
-            <h5 className="font-bold text-sm text-gray-700">Provide Feedback</h5>
+            <h5 className="font-bold text-sm text-gray-700">{t('Provide Feedback')}</h5>
             <div className="mt-2">
                 <label htmlFor={`grade-${submission._id}`} className="block text-xs font-medium text-gray-600">Grade</label>
                 <input
@@ -131,7 +134,7 @@ const ReviewForm = ({ submission, onReviewSuccess }: { submission: Submission; o
                 />
             </div>
             <div className="mt-2">
-                <label htmlFor={`feedback-${submission._id}`} className="block text-xs font-medium text-gray-600">Feedback</label>
+                <label htmlFor={`feedback-${submission._id}`} className="block text-xs font-medium text-gray-600">{t('Feedback')}</label>
                 <textarea
                     id={`feedback-${submission._id}`}
                     value={feedback}
@@ -142,7 +145,7 @@ const ReviewForm = ({ submission, onReviewSuccess }: { submission: Submission; o
                 ></textarea>
             </div>
             <button type="submit" className="mt-2 px-3 py-1 bg-yellow-500 text-white text-sm rounded hover:bg-yellow-600">
-                Submit Review
+                {t('Submit Review')}
             </button>
             {message && <p className="text-xs mt-2">{message}</p>}
         </form>
@@ -153,6 +156,7 @@ const ReviewForm = ({ submission, onReviewSuccess }: { submission: Submission; o
 // --- SUB-COMPONENT: SubmissionsList (for Teachers) ---
 // ==================================================================
 const SubmissionsList = ({ assignmentId }: { assignmentId: string }) => {
+    const { t } = useTranslation();
     const { token } = useAuth();
     const [submissions, setSubmissions] = useState<Submission[]>([]);
     const [loading, setLoading] = useState(true);
@@ -179,20 +183,20 @@ const SubmissionsList = ({ assignmentId }: { assignmentId: string }) => {
 
     return (
         <div className="mt-4 p-4 bg-green-50 rounded-md">
-            <h4 className="font-semibold text-gray-700">Submissions for this Assignment</h4>
+            <h4 className="font-semibold text-gray-700">{t('Submissions for this Assignment')}</h4>
             {submissions.length > 0 ? (
                 <ul className="mt-2 space-y-4">
                     {submissions.map(sub => (
                         <li key={sub._id} className="p-2 border-b">
                             <p><strong>Student:</strong> {sub.student.username}</p>
                             <p><strong>Submission:</strong> {sub.content}</p>
-                            <p className="text-xs text-gray-500">Submitted on: {new Date(sub.createdAt).toLocaleDateString()}</p>
+                            <p className="text-xs text-gray-500">{t('Submitted on:')} {new Date(sub.createdAt).toLocaleDateString()}</p>
                             
                             {sub.status === 'Reviewed' ? (
                                 <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-md">
-                                    <h5 className="font-bold text-sm text-blue-800">Feedback Given</h5>
-                                    <p><strong>Grade:</strong> {sub.grade}</p>
-                                    <p><strong>Comments:</strong> {sub.feedback}</p>
+                                    <h5 className="font-bold text-sm text-blue-800">{t('Feedback Given')}</h5>
+                                    <p><strong>{t('Grade:')}</strong> {sub.grade}</p>
+                                    <p><strong>{t('Comments:')}</strong> {sub.feedback}</p>
                                 </div>
                             ) : (
                                 <ReviewForm submission={sub} onReviewSuccess={fetchSubmissions} />
@@ -201,7 +205,7 @@ const SubmissionsList = ({ assignmentId }: { assignmentId: string }) => {
                     ))}
                 </ul>
             ) : (
-                <p>No submissions yet.</p>
+                 <p>{t('No submissions yet.')}</p>
             )}
         </div>
     );
@@ -214,6 +218,7 @@ const SubmissionsList = ({ assignmentId }: { assignmentId: string }) => {
 // --- THE MAIN PAGE COMPONENT ---
 // ==================================================================
 const LessonLogForm = ({ circleId, onLogSuccess }: { circleId: string; onLogSuccess: () => void }) => {
+    const { t } = useTranslation();
     const { token } = useAuth();
     const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
     const [specialization, setSpecialization] = useState<'Quran' | 'Arabic Language' | 'Islamic Lessons'>('Quran');
@@ -240,32 +245,32 @@ const LessonLogForm = ({ circleId, onLogSuccess }: { circleId: string; onLogSucc
 
     return (
         <div className="bg-white p-6 rounded-lg shadow border my-8">
-            <h2 className="text-2xl font-bold mb-4">Log a New Lesson</h2>
+            <h2 className="text-2xl font-bold mb-4">{t('circle_detail_page.log_new_lesson')}</h2>
             <form onSubmit={handleSubmit}>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label className="block font-bold mb-1">Date</label>
+                        <label className="block font-bold mb-1">{t('Date')}</label>
                         <input type="date" value={date} onChange={e => setDate(e.target.value)} className="w-full p-2 border rounded" required />
                     </div>
                     <div>
-                        <label className="block font-bold mb-1">Specialization</label>
+                        <label className="block font-bold mb-1">{t('Specialization')}</label>
                         <select value={specialization} onChange={e => setSpecialization(e.target.value as any)} className="w-full p-2 border rounded">
-                            <option>Quran</option>
-                            <option>Arabic Language</option>
-                            <option>Islamic Lessons</option>
+                            <option>{t('Quran')}</option>
+                            <option>{t('Arabic Language')}</option>
+                            <option>{t('Islamic Lessons')}</option>
                         </select>
                     </div>
                 </div>
                 <div className="mt-4">
-                    <label className="block font-bold mb-1">Topic Covered</label>
+                    <label className="block font-bold mb-1">{t('Topic Covered')}</label>
                     <input type="text" value={topic} onChange={e => setTopic(e.target.value)} className="w-full p-2 border rounded" required placeholder="e.g., Surah Al-Baqarah, Ayahs 1-10" />
                 </div>
                 <div className="mt-4">
-                    <label className="block font-bold mb-1">Notes (Optional)</label>
+                    <label className="block font-bold mb-1">{t('Notes (Optional)')}</label>
                     <textarea value={notes} onChange={e => setNotes(e.target.value)} className="w-full p-2 border rounded" rows={3}></textarea>
                 </div>
                 <button type="submit" className="w-full mt-4 py-2 px-4 bg-indigo-600 text-white font-bold rounded hover:bg-indigo-700">
-                    Save Lesson Log
+                    {t('Save Lesson Log')}
                 </button>
                 {message && <p className="mt-2 text-center">{message}</p>}
             </form>
@@ -274,6 +279,7 @@ const LessonLogForm = ({ circleId, onLogSuccess }: { circleId: string; onLogSucc
 };
 
 const LessonLogList = ({ circleId }: { circleId: string }) => {
+    const {t} = useTranslation();
     const { token } = useAuth();
     const [logs, setLogs] = useState<LessonLog[]>([]);
     const [loading, setLoading] = useState(true);
@@ -296,7 +302,7 @@ const LessonLogList = ({ circleId }: { circleId: string }) => {
         fetchLogs();
     }, [fetchLogs]);
 
-    if (loading) return <p className="mt-8">Loading lesson history...</p>;
+    if (loading) return <p>{t('circle_detail_page.loading_history')}</p>;
 
     return (
         <div className="mt-8">
@@ -306,10 +312,10 @@ const LessonLogList = ({ circleId }: { circleId: string }) => {
                     <div key={log._id} className="bg-white p-4 rounded-lg shadow border">
                         <p className="text-sm text-gray-500">{new Date(log.date).toLocaleDateString()}</p>
                         <p className="font-bold">{log.topic}</p>
-                        <p className="text-sm"><span className="font-semibold">Category:</span> {log.specialization}</p>
-                        {log.notes && <p className="text-sm mt-1"><span className="font-semibold">Notes:</span> {log.notes}</p>}
+                        <p className="text-sm"><span className="font-semibold">{t('Category:')}</span> {t(log.specialization)}</p>
+                        {log.notes && <p className="text-sm mt-1"><span className="font-semibold">{t('Notes:')}</span> {log.notes}</p>}
                     </div>
-                )) : <p>No lessons have been logged for this circle yet.</p>}
+                )) : <p>{t('No lessons have been logged yet.')}</p>}
             </div>
         </div>
     );
@@ -320,6 +326,7 @@ const LessonLogList = ({ circleId }: { circleId: string }) => {
 // --- THE MAIN PAGE COMPONENT ---
 // ==================================================================
 const CircleDetailPage = () => {
+    const { t } = useTranslation();
     const { circleId } = useParams<{ circleId: string }>();
     const { user, token } = useAuth();
     const [assignments, setAssignments] = useState<Assignment[]>([]);
@@ -371,18 +378,18 @@ const CircleDetailPage = () => {
             
             {/* The rest of the page layout */}
             <div className="my-8">
-                <h1 className="text-3xl font-bold mb-6">Assignments</h1>
+                <h1 className="text-3xl font-bold mb-6">{t('circle_detail_page.assignments_title')}</h1>
                 <div className="space-y-4">
                     {assignments.length > 0 ? (
                         assignments.map((assignment) => (
                             <div key={assignment._id} className="bg-white p-4 rounded-lg shadow border">
                                 <h2 className="text-xl font-semibold">{assignment.title}</h2>
                                 <p className="text-sm text-gray-500">
-                                    Assigned by: {assignment.createdBy.username} on {new Date(assignment.createdAt).toLocaleDateString()}
+                                   {t('circle_detail_page.assigned_by', { teacher: assignment.createdBy.username, date: new Date(assignment.createdAt).toLocaleDateString() })}
                                 </p>
                                 {assignment.dueDate && (
                                     <p className="text-sm text-red-600 font-semibold">
-                                        Due by: {new Date(assignment.dueDate).toLocaleDateString()}
+                                       {t('circle_detail_page.due_by', { date: new Date(assignment.dueDate).toLocaleDateString() })}
                                     </p>
                                 )}
                                 <p className="text-gray-700 mt-2">{assignment.description}</p>
@@ -399,7 +406,7 @@ const CircleDetailPage = () => {
                                         onClick={() => handleViewSubmissions(assignment._id)} 
                                         className="mt-4 px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300"
                                     >
-                                        {viewingSubmissionsFor === assignment._id ? 'Hide Submissions' : 'View Submissions'}
+                                         {viewingSubmissionsFor === assignment._id ? t('circle_detail_page.hide_submissions_button') : t('circle_detail_page.view_submissions_button')}
                                     </button>
                                 )}
 
@@ -409,7 +416,7 @@ const CircleDetailPage = () => {
                             </div>
                         ))
                     ) : (
-                        <p>No assignments have been posted for this circle yet.</p>
+                        <p>{t('circle_detail_page.no_assignments_message')}</p>
                     )}
                 </div>
             </div>
