@@ -2,6 +2,8 @@ import { Request, Response } from 'express';
 import User from '../models/User.model';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs'; 
+import crypto from 'crypto'; // <-- 1. IMPORT CRYPTO
+import sendEmail from '../utils/sendEmail';
 
 // Helper function to generate a unique code for students
 const generateStudentCode = () => `EJ${Math.floor(1000 + Math.random() * 9000)}`;
@@ -10,11 +12,11 @@ const generateStudentCode = () => `EJ${Math.floor(1000 + Math.random() * 9000)}`
 // @route   POST /api/auth/register
 // @access  Public
 export const registerUser = async (req: Request, res: Response) => {
-    const { username, password, role } = req.body;
+    const { username, email, password, role } = req.body;
 
     try {
         // 1. Check if user already exists
-        const userExists = await User.findOne({ username });
+        const userExists = await User.findOne({ $or: [{ username }, { email }] });
         if (userExists) {
             return res.status(400).json({ message: 'User already exists' });
         }
@@ -28,6 +30,7 @@ export const registerUser = async (req: Request, res: Response) => {
         // 3. Create new user in the database
         const user = await User.create({
             username,
+            email,
             password,
             role,
             generatedCode
@@ -45,6 +48,7 @@ export const registerUser = async (req: Request, res: Response) => {
             res.status(201).json({
                 _id: user._id,
                 username: user.username,
+                email: user.email,
                 role: user.role,
                 generatedCode: user.generatedCode,
                 token: token
@@ -94,5 +98,91 @@ export const loginUser = async (req: Request, res: Response) => {
         }
     } catch (error) {
         res.status(500).json({ message: 'Server Error' });
+    }
+};
+
+// @desc    Forgot Password
+// @route   POST /api/auth/forgot-password
+// @access  Public
+export const forgotPassword = async (req: Request, res: Response) => {
+    // Note: We need to update our User schema to allow searching by email
+    const { email } = req.body; // Assuming users register with an email
+    
+    try {
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(404).json({ message: "No user found with that email" });
+        }
+
+        // Generate reset token
+        const resetToken = crypto.randomBytes(20).toString('hex');
+
+        // Hash token and set to user document
+        user.resetPasswordToken = crypto.createHash('sha256').update(resetToken).digest('hex');
+        user.resetPasswordExpire = new Date(Date.now() + 10 * 60 * 1000); // Expires in 10 minutes
+
+        await user.save();
+
+        // Create reset URL
+        const resetUrl = `${req.protocol}://${req.get('host')}/reset-password/${resetToken}`;
+        const message = `You are receiving this email because you (or someone else) has requested the reset of a password. Please make a PUT request to: \n\n ${resetUrl}`;
+
+        await sendEmail({
+            email: user.email,
+            subject: 'Password Reset Token',
+            message,
+        });
+
+        res.status(200).json({ message: 'Email sent' });
+    } catch (error) {
+        // Clear token fields on error
+        // const user = await User.findOne({ email });
+        // user.resetPasswordToken = undefined;
+        // user.resetPasswordExpire = undefined;
+        // await user.save();
+        res.status(500).json({ message: 'Email could not be sent' });
+    }
+};
+
+// @desc    Reset Password
+// @route   PUT /api/auth/reset-password/:token
+// @access  Public
+export const resetPassword = async (req: Request, res: Response) => {
+    // 1. Get the hashed token from the URL
+    const resetPasswordToken = crypto
+        .createHash('sha256')
+        .update(req.params.token)
+        .digest('hex');
+
+    try {
+        // 2. Find the user by this hashed token and check if it has not expired
+        const user = await User.findOne({
+            resetPasswordToken,
+            resetPasswordExpire: { $gt: Date.now() }, // $gt means "greater than"
+        });
+
+        if (!user) {
+            return res.status(400).json({ message: 'Invalid or expired token' });
+        }
+
+        // 3. If the token is valid, set the new password
+        user.password = req.body.password;
+        // Clear the reset token fields so it cannot be used again
+        user.resetPasswordToken = undefined;
+        user.resetPasswordExpire = undefined;
+
+        // The pre-save hook in User.model.ts will automatically hash the new password
+        await user.save();
+
+        // 4. (Optional but recommended) Automatically log the user in by sending back a new JWT token
+        const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET as string, { expiresIn: '30d' });
+
+        res.status(200).json({
+            message: 'Password reset successful',
+            token: token,
+        });
+
+    } catch (error: any) {
+        res.status(500).json({ message: 'Server Error', error: error.message });
     }
 };

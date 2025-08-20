@@ -17,6 +17,7 @@
     "manage_users": "إدارة المستخدمين",
     "manage_library": "إدارة المكتبة",
     "manage_badges": "إدارة الشارات",
+    "teacher_attendance": "حضور المعلمين",
 
     "landing_page": {
         "hero_title": "أتقن القرآن الكريم مع إجادة",
@@ -29,10 +30,10 @@
         },
         "programs": {
             "title": "دوراتنا التعليمية",
+            "register_now": "سجل الآن",
             "program1_title": "تأهيل الكوادر التعليمية",
             "program2_title": "حلقات تعليمية حضورية",
-            "program3_title": "حلقات تعليمية إلكترونية",
-            "register_now": "سجل الآن"
+            "program3_title": "حلقات تعليمية إلكترونية"
         },
         "vision": {
             "message_title": "رسالتنا",
@@ -50,12 +51,180 @@
             "name": "الاسم الكامل",
             "email": "البريد الإلكتروني",
             "message": "أرسل رسالة...",
-            "send_button": "إرسال الرسالة"
+            "send_button": "إرسال الرسالة",
+            "success_message": "شكراً لك! تم إرسال رسالتك.",
+            "error_message": "عفواً! حدث خطأ أثناء إرسال النموذج."
         },
         "footer_about": "مؤسسة تعليمية تربوية تهتم بتعليم القرآن الكريم وعلومه واللغة العربية.",
         "footer_pages": "الصفحات",
         "footer_courses": "الدورات",
         "footer_contact": "تواصل معنا",
-        "footer_text": "جميع الحقوق محفوظة."
+        "footer_text": "جميع الحقوق محفوظة.",
+        "slider": {
+            "watch_on_youtube": "شاهد على يوتيوب"
+        }
+    },
+    "login_page": {
+        "title": "الدخول إلى إجادة",
+        "username_label": "اسم المستخدم",
+        "password_label": "كلمة المرور",
+        "submit_button": "دخول",
+        "error_credentials": "بيانات الدخول غير صحيحة",
+        "error_generic": "حدث خطأ أثناء محاولة الدخول."
+    },
+    "register_page": {
+        "title": "التسجيل في إجادة",
+        "username_label": "اسم المستخدم",
+        "password_label": "كلمة المرور",
+        "email_label": "البريد الإلكتروني",
+        "role_label": "أنا",
+        "role_student": "طالب",
+        "role_teacher": "معلم",
+        "role_parent": "ولي أمر",
+        "submit_button": "تسجيل",
+        "success_message": "تم التسجيل بنجاح! أهلاً بك، {{username}}. يرجى الدخول.",
+        "error_user_exists": "يوجد مستخدم بنفس اسم المستخدم أو البريد الإلكتروني بالفعل",
+        "error_generic": "حدث خطأ أثناء التسجيل."
+    },
+    "student_dashboard": {
+        "title": "لوحة تحكم الطالب",
+        "welcome_message": "أهلاً بك، {{username}}! هذه لوحة التحكم الخاصة بك.",
+        "star_student_banner": {
+            "congratulations": "تهانينا، {{username}}!",
+            "message": "لقد تم اختيارك نجم الشهر!"
+        }
+    },
+    "my_progress_page": {
+        "title": "نظرة عامة على تقدمي",
+        "avg_rating": "متوسط التقييم",
+        "total_submissions": "مجموع الواجبات المسلمة",
+        "daily_evaluations": "التقييمات اليومية",
+        "history_title": "سجل التقييمات اليومية",
+        "evaluation_from": "تقييم من: {{teacher}}",
+        "no_notes": "لا توجد ملاحظات.",
+        "no_evaluations": "ليس لديك أي تقييمات بعد.",
+        "loading": "جاري تحميل تقدمك...",
+        "error": "فشل تحميل بيانات التقدم."
+    },
+    "star_student_component": {
+        "title": "★ نجم الشهر ★"
+    },
+    "teacher_dashboard": {
+        "title": "لوحة تحكم المعلم",
+        "welcome_message": "أهلاً بك، {{username}}! من هنا يمكنك إدارة طلابك ودروسك."
+    },
+    "my_work_logs_page": {
+        "title": "سجل ساعات العمل",
+        "total_hours": "مجموع الساعات المسجلة",
+        "log_new_hours": "تسجيل ساعات عمل جديدة",
+        "circle_label": "الحلقة",
+        "date_label": "التاريخ",
+        "duration_label": "المدة (ساعات)",
+        "notes_label": "ملاحظات (اختياري)",
+        "submit_button": "حفظ السجل",
+        "history_title": "سجل العمل",
+        "no_notes": "لا توجد ملاحظات",
+        "success_message": "تم حفظ سجل العمل بنجاح!",
+        "error_generic": "فشل حفظ سجل العمل."
+    },
+    "my_circles_page": {
+        "title": "حلقاتي التعليمية",
+        "edit_button": "تعديل",
+        "teacher_label": "المعلم:",
+        "join_class_button": "انضم إلى الدرس المباشر (زووم)",
+        "no_link_message": "لم يتم إضافة رابط الدرس المباشر بعد.",
+        "take_attendance_button": "تسجيل الحضور",
+        "students_in_circle": "طلاب هذه الحلقة:",
+        "evaluate_button": "تقييم",
+        "close_button": "إغلاق",
+        "evaluation_saved": "تم حفظ التقييم!",
+        "no_circles_message": "لم يتم تعيينك في أي حلقة تعليمية بعد.",
+        "loading": "جاري تحميل حلقاتك..."
+    },
+    "circle_detail_page": {
+        "assignments_title": "الواجبات",
+        "assigned_by": "أضيف بواسطة: {{teacher}} في {{date}}",
+        "due_by": "آخر موعد للتسليم: {{date}}",
+        "view_submissions_button": "عرض التسليمات",
+        "hide_submissions_button": "إخفاء التسليمات",
+        "no_assignments_message": "لم يتم نشر أي واجبات لهذه الحلقة بعد.",
+        "lesson_history_title": "سجل الدروس",
+        "log_new_lesson": "تسجيل درس جديد",
+        "loading_assignments": "جاري تحميل الواجبات...",
+        "loading_history": "جاري تحميل سجل الدروس...",
+        "no_lessons_logged": "لم يتم تسجيل أي دروس لهذه الحلقة بعد.",
+        "submission_form": { "title": "أرسل عملك", "placeholder": "الصق رابطًا أو اكتب ردك هنا...", "submit_button": "إرسال" },
+        "review_form": { "title": "قدم ملاحظاتك", "grade_label": "الدرجة", "feedback_label": "الملاحظات", "submit_button": "إرسال المراجعة" },
+        "submissions_list": { "title": "تسليمات هذا الواجب", "loading": "جاري تحميل التسليمات...", "student_label": "الطالب:", "submission_label": "التسليم:", "submitted_on": "تم التسليم في:", "feedback_given": "الملاحظات المقدمة", "comments_label": "التعليقات:", "no_submissions": "لا توجد تسليمات بعد." },
+        "lesson_log_form": { "date_label": "التاريخ", "specialization_label": "التخصص", "topic_label": "الموضوع الذي تم تغطيته", "notes_label": "ملاحظات (اختياري)", "submit_button": "حفظ سجل الدرس" },
+        "lesson_log_list": { "category_label": "الفئة:", "notes_label": "الملاحظات:" },
+        "specializations": { "quran": "قرآن", "arabic_language": "لغة عربية", "islamic_lessons": "دروس إسلامية" }
+    },
+    "admin_pages": {
+        "create_circle": { "title": "إنشاء حلقة تعليمية جديدة", "name_label": "اسم الحلقة", "url_label": "رابط الدرس المباشر (زووم)", "description_label": "الوصف", "schedule_label": "جدول الحصص", "add_day_button": "+ إضافة يوم آخر", "teacher_label": "اختر المعلم", "students_label": "اختر الطلاب", "submit_button": "إنشاء الحلقة", "success_message": "تم إنشاء الحلقة بنجاح!" },
+        "manage_users": { "title": "إدارة المستخدمين", "username_header": "اسم المستخدم", "role_header": "الدور", "status_header": "الحالة", "actions_header": "الإجراءات", "star_student_status": "★ الطالب النجم", "feature_button": "تمييز", "edit_button": "تعديل", "delete_button": "حذف", "edit_modal_title": "تعديل المستخدم: {{username}}", "cancel_button": "إلغاء", "save_button": "حفظ التغييرات" },
+        "manage_library": { "add_title": "إضافة مصدر جديد", "title_label": "العنوان", "url_label": "رابط المصدر", "category_label": "الفئة", "description_label": "الوصف", "submit_button": "إضافة المصدر", "existing_title": "إدارة المصادر الحالية", "delete_button": "حذف", "success_add": "تمت إضافة المصدر بنجاح!", "success_delete": "تم حذف المصدر بنجاح." },
+        "manage_badges": { "add_title": "إنشاء شارة جديدة", "name_label": "اسم الشارة", "icon_url_label": "رابط الأيقونة", "description_label": "الوصف", "submit_button": "إنشاء الشارة", "existing_title": "الشارات المتاحة", "success_message": "تم إنشاء الشارة بنجاح!" }
+    },
+    "digital_library_page": {
+        "title": "المكتبة الرقمية",
+        "loading": "جاري تحميل المصادر...",
+        "error": "فشل تحميل المصادر.",
+        "open_resource_button": "افتح المصدر",
+        "no_resources_message": "لم تتم إضافة أي مصادر إلى المكتبة بعد."
+    },
+    "curriculum_page": {
+        "title": "الخطط الدراسية",
+        "loading": "جاري تحميل المنهج...",
+        "error_auth": "يجب عليك تسجيل الدخول لعرض المناهج الدراسية.",
+        "error_fetch": "فشل تحميل المناهج الدراسية.",
+        "level_label": "المستوى:",
+        "view_content_button": "عرض المحتوى",
+        "no_plans_message": "لم يتم العثور على خطط دراسية."
+    },
+    "create_assignment_page": {
+        "title": "إنشاء واجب جديد",
+        "assignment_title_label": "عنوان الواجب",
+        "description_label": "الوصف / التعليمات",
+        "due_date_label": "تاريخ التسليم (اختياري)",
+        "select_circle_label": "اختر الحلقة",
+        "submit_button": "إنشاء الواجب",
+        "success_message": "تم إنشاء الواجب بنجاح!"
+    },
+    "forgot_password_page": {
+        "title": "هل نسيت كلمة المرور؟",
+        "instructions": "لا مشكلة. أدخل البريد الإلكتروني المرتبط بحسابك وسنرسل لك رابطًا لإعادة تعيين كلمة المرور.",
+        "email_label": "البريد الإلكتروني",
+        "submit_button": "إرسال بريد إعادة التعيين",
+        "success_message": "تم إرسال بريد إعادة تعيين كلمة المرور! يرجى التحقق من بريدك الوارد.",
+        "error_message": "فشل إرسال البريد الإلكتروني. يرجى التحقق من العنوان والمحاولة مرة أخرى.",
+        "back_to_login": "→ العودة إلى صفحة الدخول"
+    },
+    "reset_password_page": {
+        "title": "إعادة تعيين كلمة المرور",
+        "new_password_label": "كلمة المرور الجديدة",
+        "confirm_password_label": "تأكيد كلمة المرور الجديدة",
+        "submit_button": "تعيين كلمة المرور الجديدة",
+        "error_match": "كلمات المرور غير متطابقة!",
+        "error_generic": "فشل إعادة تعيين كلمة المرور. قد يكون الرابط غير صالح أو منتهي الصلاحية.",
+        "success_alert": "تم إعادة تعيين كلمة المرور بنجاح! يرجى تسجيل الدخول بكلمة المرور الجديدة."
+    },
+    "support_page": {
+        "title": "الدعم والمساعدة",
+        "intro_message": "نحن هنا لمساعدتك. إذا واجهت أي مشاكل تقنية أو كانت لديك أسئلة حول استخدام المنصة، فلا تتردد في التواصل معنا.",
+        "email_prompt": "للحصول على مساعدة مباشرة، يمكنك مراسلة فريق الدعم عبر البريد الإلكتروني:",
+        "faq_title": "الأسئلة الشائعة",
+        "faq_q1": "كيف يمكنني إعادة تعيين كلمة المرور الخاصة بي؟",
+        "faq_a1": "حاليًا، يجب على المسؤولين التعامل مع إعادة تعيين كلمات المرور. يرجى التواصل معنا وتزويدنا باسم المستخدم الخاص بك، وسنساعدك.",
+        "faq_q2": "كيف أنضم إلى درسي المباشر؟",
+        "faq_a2": "انتقل إلى 'حلقاتي'. إذا كان معلمك قد أضاف رابطًا لحلقتك، فسترى زرًا أزرق اللون باسم 'انضم إلى الدرس المباشر'."
+    },
+    "tutorials_page": {
+        "title": "شروحات المنصة",
+        "intro": "هنا ستجد فيديوهات مفيدة لإرشادك خلال استخدام منصة إجادة.",
+        "video1_title": "البداية: كيفية تسجيل ابنك",
+        "video1_desc": "هذا الفيديو يشرح لك العملية البسيطة لإنشاء حساب لطالبك.",
+        "video2_title": "تسليم أول واجب",
+        "video2_desc": "تعلم كيف يمكن للطلاب عرض وتسليم أعمالهم للواجبات."
     }
 }

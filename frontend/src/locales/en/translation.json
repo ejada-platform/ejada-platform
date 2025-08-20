@@ -17,6 +17,7 @@
     "manage_users": "Manage Users",
     "manage_library": "Manage Library",
     "manage_badges": "Manage Badges",
+    "teacher_attendance": "Teacher Attendance",
 
     "landing_page": {
         "hero_title": "Master the Holy Quran with Ejada",
@@ -29,10 +30,10 @@
         },
         "programs": {
             "title": "Educational Courses",
+            "register_now": "Register Now",
             "program1_title": "Qualifying Educational Cadres",
             "program2_title": "On-Site Educational Sessions",
-            "program3_title": "Electronic Learning Circles",
-            "register_now": "Register Now"
+            "program3_title": "Electronic Learning Circles"
         },
         "vision": {
             "message_title": "Our Message",
@@ -50,12 +51,180 @@
             "name": "Full Name",
             "email": "Email Address",
             "message": "Send a message...",
-            "send_button": "Send Message"
+            "send_button": "Send Message",
+            "success_message": "Thank you! Your message has been sent.",
+            "error_message": "Oops! There was a problem submitting your form."
         },
         "footer_about": "An educational institution concerned with teaching the Holy Qur’an, its sciences, and the Arabic language.",
         "footer_pages": "Pages",
         "footer_courses": "Courses",
         "footer_contact": "Contact Us",
-        "footer_text": "All Rights Reserved."
+        "footer_text": "All Rights Reserved.",
+        "slider": {
+            "watch_on_youtube": "Watch on YouTube"
+        }
+    },
+    "login_page": {
+        "title": "Login to Ejada",
+        "username_label": "Username",
+        "password_label": "Password",
+        "submit_button": "Login",
+        "error_credentials": "Invalid credentials",
+        "error_generic": "An error occurred during login."
+    },
+    "register_page": {
+        "title": "Register for Ejada",
+        "username_label": "Username",
+        "password_label": "Password",
+        "email_label": "Email Address",
+        "role_label": "I am a",
+        "role_student": "Student",
+        "role_teacher": "Teacher",
+        "role_parent": "Parent",
+        "submit_button": "Register",
+        "success_message": "Registration successful! Welcome, {{username}}. Please log in.",
+        "error_user_exists": "User with that username or email already exists",
+        "error_generic": "An error occurred during registration."
+    },
+    "student_dashboard": {
+        "title": "Student Dashboard",
+        "welcome_message": "Welcome, {{username}}! This is your personal dashboard.",
+        "star_student_banner": {
+            "congratulations": "Congratulations, {{username}}!",
+            "message": "You have been selected as the Star Student of the Month!"
+        }
+    },
+    "my_progress_page": {
+        "title": "My Progress Overview",
+        "avg_rating": "Average Rating",
+        "total_submissions": "Total Submissions",
+        "daily_evaluations": "Daily Evaluations",
+        "history_title": "Daily Evaluation History",
+        "evaluation_from": "Evaluation from: {{teacher}}",
+        "no_notes": "No notes provided.",
+        "no_evaluations": "You have no evaluations yet.",
+        "loading": "Loading your progress...",
+        "error": "Failed to fetch your progress data."
+    },
+    "star_student_component": {
+        "title": "★ Star Student of the Month ★"
+    },
+    "teacher_dashboard": {
+        "title": "Teacher Dashboard",
+        "welcome_message": "Welcome, {{username}}! This is where you will manage your students and lessons."
+    },
+    "my_work_logs_page": {
+        "title": "My Work Logs",
+        "total_hours": "Total Hours Logged",
+        "log_new_hours": "Log New Work Hours",
+        "circle_label": "Circle",
+        "date_label": "Date",
+        "duration_label": "Duration (Hrs)",
+        "notes_label": "Notes (Optional)",
+        "submit_button": "Save Log",
+        "history_title": "Work Log History",
+        "no_notes": "No notes",
+        "success_message": "Work log saved successfully!",
+        "error_generic": "Failed to save work log."
+    },
+    "my_circles_page": {
+        "title": "My Educational Circles",
+        "edit_button": "Edit",
+        "teacher_label": "Teacher:",
+        "join_class_button": "Join Live Class (Zoom)",
+        "no_link_message": "No live class link has been added yet.",
+        "take_attendance_button": "Take Attendance",
+        "students_in_circle": "Students in this circle:",
+        "evaluate_button": "Evaluate",
+        "close_button": "Close",
+        "evaluation_saved": "Evaluation saved!",
+        "no_circles_message": "You are not yet assigned to any educational circles.",
+        "loading": "Loading your circles..."
+    },
+    "circle_detail_page": {
+        "assignments_title": "Assignments",
+        "assigned_by": "Assigned by: {{teacher}} on {{date}}",
+        "due_by": "Due by: {{date}}",
+        "view_submissions_button": "View Submissions",
+        "hide_submissions_button": "Hide Submissions",
+        "no_assignments_message": "No assignments have been posted for this circle yet.",
+        "lesson_history_title": "Lesson History",
+        "log_new_lesson": "Log a New Lesson",
+        "loading_assignments": "Loading assignments...",
+        "loading_history": "Loading lesson history...",
+        "no_lessons_logged": "No lessons have been logged for this circle yet.",
+        "submission_form": { "title": "Submit Your Work", "placeholder": "Paste a link...", "submit_button": "Submit" },
+        "review_form": { "title": "Provide Feedback", "grade_label": "Grade", "feedback_label": "Feedback", "submit_button": "Submit Review" },
+        "submissions_list": { "title": "Submissions for this Assignment", "loading": "Loading submissions...", "student_label": "Student:", "submission_label": "Submission:", "submitted_on": "Submitted on:", "feedback_given": "Feedback Given", "comments_label": "Comments:", "no_submissions": "No submissions yet." },
+        "lesson_log_form": { "date_label": "Date", "specialization_label": "Specialization", "topic_label": "Topic Covered", "notes_label": "Notes (Optional)", "submit_button": "Save Lesson Log" },
+        "lesson_log_list": { "category_label": "Category:", "notes_label": "Notes:" },
+        "specializations": { "quran": "Quran", "arabic_language": "Arabic Language", "islamic_lessons": "Islamic Lessons" }
+    },
+    "admin_pages": {
+        "create_circle": { "title": "Create New Educational Circle", "name_label": "Circle Name", "url_label": "Live Class URL (Zoom Link)", "description_label": "Description", "schedule_label": "Class Schedule", "add_day_button": "+ Add another day", "teacher_label": "Select Teacher", "students_label": "Select Students", "submit_button": "Create Circle", "success_message": "Circle created successfully!" },
+        "manage_users": { "title": "User Management", "username_header": "Username", "role_header": "Role", "status_header": "Status", "actions_header": "Actions", "star_student_status": "★ Star Student", "feature_button": "Feature", "edit_button": "Edit", "delete_button": "Delete", "edit_modal_title": "Edit User: {{username}}", "cancel_button": "Cancel", "save_button": "Save Changes" },
+        "manage_library": { "add_title": "Add New Resource", "title_label": "Title", "url_label": "Resource URL", "category_label": "Category", "description_label": "Description", "submit_button": "Add Resource", "existing_title": "Manage Existing Resources", "delete_button": "Delete", "success_add": "Resource added successfully!", "success_delete": "Resource deleted successfully." },
+        "manage_badges": { "add_title": "Create New Badge", "name_label": "Badge Name", "icon_url_label": "Icon URL", "description_label": "Description", "submit_button": "Create Badge", "existing_title": "Available Badges", "success_message": "Badge created successfully!" }
+    },
+    "digital_library_page": {
+        "title": "Digital Library",
+        "loading": "Loading Resources...",
+        "error": "Failed to fetch resources.",
+        "open_resource_button": "Open Resource",
+        "no_resources_message": "No resources have been added to the library yet."
+    },
+    "curriculum_page": {
+        "title": "Curriculum Plans",
+        "loading": "Loading curriculum...",
+        "error_auth": "You must be logged in to view curricula.",
+        "error_fetch": "Failed to fetch curricula.",
+        "level_label": "Level:",
+        "view_content_button": "View Content",
+        "no_plans_message": "No curriculum plans found."
+    },
+    "create_assignment_page": {
+        "title": "Create New Assignment",
+        "assignment_title_label": "Assignment Title",
+        "description_label": "Description / Instructions",
+        "due_date_label": "Due Date (Optional)",
+        "select_circle_label": "Select Circle",
+        "submit_button": "Create Assignment",
+        "success_message": "Assignment created successfully!"
+    },
+    "forgot_password_page": {
+        "title": "Forgot Your Password?",
+        "instructions": "Enter the email associated with your account and we'll send a reset link.",
+        "email_label": "Email Address",
+        "submit_button": "Send Reset Email",
+        "success_message": "Password reset email sent! Please check your inbox.",
+        "error_message": "Failed to send email. Please check the address and try again.",
+        "back_to_login": "← Back to Login"
+    },
+    "reset_password_page": {
+        "title": "Reset Your Password",
+        "new_password_label": "New Password",
+        "confirm_password_label": "Confirm New Password",
+        "submit_button": "Set New Password",
+        "error_match": "Passwords do not match!",
+        "error_generic": "Failed to reset password. The token may be invalid or expired.",
+        "success_alert": "Password reset successfully! Please log in."
+    },
+    "support_page": {
+        "title": "Support & Help",
+        "intro_message": "We are here to help you. If you encounter any technical issues or have questions, please do not hesitate to reach out.",
+        "email_prompt": "For direct assistance, you can email our support team at:",
+        "faq_title": "Frequently Asked Questions",
+        "faq_q1": "How do I reset my password?",
+        "faq_a1": "Currently, password resets must be handled by an administrator. Please contact us with your username, and we will assist you.",
+        "faq_q2": "How do I join my live class?",
+        "faq_a2": "Navigate to 'My Circles'. If your teacher has added a link for your circle, you will see a blue 'Join Live Class' button."
+    },
+    "tutorials_page": {
+        "title": "Platform Tutorials",
+        "intro": "Here you will find helpful videos to guide you through using the Ejada platform.",
+        "video1_title": "Getting Started: How to Register Your Child",
+        "video1_desc": "This video walks you through the simple process of creating an account for your student.",
+        "video2_title": "Submitting Your First Assignment",
+        "video2_desc": "Learn how students can view and submit their work for assignments."
     }
 }

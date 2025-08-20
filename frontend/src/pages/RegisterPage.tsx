@@ -29,15 +29,18 @@ const RegisterPage = () => {
     const [password, setPassword] = useState('');
     const [role, setRole] = useState('Student');
     const [message, setMessage] = useState('');
+    const [email, setEmail] = useState('');
 
+    // Handle form submission
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setMessage('');
         try {
-            const payload = { username, password, role };
+            const payload = { username, email, password, role };
             const response = await axios.post<User>('http://localhost:5000/api/auth/register', payload);
             setMessage(t('register_page.success_message', { username: response.data.username }));
             setUsername('');
+            setEmail('');
             setPassword('');
         } catch (error: any) {
             if (error.response?.data?.message === 'User already exists') {
@@ -62,6 +65,17 @@ const RegisterPage = () => {
                          <div>
                             <label className="block text-sm font-bold text-gray-700">{t('register_page.username_label')}</label>
                             <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} className="w-full mt-1 p-3 border rounded-md" required />
+                        </div>
+                        {/* --- 4. ADD THE NEW EMAIL FIELD HERE --- */}
+                        <div>
+                            <label className="block text-sm font-bold text-gray-700">Email Address</label>
+                            <input 
+                                type="email" 
+                                value={email} 
+                                onChange={(e) => setEmail(e.target.value)} 
+                                className="w-full mt-1 p-3 border rounded-md" 
+                                required 
+                            />
                         </div>
                         <div>
                             <label className="block text-sm font-bold text-gray-700">{t('register_page.password_label')}</label>

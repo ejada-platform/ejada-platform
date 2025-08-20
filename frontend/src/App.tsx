@@ -35,6 +35,9 @@ import TakeAttendancePage from './pages/teacher/TakeAttendancePage';
 import ProtectedRoute from './components/ProtectedRoute';
 import NotificationBell from './components/NotificationBell';
 import ScrollToTopButton from './components/ScrollToTopButton';
+import ForgotPasswordPage from './pages/ForgotPasswordPage';
+import ResetPasswordPage from './pages/ResetPasswordPage';
+
 // The Responsive Navigation Component
 const Navigation = () => {
     const { t, i18n } = useTranslation(); 
@@ -181,6 +184,8 @@ function App() {
         <main>
             <Routes>
                 {/* Public Routes */}
+                <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+                    <Route path="/reset-password/:resetToken" element={<ResetPasswordPage />} />
                 <Route path="/" element={<LandingPage />} />
                 <Route path="/register" element={<RegisterPage />} />
                 <Route path="/login" element={<LoginPage />} />

@@ -36,7 +36,7 @@ export const getUserById = async (req: Request, res: Response) => {
 // @access  Private (Admin)
 export const updateUser = async (req: Request, res: Response) => {
     try {
-        const user = await User.findById(req.params.id);
+        const user = await User.findById(req.params.id).select('+password');
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
         }
@@ -46,12 +46,12 @@ export const updateUser = async (req: Request, res: Response) => {
         user.role = req.body.role || user.role;
 
         // --- THIS IS THE NEW, SAFER LOGIC FOR THE FEATURED STATUS ---
-        if (req.body.isFeatured === true) {
+        if (req.body.password) {
             // If we are setting this user to be featured...
             // First, un-feature ALL other students in the database.
             await User.updateMany({ role: 'Student' }, { $set: { isFeatured: false } });
             // Then, set this user to be featured.
-            user.isFeatured = true;
+           user.password = req.body.password;
         } else if (req.body.isFeatured === false) {
             // If we are explicitly un-featuring this user
             user.isFeatured = false;
