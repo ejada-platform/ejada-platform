@@ -10,6 +10,7 @@ import RegisterPage from './pages/RegisterPage';
 import LoginPage from './pages/LoginPage';
 import StudentDashboard from './pages/student/StudentDashboard';
 import TeacherDashboard from './pages/teacher/TeacherDashboard';
+import ParentDashboardPage from './pages/parent/ParentDashboardPage';
 import CurriculumPage from './pages/CurriculumPage';
 import MyCirclesPage from './pages/MyCirclesPage';
 import CircleDetailPage from './pages/CircleDetailPage';
@@ -18,6 +19,8 @@ import DigitalLibraryPage from './pages/admin/DigitalLibraryPage';
 import MyWorkLogsPage from './pages/teacher/MyWorkLogsPage';
 import SupportPage from './pages/SupportPage';
 import TutorialsPage from './pages/TutorialsPage';
+import AcademicCalendarPage from './pages/AcademicCalendarPage'; 
+import LandingPage from './pages/LandingPage';
 // Admin Pages
 import CreateCirclePage from './pages/admin/CreateCirclePage';
 import UserManagementPage from './pages/admin/UserManagementPage';
@@ -30,7 +33,8 @@ import CreateAssignmentPage from './pages/teacher/CreateAssignmentPage';
 import TakeAttendancePage from './pages/teacher/TakeAttendancePage';
 // Import components
 import ProtectedRoute from './components/ProtectedRoute';
-
+import NotificationBell from './components/NotificationBell';
+import ScrollToTopButton from './components/ScrollToTopButton';
 // The Responsive Navigation Component
 const Navigation = () => {
     const { t, i18n } = useTranslation(); 
@@ -57,7 +61,7 @@ const Navigation = () => {
         return (
             <header className="bg-gray-800 text-white p-4">
                 <div className="max-w-7xl mx-auto flex justify-between items-center">
-                    <Link to="/" className="text-xl font-bold">Ejadah</Link>
+                     <Link to={user ? "/dashboard" : "/"} className="text-xl font-bold">Ejadah</Link>
                     <div className="animate-pulse">Loading...</div>
                 </div>
             </header>
@@ -65,27 +69,30 @@ const Navigation = () => {
     }
  
     return (
-        <header className="bg-gray-800 text-white p-4">
+        <header className="bg-gray-800 text-white p-4 sticky top-0 z-50 w-full">
             <div className="max-w-7xl mx-auto flex justify-between items-center">
                 <Link to="/" className="text-xl font-bold">Ejadah</Link>
 
                 <nav className="hidden md:flex items-center space-x-4">
+                    
+                    <Link to="/calendar" className="hover:underline">{t('Calendar')}</Link>
                     <Link to="/library" className="hover:underline">{t('library')}</Link>
                     <Link to="/support" className="hover:underline">{t('Support')}</Link>
-                     <Link to="/tutorials" className="hover:underline">{t('Tutorials')}</Link>
+                    <Link to="/tutorials" className="hover:underline">{t('Tutorials')}</Link>
                     {user ? (
                         <>
                             {user.role === 'Student' && <Link to="/my-progress" className="font-bold hover:underline">{t('my_progress')}</Link>}
+                            {(user.role === 'Student' || user.role === 'Teacher') && <Link to="/my-circles" className="hover:underline">{t('my_circles')}</Link>}
                             {user.role === 'Admin' && <Link to="/admin/create-circle" className="hover:underline">{t('create_circle')}</Link>}
                             {user.role === 'Admin' && <Link to="/admin/users" className="hover:underline">{t('manage_users')}</Link>}
                             {user.role === 'Admin' && <Link to="/admin/library" className="hover:underline">{t('manage_library')}</Link>}
                             {user.role === 'Admin' && <Link to="/admin/badges" className="hover:underline">{t('manage_badges')}</Link>}
                             {(user.role === 'Teacher' || user.role === 'Admin') && <Link to="/teacher/create-assignment" className="hover:underline">{t('create_assignment')}</Link>}
                             {(user.role === 'Teacher' || user.role === 'Admin') && <Link to="/teacher/work-logs" className="font-bold hover:underline">{t('my_work_logs')}</Link>}
-                            <Link to="/my-circles" className="hover:underline">{t('my_circles')}</Link>
                             {(user.role === 'Teacher' || user.role === 'Admin') && <Link to="/curriculum" className="hover:underline">{t('curriculum')}</Link>}
                             <span className="text-gray-300">|</span>
                             <span className="font-semibold">{t('welcome_user', { username: user.username })}</span>
+                            <NotificationBell />
                             <button onClick={handleLogout} className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">{t('logout')}</button>
                         </>
                     ) : (
@@ -109,27 +116,35 @@ const Navigation = () => {
 
             {isMobileMenuOpen && (
                 <nav className="md:hidden mt-4 space-y-2">
+                    {/* --- THIS IS THE CORRECTED MOBILE MENU --- */}
+                    <Link to="/calendar" onClick={handleLinkClick} className="block px-2 py-1 hover:bg-gray-700 rounded">{t('Calendar')}</Link>
                     <Link to="/library" onClick={handleLinkClick} className="block px-2 py-1 hover:bg-gray-700 rounded">{t('library')}</Link>
+                    <Link to="/support" onClick={handleLinkClick} className="block px-2 py-1 hover:bg-gray-700 rounded">{t('Support')}</Link>
+                    <Link to="/tutorials" onClick={handleLinkClick} className="block px-2 py-1 hover:bg-gray-700 rounded">{t('Tutorials')}</Link>
+                     
                      {user ? (
                         <>
                             {user.role === 'Student' && <Link to="/my-progress" onClick={handleLinkClick} className="block px-2 py-1 hover:bg-gray-700 rounded font-bold">{t('my_progress')}</Link>}
+                            {(user.role === 'Student' || user.role === 'Teacher') && <Link to="/my-circles" onClick={handleLinkClick} className="block px-2 py-1 hover:bg-gray-700 rounded">{t('my_circles')}</Link>}
+                            
                             {user.role === 'Admin' && <Link to="/admin/create-circle" onClick={handleLinkClick} className="block px-2 py-1 hover:bg-gray-700 rounded">{t('create_circle')}</Link>}
                             {user.role === 'Admin' && <Link to="/admin/users" onClick={handleLinkClick} className="block px-2 py-1 hover:bg-gray-700 rounded">{t('manage_users')}</Link>}
                             {user.role === 'Admin' && <Link to="/admin/library" onClick={handleLinkClick} className="block px-2 py-1 hover:bg-gray-700 rounded">{t('manage_library')}</Link>}
                             {user.role === 'Admin' && <Link to="/admin/badges" onClick={handleLinkClick} className="block px-2 py-1 hover:bg-gray-700 rounded">{t('manage_badges')}</Link>}
+                            
                             {(user.role === 'Teacher' || user.role === 'Admin') && <Link to="/teacher/create-assignment" onClick={handleLinkClick} className="block px-2 py-1 hover:bg-gray-700 rounded">{t('create_assignment')}</Link>}
                             {(user.role === 'Teacher' || user.role === 'Admin') && <Link to="/teacher/work-logs" onClick={handleLinkClick} className="block px-2 py-1 hover:bg-gray-700 rounded font-bold">{t('my_work_logs')}</Link>}
-                            <Link to="/my-circles" onClick={handleLinkClick} className="block px-2 py-1 hover:bg-gray-700 rounded">{t('my_circles')}</Link>
                             {(user.role === 'Teacher' || user.role === 'Admin') && <Link to="/curriculum" onClick={handleLinkClick} className="block px-2 py-1 hover:bg-gray-700 rounded">{t('curriculum')}</Link>}
+                            
                             <div className="border-t border-gray-700 mt-2 pt-2">
                                 <button onClick={handleLogout} className="w-full text-left bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">{t('logout')}</button>
                             </div>
                         </>
                     ) : (
-                        <>
+                        <div className="border-t border-gray-700 mt-2 pt-2">
                             <Link to="/register" onClick={handleLinkClick} className="block px-2 py-1 hover:bg-gray-700 rounded">{t('register')}</Link>
                             <Link to="/login" onClick={handleLinkClick} className="block px-2 py-1 hover:bg-gray-700 rounded">{t('login')}</Link>
-                        </>
+                        </div>
                     )}
                      <div className="border-t border-gray-700 mt-2 pt-2 flex justify-center space-x-2">
                         <button onClick={() => changeLanguage('en')} className={`px-4 py-2 text-sm rounded ${i18n.language.startsWith('en') ? 'bg-white text-gray-800' : ''}`}>EN</button>
@@ -146,6 +161,7 @@ const HomeRouter = () => {
     const { user } = useAuth();
     if (user?.role === 'Admin') return <AdminDashboardPage />;
     if (user?.role === 'Teacher') return <TeacherDashboard />;
+    if (user?.role === 'Parent') return <ParentDashboardPage />;
     return <StudentDashboard />;
 };
 
@@ -153,7 +169,6 @@ const HomeRouter = () => {
 function App() {
   const { i18n } = useTranslation();
 
-  // This hook handles the Right-to-Left (RTL) text direction
   useEffect(() => {
     const documentDirection = i18n.dir(i18n.language);
     document.documentElement.dir = documentDirection;
@@ -166,21 +181,23 @@ function App() {
         <main>
             <Routes>
                 {/* Public Routes */}
+                <Route path="/" element={<LandingPage />} />
                 <Route path="/register" element={<RegisterPage />} />
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/library" element={<DigitalLibraryPage />} />
-                
+                <Route path="/support" element={<SupportPage />} />
+                <Route path="/tutorials" element={<TutorialsPage />} />
+
                 {/* Protected Routes */}
-                <Route path="/" element={<ProtectedRoute allowedRoles={['Student', 'Teacher', 'Admin']}><HomeRouter /></ProtectedRoute>} />
-                <Route path="/my-circles" element={<ProtectedRoute allowedRoles={['Student', 'Teacher', 'Admin']}><MyCirclesPage /></ProtectedRoute>} />
+                <Route path="/" element={<ProtectedRoute allowedRoles={['Student', 'Teacher', 'Admin', 'Parent']}><HomeRouter /></ProtectedRoute>} />
+                <Route path="/my-circles" element={<ProtectedRoute allowedRoles={['Student', 'Teacher']}><MyCirclesPage /></ProtectedRoute>} />
                 <Route path="/circle/:circleId" element={<ProtectedRoute allowedRoles={['Student', 'Teacher', 'Admin']}><CircleDetailPage /></ProtectedRoute>} />
                 <Route path="/curriculum" element={<ProtectedRoute allowedRoles={['Teacher', 'Admin']}><CurriculumPage /></ProtectedRoute>} />
                 
-                {/* Student Routes */}
+                {/* User-Specific Routes */}
                 <Route path="/student-dashboard" element={<ProtectedRoute allowedRoles={['Student']}><StudentDashboard /></ProtectedRoute>} />
                 <Route path="/my-progress" element={<ProtectedRoute allowedRoles={['Student']}><MyProgressPage /></ProtectedRoute>} />
-                
-                {/* Teacher Routes */}
+                <Route path="/parent-dashboard" element={<ProtectedRoute allowedRoles={['Parent']}><ParentDashboardPage /></ProtectedRoute>} />
                 <Route path="/teacher-dashboard" element={<ProtectedRoute allowedRoles={['Teacher', 'Admin']}><TeacherDashboard /></ProtectedRoute>} />
                 <Route path="/teacher/create-assignment" element={<ProtectedRoute allowedRoles={['Teacher', 'Admin']}><CreateAssignmentPage /></ProtectedRoute>} />
                 <Route path="/teacher/work-logs" element={<ProtectedRoute allowedRoles={['Teacher', 'Admin']}><MyWorkLogsPage /></ProtectedRoute>} />
@@ -188,15 +205,17 @@ function App() {
                 <Route path="/teacher/attendance/:circleId" element={<ProtectedRoute allowedRoles={['Teacher', 'Admin']}><TakeAttendancePage /></ProtectedRoute>} />
                 
                 {/* Admin Routes */}
+                <Route path="/dashboard" element={<ProtectedRoute allowedRoles={['Student', 'Teacher', 'Admin', 'Parent']}><HomeRouter /></ProtectedRoute>} />
                 <Route path="/admin-dashboard" element={<ProtectedRoute allowedRoles={['Admin']}><AdminDashboardPage /></ProtectedRoute>} />
                 <Route path="/admin/create-circle" element={<ProtectedRoute allowedRoles={['Admin']}><CreateCirclePage /></ProtectedRoute>} />
                 <Route path="/admin/users" element={<ProtectedRoute allowedRoles={['Admin']}><UserManagementPage /></ProtectedRoute>} />
                 <Route path="/admin/library" element={<ProtectedRoute allowedRoles={['Admin']}><ManageLibraryPage /></ProtectedRoute>} />
                 <Route path="/admin/badges" element={<ProtectedRoute allowedRoles={['Admin']}><ManageBadgesPage /></ProtectedRoute>} />
-                <Route path="/support" element={<SupportPage />} />
-                 <Route path="/tutorials" element={<TutorialsPage />} />
+                <Route path="/calendar" element={<AcademicCalendarPage />} />
+
             </Routes>
         </main>
+         <ScrollToTopButton />
     </Router>
   );
 }

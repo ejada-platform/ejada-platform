@@ -59,3 +59,18 @@ export const getAttendanceForDate = async (req: Request, res: Response) => {
         res.status(500).json({ message: 'Server Error', error: error.message });
     }
 };
+
+// @access  Private (Admin, Teacher of the circle)
+export const getAttendanceForCircle = async (req: Request, res: Response) => {
+    // ... (Add security check to ensure user is admin or teacher of this circle)
+    try {
+        const { circleId } = req.params;
+        const attendanceRecords = await Attendance.find({ circle: circleId })
+            .populate('takenBy', 'username')
+            .sort({ date: -1 }); // Sort by most recent date
+        
+        res.status(200).json(attendanceRecords);
+    } catch (error: any) {
+        res.status(500).json({ message: 'Server Error', error: error.message });
+    }
+};

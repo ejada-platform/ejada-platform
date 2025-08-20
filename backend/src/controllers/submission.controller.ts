@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import Submission from '../models/Submission.model';
 import Assignment from '../models/Assignment.model';
 import Circle from '../models/Circle.model';
-
+import { createAndSendNotification } from '../services/notification.service';
 
 export const createSubmission = async (req: Request, res: Response) => {
     const user = req.user!; // We know the user exists from the 'protect' middleware
@@ -79,6 +79,12 @@ export const reviewSubmission = async (req: Request, res: Response) => {
         submission.status = 'Reviewed';
 
         await submission.save();
+
+        await createAndSendNotification({
+            recipient: submission.student.toString(),
+            message: `Your teacher, ${user.username}, has reviewed your assignment: "${assignment.title}"`,
+            link: `/my-circles` // A link to the circles page
+        });
 
         res.status(200).json(submission);
 

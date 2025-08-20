@@ -1,9 +1,6 @@
 import { Request, Response } from 'express'; 
 import Circle, { ICircle } from '../models/Circle.model';
 
-
-
-
 export const createCircle = async (req: Request, res: Response) => {
     // Admins will provide the name, teacher ID, and an array of student IDs
     const { name, description, teacher, students, liveClassUrl, schedule } = req.body;
@@ -26,12 +23,7 @@ export const createCircle = async (req: Request, res: Response) => {
     }
 };
 
-// @desc    Get the circles for the currently logged-in user
-// @route   GET /api/circles/my-circles
-// @access  Private (Students and Teachers)
 export const getMyCircles = async (req: Request, res: Response) => {
-    // The 'protect' middleware guarantees 'req.user' exists.
-    // We use the non-null assertion "!" to tell TypeScript we are certain.
     const user = req.user!; 
     
     const userId = user._id;
@@ -52,9 +44,6 @@ export const getMyCircles = async (req: Request, res: Response) => {
     }
 };
 
-// @desc    Update a circle (e.g., to add a meeting link)
-// @route   PUT /api/circles/:circleId
-// @access  Private (Teacher or Admin)
 export const updateCircle = async (req: Request, res: Response) => {
     const user = req.user!;
     const { circleId } = req.params;
@@ -81,6 +70,17 @@ export const updateCircle = async (req: Request, res: Response) => {
         const updatedCircle = await circle.save();
         res.status(200).json(updatedCircle);
 
+    } catch (error: any) {
+        res.status(500).json({ message: 'Server Error', error: error.message });
+    }
+};
+
+export const getAllCircles = async (req: Request, res: Response) => {
+    try {
+        const circles = await Circle.find({})
+            .populate('teacher', 'username')
+            .populate('students', 'username');
+        res.status(200).json(circles);
     } catch (error: any) {
         res.status(500).json({ message: 'Server Error', error: error.message });
     }

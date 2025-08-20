@@ -1,10 +1,12 @@
 import express from 'express';
-import { createCircle, getMyCircles, updateCircle } from '../controllers/circle.controller';
+import { createCircle, getMyCircles, updateCircle, getAllCircles } from '../controllers/circle.controller';
 import { protect, authorize } from '../middleware/auth.middleware';
 
 
 const router = express.Router();
 
+router.route('/all')
+    .get(protect, authorize('Admin'), getAllCircles);
 // Route for Admins to create a circle
 router.route('/')
     .post(protect, authorize('Admin'), createCircle);

@@ -1,16 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
-// Import the context object and User type from our logic file
+import { io, Socket } from 'socket.io-client'; 
 import { AuthContext } from './AuthContext';
 import type { User } from './AuthContext';
 
-// This is the AuthProvider component that will wrap our application
-// It provides authentication state and methods to the rest of the app
-// This is the provider component. It's the only thing this file exports.
+
+export interface INotification {
+    _id: string;
+    message: string;
+    link?: string;
+    isRead: boolean;
+    createdAt: string;
+}
+
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [user, setUser] = useState<User | null>(null);
     const [token, setToken] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(true);
+    const [notifications, setNotifications] = useState<INotification[]>([]);
+    const [socket, setSocket] = useState<Socket | null>(null);
 
     useEffect(() => {
         try {
@@ -27,6 +35,35 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             setIsLoading(false);
         }
     }, []);
+
+    useEffect(() => {
+        // If there is a user but no socket connection, create one.
+        if (user && !socket) {
+            const newSocket = io('http://localhost:5000'); // Connect to our backend
+            setSocket(newSocket);
+            
+            // Tell the backend which user we are, so we can join our room
+            newSocket.emit('join', user._id);
+            
+            // Listen for the 'new_notification' event from the server
+            newSocket.on('new_notification', (notification: INotification) => {
+                // When we get a new notification, add it to the top of our list
+                setNotifications(prev => [notification, ...prev]);
+            });
+
+        // If there's no user but a socket exists, disconnect it.
+        } else if (!user && socket) {
+            socket.disconnect();
+            setSocket(null);
+        }
+
+        // Cleanup function to disconnect when the component unmounts
+        return () => {
+            if (socket) {
+                socket.disconnect();
+            }
+        };
+    }, [user]);
 
     const login = (userData: User, token: string) => {
         setUser(userData);
@@ -48,6 +85,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         login,
         logout,
         isLoading,
+        notifications,
+        setNotifications
     };
 
     return (

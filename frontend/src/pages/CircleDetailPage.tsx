@@ -7,36 +7,12 @@ import { useAuth } from '../context/AuthContext';
 import { useTranslation } from 'react-i18next';
 
 // --- TYPE DEFINITIONS ---
-interface Assignment {
-    _id: string;
-    title: string;
-    description: string;
-    dueDate?: string;
-    createdBy: { _id: string; username: string };
-    createdAt: string;
-}
-
-interface Submission {
-    _id: string;
-    student: { _id: string; username: string };
-    content: string;
-    status: 'Submitted' | 'Reviewed';
-    grade?: string;
-    feedback?: string;
-    createdAt: string;
-}
-
-interface LessonLog {
-    _id: string;
-    date: string;
-    specialization: 'Quran' | 'Arabic Language' | 'Islamic Lessons';
-    topic: string;
-    notes?: string;
-    teacher: { _id: string, username: string };
-}
+interface Assignment { _id: string; title: string; description: string; dueDate?: string; createdBy: { _id: string; username: string }; createdAt: string; }
+interface Submission { _id: string; student: { _id: string; username: string }; content: string; status: 'Submitted' | 'Reviewed'; grade?: string; feedback?: string; createdAt: string; }
+interface LessonLog { _id: string; date: string; specialization: 'Quran' | 'Arabic Language' | 'Islamic Lessons'; topic: string; notes?: string; teacher: { _id: string, username: string }; }
 
 // ==================================================================
-// --- SUB-COMPONENT: SubmissionForm (for Students) ---
+// --- SUB-COMPONENT: SubmissionForm ---
 // ==================================================================
 const SubmissionForm = ({ assignmentId, onSubmissionSuccess }: { assignmentId: string; onSubmissionSuccess: () => void }) => {
     const { t } = useTranslation();
@@ -47,41 +23,30 @@ const SubmissionForm = ({ assignmentId, onSubmissionSuccess }: { assignmentId: s
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setMessage('');
-        if (!content) {
-            setMessage('Please provide content for your submission.');
-            return;
-        }
-
+        if (!content) return;
         try {
             const config = { headers: { Authorization: `Bearer ${token}` } };
-            const payload = { assignmentId, content };
-            await axios.post('http://localhost:5000/api/submissions', payload, config);
-            
-            setMessage('Submission successful!');
+            await axios.post('http://localhost:5000/api/submissions', { assignmentId, content }, config);
+            setMessage(t('Submission successful!'));
             setContent('');
             onSubmissionSuccess();
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (err: any) {
-            if (err.response) {
-                setMessage(err.response.data.message || 'Submission failed.');
-            } else {
-                setMessage('An unexpected network error occurred.');
-            }
+            setMessage(err.response?.data?.message || 'Submission failed.');
         }
     };
 
     return (
         <form onSubmit={handleSubmit} className="mt-4 p-4 bg-gray-50 rounded-md">
-            <h4 className="font-semibold text-gray-700">Submit Your Work</h4>
+            <h4 className="font-semibold text-gray-700">{t('circle_detail_page.submission_form.title')}</h4>
             <textarea
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
-                placeholder="Paste a link to your recording or type your response here..."
+                placeholder={t('circle_detail_page.submission_form.placeholder')}
                 className="w-full mt-2 p-2 border rounded"
                 rows={3}
             ></textarea>
             <button type="submit" className="mt-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
-                Submit
+                {t('circle_detail_page.submission_form.submit_button')}
             </button>
             {message && <p className="text-sm mt-2">{message}</p>}
         </form>
@@ -89,7 +54,7 @@ const SubmissionForm = ({ assignmentId, onSubmissionSuccess }: { assignmentId: s
 };
 
 // ==================================================================
-// --- SUB-COMPONENT: ReviewForm (for Teachers) ---
+// --- SUB-COMPONENT: ReviewForm ---
 // ==================================================================
 const ReviewForm = ({ submission, onReviewSuccess }: { submission: Submission; onReviewSuccess: () => void }) => {
     const { t } = useTranslation();
@@ -101,51 +66,29 @@ const ReviewForm = ({ submission, onReviewSuccess }: { submission: Submission; o
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setMessage('');
-
         try {
             const config = { headers: { Authorization: `Bearer ${token}` } };
-            const payload = { grade, feedback };
-            await axios.patch(`http://localhost:5000/api/submissions/${submission._id}/review`, payload, config);
-
+            await axios.patch(`http://localhost:5000/api/submissions/${submission._id}/review`, { grade, feedback }, config);
             setMessage('Review submitted successfully!');
             onReviewSuccess();
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (err: any) {
-            if (err.response) {
-                setMessage(err.response.data.message || 'Failed to submit review.');
-            } else {
-                setMessage('An unexpected network error occurred.');
-            }
+            setMessage(err.response?.data?.message || 'Failed to submit review.');
         }
     };
 
     return (
         <form onSubmit={handleSubmit} className="mt-3 p-3 bg-yellow-50 rounded-md border border-yellow-200">
-            <h5 className="font-bold text-sm text-gray-700">{t('Provide Feedback')}</h5>
+            <h5 className="font-bold text-sm text-gray-700">{t('circle_detail_page.review_form.title')}</h5>
             <div className="mt-2">
-                <label htmlFor={`grade-${submission._id}`} className="block text-xs font-medium text-gray-600">Grade</label>
-                <input
-                    type="text"
-                    id={`grade-${submission._id}`}
-                    value={grade}
-                    onChange={(e) => setGrade(e.target.value)}
-                    placeholder="e.g., Excellent, Good"
-                    className="w-full mt-1 p-1 border rounded text-sm"
-                />
+                <label className="block text-xs font-medium text-gray-600">{t('circle_detail_page.review_form.grade_label')}</label>
+                <input type="text" value={grade} onChange={(e) => setGrade(e.target.value)} placeholder={t('circle_detail_page.review_form.grade_placeholder')} className="w-full mt-1 p-1 border rounded text-sm" />
             </div>
             <div className="mt-2">
-                <label htmlFor={`feedback-${submission._id}`} className="block text-xs font-medium text-gray-600">{t('Feedback')}</label>
-                <textarea
-                    id={`feedback-${submission._id}`}
-                    value={feedback}
-                    onChange={(e) => setFeedback(e.target.value)}
-                    placeholder="Your comments..."
-                    className="w-full mt-1 p-1 border rounded text-sm"
-                    rows={2}
-                ></textarea>
+                <label className="block text-xs font-medium text-gray-600">{t('circle_detail_page.review_form.feedback_label')}</label>
+                <textarea value={feedback} onChange={(e) => setFeedback(e.target.value)} placeholder={t('circle_detail_page.review_form.feedback_placeholder')} className="w-full mt-1 p-1 border rounded text-sm" rows={2}></textarea>
             </div>
             <button type="submit" className="mt-2 px-3 py-1 bg-yellow-500 text-white text-sm rounded hover:bg-yellow-600">
-                {t('Submit Review')}
+                {t('circle_detail_page.review_form.submit_button')}
             </button>
             {message && <p className="text-xs mt-2">{message}</p>}
         </form>
@@ -153,7 +96,7 @@ const ReviewForm = ({ submission, onReviewSuccess }: { submission: Submission; o
 };
 
 // ==================================================================
-// --- SUB-COMPONENT: SubmissionsList (for Teachers) ---
+// --- SUB-COMPONENT: SubmissionsList ---
 // ==================================================================
 const SubmissionsList = ({ assignmentId }: { assignmentId: string }) => {
     const { t } = useTranslation();
@@ -179,24 +122,23 @@ const SubmissionsList = ({ assignmentId }: { assignmentId: string }) => {
         fetchSubmissions();
     }, [fetchSubmissions]);
 
-    if (loading) return <p className="mt-4">Loading submissions...</p>;
+    if (loading) return <p className="mt-4">{t('circle_detail_page.submissions_list.loading')}</p>;
 
     return (
         <div className="mt-4 p-4 bg-green-50 rounded-md">
-            <h4 className="font-semibold text-gray-700">{t('Submissions for this Assignment')}</h4>
+            <h4 className="font-semibold text-gray-700">{t('circle_detail_page.submissions_list.title')}</h4>
             {submissions.length > 0 ? (
                 <ul className="mt-2 space-y-4">
                     {submissions.map(sub => (
                         <li key={sub._id} className="p-2 border-b">
-                            <p><strong>Student:</strong> {sub.student.username}</p>
-                            <p><strong>Submission:</strong> {sub.content}</p>
-                            <p className="text-xs text-gray-500">{t('Submitted on:')} {new Date(sub.createdAt).toLocaleDateString()}</p>
-                            
+                            <p><strong>{t('circle_detail_page.submissions_list.student_label')}</strong> {sub.student.username}</p>
+                            <p><strong>{t('circle_detail_page.submissions_list.submission_label')}</strong> {sub.content}</p>
+                            <p className="text-xs text-gray-500">{t('circle_detail_page.submissions_list.submitted_on')} {new Date(sub.createdAt).toLocaleDateString()}</p>
                             {sub.status === 'Reviewed' ? (
                                 <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-md">
-                                    <h5 className="font-bold text-sm text-blue-800">{t('Feedback Given')}</h5>
-                                    <p><strong>{t('Grade:')}</strong> {sub.grade}</p>
-                                    <p><strong>{t('Comments:')}</strong> {sub.feedback}</p>
+                                    <h5 className="font-bold text-sm text-blue-800">{t('circle_detail_page.submissions_list.feedback_given')}</h5>
+                                    <p><strong>{t('circle_detail_page.review_form.grade_label')}</strong> {sub.grade}</p>
+                                    <p><strong>{t('circle_detail_page.submissions_list.comments_label')}</strong> {sub.feedback}</p>
                                 </div>
                             ) : (
                                 <ReviewForm submission={sub} onReviewSuccess={fetchSubmissions} />
@@ -205,17 +147,14 @@ const SubmissionsList = ({ assignmentId }: { assignmentId: string }) => {
                     ))}
                 </ul>
             ) : (
-                 <p>{t('No submissions yet.')}</p>
+                <p>{t('circle_detail_page.submissions_list.no_submissions')}</p>
             )}
         </div>
     );
 };
 
-
-
-
 // ==================================================================
-// --- THE MAIN PAGE COMPONENT ---
+// --- SUB-COMPONENT: LessonLogForm ---
 // ==================================================================
 const LessonLogForm = ({ circleId, onLogSuccess }: { circleId: string; onLogSuccess: () => void }) => {
     const { t } = useTranslation();
@@ -237,7 +176,6 @@ const LessonLogForm = ({ circleId, onLogSuccess }: { circleId: string; onLogSucc
             setTopic('');
             setNotes('');
             onLogSuccess();
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (err: any) {
             setMessage(err.response?.data?.message || 'Failed to log lesson.');
         }
@@ -249,28 +187,28 @@ const LessonLogForm = ({ circleId, onLogSuccess }: { circleId: string; onLogSucc
             <form onSubmit={handleSubmit}>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label className="block font-bold mb-1">{t('Date')}</label>
+                        <label className="block font-bold mb-1 rtl:text-right">{t('circle_detail_page.lesson_log_form.date_label')}</label>
                         <input type="date" value={date} onChange={e => setDate(e.target.value)} className="w-full p-2 border rounded" required />
                     </div>
                     <div>
-                        <label className="block font-bold mb-1">{t('Specialization')}</label>
+                        <label className="block font-bold mb-1 rtl:text-right">{t('circle_detail_page.lesson_log_form.specialization_label')}</label>
                         <select value={specialization} onChange={e => setSpecialization(e.target.value as any)} className="w-full p-2 border rounded">
-                            <option>{t('Quran')}</option>
-                            <option>{t('Arabic Language')}</option>
-                            <option>{t('Islamic Lessons')}</option>
+                            <option value="Quran">{t('circle_detail_page.specializations.quran')}</option>
+                            <option value="Arabic Language">{t('circle_detail_page.specializations.arabic_language')}</option>
+                            <option value="Islamic Lessons">{t('circle_detail_page.specializations.islamic_lessons')}</option>
                         </select>
                     </div>
                 </div>
                 <div className="mt-4">
-                    <label className="block font-bold mb-1">{t('Topic Covered')}</label>
-                    <input type="text" value={topic} onChange={e => setTopic(e.target.value)} className="w-full p-2 border rounded" required placeholder="e.g., Surah Al-Baqarah, Ayahs 1-10" />
+                    <label className="block font-bold mb-1 rtl:text-right">{t('circle_detail_page.lesson_log_form.topic_label')}</label>
+                    <input type="text" value={topic} onChange={e => setTopic(e.target.value)} className="w-full p-2 border rounded" required placeholder={t('circle_detail_page.lesson_log_form.topic_placeholder')} />
                 </div>
                 <div className="mt-4">
-                    <label className="block font-bold mb-1">{t('Notes (Optional)')}</label>
+                    <label className="block font-bold mb-1 rtl:text-right">{t('circle_detail_page.lesson_log_form.notes_label')}</label>
                     <textarea value={notes} onChange={e => setNotes(e.target.value)} className="w-full p-2 border rounded" rows={3}></textarea>
                 </div>
                 <button type="submit" className="w-full mt-4 py-2 px-4 bg-indigo-600 text-white font-bold rounded hover:bg-indigo-700">
-                    {t('Save Lesson Log')}
+                    {t('circle_detail_page.lesson_log_form.submit_button')}
                 </button>
                 {message && <p className="mt-2 text-center">{message}</p>}
             </form>
@@ -278,8 +216,11 @@ const LessonLogForm = ({ circleId, onLogSuccess }: { circleId: string; onLogSucc
     );
 };
 
-const LessonLogList = ({ circleId }: { circleId: string }) => {
-    const {t} = useTranslation();
+// ==================================================================
+// --- SUB-COMPONENT: LessonLogList ---
+// ==================================================================
+const LessonLogList = ({ circleId, logCount }: { circleId: string; logCount: number }) => {
+    const { t } = useTranslation();
     const { token } = useAuth();
     const [logs, setLogs] = useState<LessonLog[]>([]);
     const [loading, setLoading] = useState(true);
@@ -300,27 +241,26 @@ const LessonLogList = ({ circleId }: { circleId: string }) => {
 
     useEffect(() => {
         fetchLogs();
-    }, [fetchLogs]);
+    }, [fetchLogs, logCount]); // Add logCount as a dependency to re-fetch when a new log is made
 
-    if (loading) return <p>{t('circle_detail_page.loading_history')}</p>;
+    if (loading) return <p className="mt-8">{t('circle_detail_page.loading_history')}</p>;
 
     return (
         <div className="mt-8">
-            <h2 className="text-2xl font-bold mb-4">Lesson History</h2>
+            <h2 className="text-2xl font-bold mb-4">{t('circle_detail_page.lesson_history_title')}</h2>
             <div className="space-y-4">
                 {logs.length > 0 ? logs.map(log => (
                     <div key={log._id} className="bg-white p-4 rounded-lg shadow border">
                         <p className="text-sm text-gray-500">{new Date(log.date).toLocaleDateString()}</p>
                         <p className="font-bold">{log.topic}</p>
-                        <p className="text-sm"><span className="font-semibold">{t('Category:')}</span> {t(log.specialization)}</p>
-                        {log.notes && <p className="text-sm mt-1"><span className="font-semibold">{t('Notes:')}</span> {log.notes}</p>}
+                        <p className="text-sm"><span className="font-semibold">{t('circle_detail_page.lesson_log_list.category_label')}</span> {t(`circle_detail_page.specializations.${log.specialization.toLowerCase().replace(' ', '_')}` as const, log.specialization)}</p>
+                        {log.notes && <p className="text-sm mt-1"><span className="font-semibold">{t('circle_detail_page.lesson_log_list.notes_label')}</span> {log.notes}</p>}
                     </div>
-                )) : <p>{t('No lessons have been logged yet.')}</p>}
+                )) : <p>{t('circle_detail_page.no_lessons_logged')}</p>}
             </div>
         </div>
     );
 };
-
 
 // ==================================================================
 // --- THE MAIN PAGE COMPONENT ---
@@ -333,7 +273,7 @@ const CircleDetailPage = () => {
     const [loadingAssignments, setLoadingAssignments] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [viewingSubmissionsFor, setViewingSubmissionsFor] = useState<string | null>(null);
-    const [logCount, setLogCount] = useState(0); // This state is used to trigger a refresh
+    const [logCount, setLogCount] = useState(0);
 
     const fetchAssignments = useCallback(async () => {
         if (!token || !circleId) {
@@ -363,12 +303,11 @@ const CircleDetailPage = () => {
         setViewingSubmissionsFor(prev => (prev === assignmentId ? null : assignmentId));
     };
 
-    if (loadingAssignments) return <div className="p-10 text-center">Loading...</div>;
+    if (loadingAssignments) return <div className="p-10 text-center">{t('circle_detail_page.loading_assignments')}</div>;
     if (error) return <div className="p-10 text-center text-red-500">{error}</div>;
 
     return (
         <div className="p-8 max-w-4xl mx-auto">
-            {/* THIS IS THE MISSING PIECE: The Lesson Log Form for Teachers */}
             {user?.role === 'Teacher' && circleId && (
                 <LessonLogForm 
                     circleId={circleId} 
@@ -376,20 +315,19 @@ const CircleDetailPage = () => {
                 />
             )}
             
-            {/* The rest of the page layout */}
             <div className="my-8">
                 <h1 className="text-3xl font-bold mb-6">{t('circle_detail_page.assignments_title')}</h1>
                 <div className="space-y-4">
                     {assignments.length > 0 ? (
                         assignments.map((assignment) => (
-                            <div key={assignment._id} className="bg-white p-4 rounded-lg shadow border">
-                                <h2 className="text-xl font-semibold">{assignment.title}</h2>
-                                <p className="text-sm text-gray-500">
-                                   {t('circle_detail_page.assigned_by', { teacher: assignment.createdBy.username, date: new Date(assignment.createdAt).toLocaleDateString() })}
+                            <div key={assignment._id} className="bg-white p-4 rounded-lg shadow border border-gray-200">
+                                <h2 className="text-xl font-semibold text-gray-800">{assignment.title}</h2>
+                                <p className="text-sm text-gray-500" dir="auto">
+                                    {t('circle_detail_page.assigned_by', { teacher: assignment.createdBy.username, date: new Date(assignment.createdAt).toLocaleDateString() })}
                                 </p>
                                 {assignment.dueDate && (
-                                    <p className="text-sm text-red-600 font-semibold">
-                                       {t('circle_detail_page.due_by', { date: new Date(assignment.dueDate).toLocaleDateString() })}
+                                    <p className="text-sm text-red-600 font-semibold" dir="auto">
+                                        {t('circle_detail_page.due_by', { date: new Date(assignment.dueDate).toLocaleDateString() })}
                                     </p>
                                 )}
                                 <p className="text-gray-700 mt-2">{assignment.description}</p>
@@ -397,7 +335,7 @@ const CircleDetailPage = () => {
                                 {user?.role === 'Student' && (
                                     <SubmissionForm 
                                         assignmentId={assignment._id} 
-                                        onSubmissionSuccess={() => alert('Submission received!')} 
+                                        onSubmissionSuccess={() => alert(t('Submission received!'))} 
                                     />
                                 )}
 
@@ -406,7 +344,7 @@ const CircleDetailPage = () => {
                                         onClick={() => handleViewSubmissions(assignment._id)} 
                                         className="mt-4 px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300"
                                     >
-                                         {viewingSubmissionsFor === assignment._id ? t('circle_detail_page.hide_submissions_button') : t('circle_detail_page.view_submissions_button')}
+                                        {viewingSubmissionsFor === assignment._id ? t('circle_detail_page.hide_submissions_button') : t('circle_detail_page.view_submissions_button')}
                                     </button>
                                 )}
 
@@ -423,8 +361,7 @@ const CircleDetailPage = () => {
 
             <hr className="my-8" />
             
-            {/* The Lesson History, which is visible to everyone */}
-            {circleId && <LessonLogList key={logCount} circleId={circleId} />}
+            {circleId && <LessonLogList key={logCount} circleId={circleId} logCount={0} />}
         </div>
     );
 };

@@ -7,26 +7,29 @@ export interface IUser extends Document {
     _id: Types.ObjectId;
     username: string;
     password?: string;
-    role: 'Student' | 'Teacher' | 'Admin';
+    role: 'Student' | 'Teacher' | 'Admin' | 'Parent';
     generatedCode?: string;
     isFeatured?: boolean;
+    children?: Types.ObjectId[];
 }
 
 // THIS IS THE CORRECTED SCHEMA
 const UserSchema: Schema<IUser> = new Schema({
     username: { type: String, required: true, unique: true },
     password: { type: String, required: true, select: false },
-    role: { type: String, enum: ['Student', 'Teacher', 'Admin'], required: true },
+    role: { type: String, enum: ['Student', 'Teacher', 'Admin', 'Parent'], required: true },
     generatedCode: { type: String, unique: true, sparse: true },
     isFeatured: {
         type: Boolean,
         default: false,
         required: false // Explicitly state it's not required
-    }
+    },
+    children: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    }]
 }, {
     timestamps: true,
-    // This option ensures that even if a field is not in the schema, it's not an error.
-    // It's a good safety net, but the main fix is the 'required: false' above.
     strict: false 
 });
 

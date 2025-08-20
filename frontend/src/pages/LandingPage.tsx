@@ -1,0 +1,315 @@
+
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import Slider from 'react-slick';
+
+// --- Imports for Sliders and Icons ---
+import "slick-carousel/slick/slick.css"; 
+import "slick-carousel/slick/slick-theme.css";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faWhatsapp, faInstagram, faYoutube, faFacebook } from '@fortawesome/free-brands-svg-icons';
+
+// --- THIS IS THE NEW, SIMPLIFIED LIGHTBOX IMPORT ---
+import Lightbox from "yet-another-react-lightbox";
+import "yet-another-react-lightbox/styles.css";
+
+
+// --- Section 1: Hero with Live Statistics ---
+const HeroWithStats = () => {
+    const { t } = useTranslation();
+    const [stats, setStats] = useState({ totalStudents: 0, totalTeachers: 0, totalCircles: 0 });
+
+    useEffect(() => {
+        const fetchStats = async () => {
+            try {
+                const { data } = await axios.get('http://localhost:5000/api/stats/overview');
+                if (data) setStats(data);
+            } catch (error) { console.error("Failed to fetch stats", error); }
+        };
+        fetchStats();
+    }, []);
+
+    return (
+        <section className="relative bg-gray-700 text-white py-40 px-4 text-center">
+            <div className="relative z-10">
+                <h1 className="text-4xl md:text-6xl font-extrabold">{t('landing_page.hero_title')}</h1>
+                <p className="text-lg mt-4 max-w-3xl mx-auto text-gray-200">{t('landing_page.hero_subtitle')}</p>
+                <Link to="/register" className="mt-8 inline-block bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-8 rounded-full transition-colors">
+                    {t('landing_page.hero_cta_button')}
+                </Link>
+            </div>
+            <div className="absolute -bottom-16 left-1/2 -translate-x-1/2 w-full max-w-4xl px-4">
+                <div className="bg-white bg-opacity-90 backdrop-blur-sm rounded-xl shadow-lg p-6 grid grid-cols-1 md:grid-cols-3 gap-4 text-gray-800">
+                    <div className="text-center">
+                        <p className="text-4xl font-bold text-blue-600">{stats.totalStudents}</p>
+                        <p className="text-md">{t('landing_page.stats.students')}</p>
+                    </div>
+                    <div className="text-center">
+                        <p className="text-4xl font-bold text-blue-600">{stats.totalTeachers}</p>
+                        <p className="text-md">{t('landing_page.stats.teachers')}</p>
+                    </div>
+                    <div className="text-center">
+                        <p className="text-4xl font-bold text-blue-600">{stats.totalCircles}</p>
+                        <p className="text-md">{t('landing_page.stats.circles')}</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    );
+};
+
+// --- Section 2: Image Slider ---
+const ImageSliderSection = () => {
+    const [openVideo, setOpenVideo] = useState<string | null>(null);
+
+    const slides = [
+        { img: '/images/slider1.jpeg', youtubeId: 'YOUR_YOUTUBE_ID_1' },
+        { img: '/images/slider2.jpeg', youtubeId: 'YOUR_YOUTUBE_ID_2' },
+        { img: '/images/slider3.jpeg', youtubeId: 'YOUR_YOUTUBE_ID_3' }
+    ];
+
+    const settings = { dots: true, infinite: true, speed: 500, slidesToShow: 1, slidesToScroll: 1, autoplay: true, autoplaySpeed: 4000, arrows: true };
+
+    return (
+        <section className="pt-28 pb-16 bg-gray-500">
+            <div className="max-w-5xl mx-auto px-12">
+                <Slider {...settings}>
+                    {slides.map((slide, index) => (
+                        <div key={index} className="px-2 relative">
+                            <img src={slide.img} alt={`Slide ${index+1}`} className="rounded-lg shadow-xl w-full h-auto max-h-[500px] object-cover mx-auto" />
+                            <div onClick={() => setOpenVideo(slide.youtubeId)} className="absolute inset-0 flex items-center justify-center cursor-pointer">
+                                <div className="bg-red-600 h-20 w-20 rounded-full flex items-center justify-center shadow-lg transform hover:scale-110 transition-transform">
+                                    <svg className="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 20 20"><path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"></path></svg>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </Slider>
+            </div>
+
+            {/* --- The New Lightbox Implementation --- */}
+            <Lightbox
+                open={!!openVideo}
+                close={() => setOpenVideo(null)}
+                slides={openVideo ? [{
+                    type: "html",
+                    html: `<div style="position: relative; width: 100%; height: 100%;"><iframe src="https://www.youtube.com/embed/${openVideo}?autoplay=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></iframe></div>`
+                }] : []}
+                render={{
+                    slide: ({ slide }) => (slide.type === 'html' ? <div style={{ width: '100%', height: 'calc(100vh - 120px)' }} dangerouslySetInnerHTML={{ __html: slide.html }} /> : undefined),
+                }}
+            />
+        </section>
+    );
+};
+// --- Section 3: Educational Courses ---
+const CoursesSection = () => {
+    const { t } = useTranslation();
+    const courses = [
+        { titleKey: 'landing_page.programs.program1_title', img: '/images/program1.jpg' },
+        { titleKey: 'landing_page.programs.program2_title', img: '/images/program2.jpg' },
+        { titleKey: 'landing_page.programs.program3_title', img: '/images/program3.jpg' }
+    ];
+    return (
+        <section className="py-16 bg-white">
+            <div className="max-w-6xl mx-auto px-4">
+                <h2 className="text-4xl font-bold text-center mb-12">{t('landing_page.programs.title')}</h2>
+                <div className="grid md:grid-cols-3 gap-8">
+                    {courses.map((course, i) => (
+                        <div key={i} className="bg-white border border-gray-200 rounded-lg shadow-lg text-center p-6">
+                            <img src={course.img} alt={t(course.titleKey)} className="w-full h-40 object-cover rounded-md mb-4" />
+                            <h3 className="text-xl font-bold mb-4">{t(course.titleKey)}</h3>
+                            <Link to="/register" className="inline-block bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-6 rounded-lg transition-colors">{t('landing_page.programs.register_now')}</Link>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        </section>
+    );
+};
+
+// --- Section 4: Vision & Goals ---
+const VisionMissionSection = () => {
+    const { t } = useTranslation();
+    return(
+        <section className="py-20 bg-gray-50">
+            <div className="max-w-6xl mx-auto px-4 grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div className="border border-gray-200 p-6 rounded-lg text-center bg-white shadow">
+                    <div className="text-4xl mb-4">✉️</div>
+                    <h3 className="text-xl font-bold">{t('landing_page.vision.message_title')}</h3>
+                    <p className="text-gray-600 mt-2">{t('landing_page.vision.message_text')}</p>
+                </div>
+                 <div className="border border-gray-200 p-6 rounded-lg text-center bg-white shadow">
+                    <div className="text-4xl mb-4">💎</div>
+                    <h3 className="text-xl font-bold">{t('landing_page.vision.values_title')}</h3>
+                    <p className="text-gray-600 mt-2">{t('landing_page.vision.values_text')}</p>
+                </div>
+                 <div className="border border-gray-200 p-6 rounded-lg text-center bg-white shadow">
+                    <div className="text-4xl mb-4">👁️</div>
+                    <h3 className="text-xl font-bold">{t('landing_page.vision.vision_title')}</h3>
+                    <p className="text-gray-600 mt-2">{t('landing_page.vision.vision_text')}</p>
+                </div>
+                 <div className="border border-gray-200 p-6 rounded-lg text-center bg-white shadow">
+                    <div className="text-4xl mb-4">🎯</div>
+                    <h3 className="text-xl font-bold">{t('landing_page.vision.goals_title')}</h3>
+                    <p className="text-gray-600 mt-2">{t('landing_page.vision.goals_text')}</p>
+                </div>
+            </div>
+        </section>
+    );
+};
+
+// --- Section 5: Testimonials ---
+const StarRating = ({ rating }: { rating: number }) => (
+    <div className="flex justify-center text-yellow-400 text-xl">
+        {Array.from({ length: 5 }, (_, i) => <span key={i}>{i < rating ? '★' : '☆'}</span>)}
+    </div>
+);
+const TestimonialsSection = () => {
+    const { t } = useTranslation();
+    return (
+        <section className="py-20 bg-white">
+            <div className="max-w-6xl mx-auto px-4">
+                <h2 className="text-4xl font-bold text-center mb-12">{t('landing_page.testimonials_title')}</h2>
+                <div className="grid md:grid-cols-3 gap-8">
+                    <div className="bg-gray-50 p-8 rounded-lg shadow-lg">
+                        <p className="text-gray-600 italic">"The best institution I have known. I recommend that anyone who wants to learn to read and write Arabic and recite the Holy Quran enroll here."</p>
+                        <p className="mt-4 font-bold text-right">- Wael Hakawati</p>
+                        <div className="mt-2"><StarRating rating={5} /></div>
+                    </div>
+                    <div className="bg-gray-50 p-8 rounded-lg shadow-lg">
+                        <p className="text-gray-600 italic">"May Allah bless you and your efforts. The follow-up is very good, and the teacher's teaching and style are distinctive. Thank you very much."</p>
+                        <p className="mt-4 font-bold text-right">- Ahmed Kurdas</p>
+                        <div className="mt-2"><StarRating rating={5} /></div>
+                    </div>
+                     <div className="bg-gray-50 p-8 rounded-lg shadow-lg">
+                        <p className="text-gray-600 italic">"When we came to Turkey, I was afraid for our children... an institute that teaches Syrian children the Quran... May God reward you."</p>
+                        <p className="mt-4 font-bold text-right">- Hamza Haj Ali</p>
+                        <div className="mt-2"><StarRating rating={5} /></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    );
+};
+
+// --- Section 6: Contact Form ---
+const ContactSection = () => {
+    const { t } = useTranslation();
+    const [status, setStatus] = useState('');
+
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        const form = e.target as HTMLFormElement;
+        const data = new FormData(form);
+        
+        try {
+            const response = await axios.post('https://formspree.io/f/mwpqdvjn', data, {
+                headers: { 'Accept': 'application/json' }
+            });
+
+            if (response.status === 200) {
+                setStatus(t('landing_page.contact.success_message'));
+                form.reset();
+            } else {
+                setStatus(t('landing_page.contact.error_message'));
+            }
+        } catch (error) {
+            setStatus(t('landing_page.contact.error_message'));
+        }
+    };
+
+    return(
+        <section className="py-20 bg-gray-50">
+            <div className="max-w-4xl mx-auto px-4">
+                 <h2 className="text-4xl font-bold text-center mb-12">{t('landing_page.contact.title')}</h2>
+                 <form onSubmit={handleSubmit} className="bg-white p-8 rounded-lg shadow-lg">
+                    <div className="grid md:grid-cols-2 gap-4">
+                        <input type="text" name="name" placeholder={t('landing_page.contact.name')} className="w-full p-3 border rounded" required />
+                        <input type="email" name="email" placeholder={t('landing_page.contact.email')} className="w-full p-3 border rounded" required />
+                    </div>
+                    <textarea name="message" placeholder={t('landing_page.contact.message')} rows={5} className="w-full p-3 border rounded mt-4" required></textarea>
+                    <button type="submit" className="w-full mt-4 py-3 px-6 bg-blue-600 text-white font-bold rounded hover:bg-blue-700">
+                        {t('landing_page.contact.send_button')}
+                    </button>
+                    {status && <p className="mt-4 text-center">{status}</p>}
+                 </form>
+            </div>
+        </section>
+    );
+};
+const Footer = () => {
+    const { t } = useTranslation();
+    return (
+         <footer className="bg-gray-900 text-white pt-16 pb-8">
+            <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8 text-center md:text-left px-4">
+                {/* Column 1: About */}
+                <div>
+                    <h3 className="text-xl font-bold mb-4">Ejada</h3>
+                    <p className="text-gray-400">{t('landing_page.footer_about')}</p>
+                </div>
+                {/* Column 2: Pages */}
+                <div>
+                    <h3 className="text-lg font-bold mb-4">{t('landing_page.footer_pages')}</h3>
+                    <ul className="space-y-2">
+                        <li><Link to="/" className="hover:underline text-gray-300">Home</Link></li>
+                        <li><Link to="/library" className="hover:underline text-gray-300">Library</Link></li>
+                        <li><Link to="/support" className="hover:underline text-gray-300">Support</Link></li>
+                        <li><Link to="/tutorials" className="hover:underline text-gray-300">Tutorials</Link></li>
+                    </ul>
+                </div>
+                 {/* Column 3: Courses */}
+                 <div>
+                    <h3 className="text-lg font-bold mb-4">{t('landing_page.footer_courses')}</h3>
+                    <ul className="space-y-2">
+                        <li><span className="text-gray-300">Quran Recitation</span></li>
+                        <li><span className="text-gray-300">Tajweed</span></li>
+                        <li><span className="text-gray-300">Arabic Language</span></li>
+                    </ul>
+                </div>
+                 {/* Column 4: Contact & Social */}
+                 <div>
+                    <h3 className="text-lg font-bold mb-4">{t('landing_page.footer_contact')}</h3>
+                    <p className="text-gray-300">info@ejada.com</p>
+                    <p className="text-gray-300">+1 234 567 890</p>
+                    {/* 2. Replace the old <i> tags with the <FontAwesomeIcon> component */}
+                    <div className="flex justify-center md:justify-start space-x-4 mt-4 text-2xl">
+                        <a href="#" aria-label="WhatsApp" className="text-gray-400 hover:text-white transition-colors">
+                            <FontAwesomeIcon icon={faWhatsapp} />
+                        </a>
+                        <a href="#" aria-label="Instagram" className="text-gray-400 hover:text-white transition-colors">
+                            <FontAwesomeIcon icon={faInstagram} />
+                        </a>
+                         <a href="#" aria-label="YouTube" className="text-gray-400 hover:text-white transition-colors">
+                            <FontAwesomeIcon icon={faYoutube} />
+                        </a>
+                         <a href="#" aria-label="Facebook" className="text-gray-400 hover:text-white transition-colors">
+                            <FontAwesomeIcon icon={faFacebook} />
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div className="border-t border-gray-700 mt-8 pt-6 text-center">
+                 <p>&copy; {new Date().getFullYear()} Ejada Platform. {t('landing_page.footer_text')}</p>
+            </div>
+        </footer>
+    );
+};
+// --- The Main Landing Page Component ---
+const LandingPage = () => {
+    return (
+        <>
+            <HeroWithStats />
+            <ImageSliderSection />
+            <CoursesSection />
+            <TestimonialsSection />
+            <VisionMissionSection />
+            <ContactSection />
+            <Footer />
+        </>
+    );
+};
+
+export default LandingPage;

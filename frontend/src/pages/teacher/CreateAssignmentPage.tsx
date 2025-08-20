@@ -1,11 +1,10 @@
-// src/pages/teacher/CreateAssignmentPage.tsx
-
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Select from 'react-select';
 import { useAuth } from '../../context/AuthContext';
+import { useTranslation } from 'react-i18next';
 
-// Define the shape of the data we'll fetch
+
 interface Circle {
     _id: string;
     name: string;
@@ -16,17 +15,15 @@ interface SelectOption {
 }
 
 const CreateAssignmentPage = () => {
+    const { t } = useTranslation();
     const { token } = useAuth();
     const [myCircles, setMyCircles] = useState<Circle[]>([]);
-
-    // Form state
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [dueDate, setDueDate] = useState('');
     const [selectedCircle, setSelectedCircle] = useState<SelectOption | null>(null);
     const [message, setMessage] = useState('');
 
-    // 1. Fetch the teacher's circles to populate the dropdown
     useEffect(() => {
         const fetchMyCircles = async () => {
             if (!token) return;
@@ -46,7 +43,7 @@ const CreateAssignmentPage = () => {
         e.preventDefault();
         setMessage('');
         if (!title || !selectedCircle) {
-            setMessage('Please provide a title and select a circle.');
+            setMessage(t('create_assignment_page.success_message'));
             return;
         }
 
@@ -76,26 +73,26 @@ const CreateAssignmentPage = () => {
 
     return (
         <div className="p-8 max-w-2xl mx-auto">
-            <h1 className="text-3xl font-bold mb-6">Create New Assignment</h1>
+            <h1 className="text-3xl font-bold mb-6">{t('create_assignment_page.title')}</h1>
             <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow">
                 <div className="mb-4">
-                    <label className="block font-bold mb-1">Assignment Title</label>
+                    <label className="block font-bold mb-1">{t('create_assignment_page.assignment_title_label')}</label>
                     <input type="text" value={title} onChange={e => setTitle(e.target.value)} className="w-full p-2 border rounded" required />
                 </div>
                 <div className="mb-4">
-                    <label className="block font-bold mb-1">Description / Instructions</label>
+                    <label className="block font-bold mb-1">{t('create_assignment_page.description_label')}</label>
                     <textarea value={description} onChange={e => setDescription(e.target.value)} className="w-full p-2 border rounded" rows={4} />
                 </div>
                 <div className="mb-4">
-                    <label className="block font-bold mb-1">Due Date (Optional)</label>
+                    <label className="block font-bold mb-1">{t('create_assignment_page.due_date_label')}</label>
                     <input type="date" value={dueDate} onChange={e => setDueDate(e.target.value)} className="w-full p-2 border rounded" />
                 </div>
                 <div className="mb-6">
-                    <label className="block font-bold mb-1">Select Circle</label>
+                    <label className="block font-bold mb-1">{t('create_assignment_page.select_circle_label')}</label>
                     <Select options={circleOptions} value={selectedCircle} onChange={setSelectedCircle} required />
                 </div>
                 <button type="submit" className="w-full py-2 px-4 bg-green-600 text-white font-bold rounded hover:bg-green-700">
-                    Create Assignment
+                    {t('create_assignment_page.submit_button')}
                 </button>
                 {message && <p className="mt-4 text-center">{message}</p>}
             </form>

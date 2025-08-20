@@ -1,13 +1,11 @@
-// src/context/AuthContext.ts
-
 import { createContext, useContext } from 'react';
+import type { INotification } from './AuthProvider';
 
-// Define the shape of the user data
 export interface User {
     _id: string;
     username: string;
     role: string;
-    isFeatured?: boolean; // Optional property for featured users
+    isFeatured?: boolean; 
 }
 
 // Define the shape of the context's value
@@ -17,6 +15,8 @@ interface AuthContextType {
     login: (userData: User, token: string) => void;
     logout: () => void;
     isLoading: boolean;
+    notifications: INotification[]; // <-- ADD
+    setNotifications: React.Dispatch<React.SetStateAction<INotification[]>>; // Optional notifications array
 }
 
 // Create and export the context object.
@@ -27,6 +27,8 @@ export const AuthContext = createContext<AuthContextType>({
     login: () => {},
     logout: () => {},
     isLoading: true,
+    notifications: [],
+    setNotifications: () => {},
 });
 
 // Create and export the custom hook for easy consumption
