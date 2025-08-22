@@ -20,13 +20,14 @@ export const getResources = async (req: Request, res: Response) => {
 // @access  Private (Admin)
 export const createResource = async (req: Request, res: Response) => {
     const admin = req.user!;
+    // We now expect the resourceUrl directly from the form body
     const { title, description, resourceUrl, category } = req.body;
 
     try {
         const resource = await Resource.create({
             title,
             description,
-            resourceUrl,
+            resourceUrl, // Use the URL provided by the Admin
             category,
             createdBy: admin._id,
         });
@@ -45,7 +46,6 @@ export const deleteResource = async (req: Request, res: Response) => {
         if (!resource) {
             return res.status(404).json({ message: 'Resource not found' });
         }
-
         await resource.deleteOne();
         res.status(200).json({ message: 'Resource removed successfully' });
     } catch (error: any) {

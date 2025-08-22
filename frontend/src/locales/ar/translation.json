@@ -1,9 +1,9 @@
 {
     "welcome_message": "أهلاً بكم في إجادة",
     "library": "المكتبة",
-    "support": "الدعم",
-    "tutorials": "الشروحات",
-    "calendar": "التقويم",
+    "Support": "الدعم",
+    "Tutorials": "الشروحات",
+    "Calendar": "التقويم",
     "register": "تسجيل",
     "login": "دخول",
     "logout": "خروج",
@@ -162,11 +162,24 @@
     },
     "admin_pages": {
         "create_circle": { "title": "إنشاء حلقة تعليمية جديدة", "name_label": "اسم الحلقة", "url_label": "رابط الدرس المباشر (زووم)", "description_label": "الوصف", "schedule_label": "جدول الحصص", "add_day_button": "+ إضافة يوم آخر", "teacher_label": "اختر المعلم", "students_label": "اختر الطلاب", "submit_button": "إنشاء الحلقة", "success_message": "تم إنشاء الحلقة بنجاح!" },
-        "manage_users": { "title": "إدارة المستخدمين", "username_header": "اسم المستخدم", "role_header": "الدور", "status_header": "الحالة", "actions_header": "الإجراءات", "star_student_status": "★ الطالب النجم", "feature_button": "تمييز", "edit_button": "تعديل", "delete_button": "حذف", "edit_modal_title": "تعديل المستخدم: {{username}}", "cancel_button": "إلغاء", "save_button": "حفظ التغييرات" },
-        "manage_library": { "add_title": "إضافة مصدر جديد", "title_label": "العنوان", "url_label": "رابط المصدر", "category_label": "الفئة", "description_label": "الوصف", "submit_button": "إضافة المصدر", "existing_title": "إدارة المصادر الحالية", "delete_button": "حذف", "success_add": "تمت إضافة المصدر بنجاح!", "success_delete": "تم حذف المصدر بنجاح." },
+        "manage_users": { "title": "إدارة المستخدمين", "username_header": "اسم المستخدم", "role_header": "الدور", "status_header": "الحالة", "actions_header": "الإجراءات", "star_student_status": "★ الطالب النجم", "feature_button": "تمييز", "edit_button": "تعديل", "delete_button": "حذف", "edit_modal_title": "تعديل المستخدم: {{username}}", "cancel_button": "إلغاء", "save_button": "حفظ التغييرات","delete_button": "حذف",
+            "delete_confirm_title": "هل أنت متأكد؟",
+            "delete_confirm_text": "لن تتمكن من التراجع عن هذا الإجراء!",
+            "delete_success_title": "تم الحذف!",
+            "delete_success_text": "لقد تم حذف المستخدم.",
+            "delete_error_title": "خطأ!",
+            "delete_error_text": "فشل حذف المستخدم." },
+        "manage_library": { "add_title": "إضافة مصدر جديد", "title_label": "العنوان", "url_label": "رابط المصدر", "category_label": "الفئة", "description_label": "الوصف", "submit_button": "إضافة المصدر", "existing_title": "إدارة المصادر الحالية", "delete_button": "حذف", "success_add": "تمت إضافة المصدر بنجاح!", "success_delete": "تم حذف المصدر بنجاح.","delete_button": "حذف",
+            "delete_confirm_title": "هل أنت متأكد؟",
+            "delete_confirm_text": "سيتم حذف هذا المصدر بشكل دائم.",
+            "delete_success_title": "تم الحذف!",
+            "delete_success_text": "لقد تم حذف المصدر.",
+            "delete_error_title": "خطأ!",
+            "delete_error_text": "فشل حذف المصدر." },
         "manage_badges": { "add_title": "إنشاء شارة جديدة", "name_label": "اسم الشارة", "icon_url_label": "رابط الأيقونة", "description_label": "الوصف", "submit_button": "إنشاء الشارة", "existing_title": "الشارات المتاحة", "success_message": "تم إنشاء الشارة بنجاح!" }
     },
     "digital_library_page": {
+        "download_button": "تحميل",
         "title": "المكتبة الرقمية",
         "loading": "جاري تحميل المصادر...",
         "error": "فشل تحميل المصادر.",
@@ -226,5 +239,24 @@
         "video1_desc": "هذا الفيديو يشرح لك العملية البسيطة لإنشاء حساب لطالبك.",
         "video2_title": "تسليم أول واجب",
         "video2_desc": "تعلم كيف يمكن للطلاب عرض وتسليم أعمالهم للواجبات."
+    },
+    "admin_dashboard": {
+        "title": "لوحة تحكم المسؤول",
+        "welcome_message": "أهلاً بعودتك، {{username}}!",
+        "loading": "جاري تحميل لوحة التحكم...",
+        "error": "فشل تحميل إحصائيات المنصة.",
+        "stats": {
+            "total_students": "مجموع الطلاب",
+            "total_teachers": "مجموع المعلمين",
+            "active_circles": "الحلقات النشطة",
+            "total_hours": "مجموع الساعات المسجلة"
+        },
+        "quick_actions": {
+            "title": "إجراءات سريعة",
+            "manage_users": "إدارة المستخدمين",
+            "create_circle": "إنشاء حلقة",
+            "manage_library": "إدارة المكتبة",
+            "manage_badges": "إدارة الشارات"
+        }
     }
 }

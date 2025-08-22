@@ -1,12 +1,9 @@
-// src/routes/notification.routes.ts
-
 import express from 'express';
-import { getMyNotifications, markNotificationsAsRead } from '../controllers/notification.controller';
-import { protect } from '../middleware/auth.middleware';
+import { getMyNotifications, markNotificationsAsRead, broadcastNotification } from '../controllers/notification.controller';
+import { protect, authorize } from '../middleware/auth.middleware';
 
 const router = express.Router();
 
-// All routes here are for the logged-in user
 router.use(protect);
 
 router.route('/')
@@ -14,5 +11,9 @@ router.route('/')
 
 router.route('/mark-read')
     .patch(markNotificationsAsRead);
+
+// This is the Admin-only route
+router.route('/broadcast')
+    .post(authorize('Admin'), broadcastNotification);
 
 export default router;

@@ -3,6 +3,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faDownload } from '@fortawesome/free-solid-svg-icons';
 
 // Define the shape of a single resource object
 interface Resource {
@@ -67,11 +69,15 @@ const DigitalLibraryPage = () => {
                             <p className="text-gray-600 mt-2 flex-grow">{resource.description}</p>
                             <a
                                 href={resource.resourceUrl}
+                                download
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="block text-center mt-4 px-4 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors"
                             >
-                                {t('digital_library_page.open_resource_button')}
+                                 <FontAwesomeIcon icon={faDownload} />
+                                 <span>
+                               {t('digital_library_page.download_button')}
+                                </span>
                             </a>
                         </div>
                     ))

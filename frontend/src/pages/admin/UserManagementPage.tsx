@@ -6,6 +6,7 @@ import { useAuth } from '../../context/AuthContext';
 import type { User } from '../../context/AuthContext';
 import Modal from '../../components/Modal';
 import EditUserForm from './EditUserForm';
+import { showSuccessAlert, showErrorAlert, showConfirmationDialog } from '../../services/alert.service';
 import { useTranslation } from 'react-i18next';
 
 
@@ -39,15 +40,20 @@ const UserManagementPage = () => {
     }, [fetchUsers]);
 
     const handleDelete = async (userId: string) => {
-        if (window.confirm('Are you sure you want to delete this user? This action cannot be undone.')) {
+        const result = await showConfirmationDialog(
+            'Are you sure?',
+            "You won't be able to revert this!"
+        );
+        if (result.isConfirmed) {
             try {
                 const config = { headers: { Authorization: `Bearer ${token}` } };
                 await axios.delete(`http://localhost:5000/api/users/${userId}`, config);
-                alert('User deleted successfully.');
+                //alert('User deleted successfully.');
+                showSuccessAlert('Deleted!', 'The user has been removed successfully.');
                 fetchUsers();
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
             } catch (err) {
-                alert('Failed to delete user.');
+                showErrorAlert('Error!', 'Failed to delete the user.');
             }
         }
     };
@@ -60,10 +66,12 @@ const UserManagementPage = () => {
             // The backend will handle un-featuring anyone else.
             await axios.put(`http://localhost:5000/api/users/${userToFeature._id}`, { isFeatured: true }, config);
             
-            alert(`${userToFeature.username} is now the Star Student!`);
+           showSuccessAlert('Success!', `${userToFeature.username} is now the Star Student!`);
+           // alert(`${userToFeature.username} is now the Star Student!`);
             fetchUsers(); // Refresh the list to get the definitive state from the server
         } catch {
-            alert('Failed to update featured student.');
+            showErrorAlert('Error!', 'Failed to update the featured student.');
+            //alert('Failed to update featured student.');
         }
     };
 

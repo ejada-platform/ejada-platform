@@ -1,9 +1,9 @@
 {
     "welcome_message": "Welcome to Ejada",
     "library": "Library",
-    "support": "Support",
-    "tutorials": "Tutorials",
-    "calendar": "Calendar",
+    "Support": "Support",
+    "Tutorials": "Tutorials",
+    "Calendar": "Calendar",
     "register": "Register",
     "login": "Login",
     "logout": "Logout",
@@ -162,11 +162,25 @@
     },
     "admin_pages": {
         "create_circle": { "title": "Create New Educational Circle", "name_label": "Circle Name", "url_label": "Live Class URL (Zoom Link)", "description_label": "Description", "schedule_label": "Class Schedule", "add_day_button": "+ Add another day", "teacher_label": "Select Teacher", "students_label": "Select Students", "submit_button": "Create Circle", "success_message": "Circle created successfully!" },
-        "manage_users": { "title": "User Management", "username_header": "Username", "role_header": "Role", "status_header": "Status", "actions_header": "Actions", "star_student_status": "★ Star Student", "feature_button": "Feature", "edit_button": "Edit", "delete_button": "Delete", "edit_modal_title": "Edit User: {{username}}", "cancel_button": "Cancel", "save_button": "Save Changes" },
-        "manage_library": { "add_title": "Add New Resource", "title_label": "Title", "url_label": "Resource URL", "category_label": "Category", "description_label": "Description", "submit_button": "Add Resource", "existing_title": "Manage Existing Resources", "delete_button": "Delete", "success_add": "Resource added successfully!", "success_delete": "Resource deleted successfully." },
+        "manage_users": { "title": "User Management", "username_header": "Username", "role_header": "Role", "status_header": "Status", "actions_header": "Actions", "star_student_status": "★ Star Student", "feature_button": "Feature", "edit_button": "Edit", "delete_button": "Delete", "edit_modal_title": "Edit User: {{username}}", "cancel_button": "Cancel", "save_button": "Save Changes",  "delete_button": "Delete",
+            "delete_confirm_title": "Are you sure?",
+            "delete_confirm_text": "You won't be able to revert this!",
+            "delete_success_title": "Deleted!",
+            "delete_success_text": "The user has been removed.",
+            "delete_error_title": "Error!",
+            "delete_error_text": "Failed to delete the user."},
+        "manage_library": { "add_title": "Add New Resource", "title_label": "Title", "url_label": "Resource URL", "category_label": "Category", "description_label": "Description", "submit_button": "Add Resource", "existing_title": "Manage Existing Resources", "delete_button": "Delete", "success_add": "Resource added successfully!", "success_delete": "Resource deleted successfully.","delete_button": "Delete",
+            "delete_confirm_title": "Are you sure?",
+            "delete_confirm_text": "This resource will be permanently deleted.",
+            "delete_success_title": "Deleted!",
+            "delete_success_text": "The resource has been removed.",
+            "delete_error_title": "Error!",
+            "delete_error_text": "Failed to delete the resource."
+ },
         "manage_badges": { "add_title": "Create New Badge", "name_label": "Badge Name", "icon_url_label": "Icon URL", "description_label": "Description", "submit_button": "Create Badge", "existing_title": "Available Badges", "success_message": "Badge created successfully!" }
     },
     "digital_library_page": {
+         "download_button": "Download",
         "title": "Digital Library",
         "loading": "Loading Resources...",
         "error": "Failed to fetch resources.",
@@ -226,5 +240,24 @@
         "video1_desc": "This video walks you through the simple process of creating an account for your student.",
         "video2_title": "Submitting Your First Assignment",
         "video2_desc": "Learn how students can view and submit their work for assignments."
+    },
+     "admin_dashboard": {
+        "title": "Admin Dashboard",
+        "welcome_message": "Welcome back, {{username}}!",
+        "loading": "Loading dashboard...",
+        "error": "Failed to fetch platform statistics.",
+        "stats": {
+            "total_students": "Total Students",
+            "total_teachers": "Total Teachers",
+            "active_circles": "Active Circles",
+            "total_hours": "Total Hours Logged"
+        },
+        "quick_actions": {
+            "title": "Quick Actions",
+            "manage_users": "Manage Users",
+            "create_circle": "Create a Circle",
+            "manage_library": "Manage Library",
+            "manage_badges": "Manage Badges"
+        }
     }
 }

@@ -10,11 +10,18 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faWhatsapp, faInstagram, faYoutube, faFacebook } from '@fortawesome/free-brands-svg-icons';
+import { faPhone, faEnvelope } from '@fortawesome/free-solid-svg-icons'; 
 
 // --- THIS IS THE NEW, SIMPLIFIED LIGHTBOX IMPORT ---
 import Lightbox from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css";
 
+// --- NEW COMPONENT for internal page headers ---
+export const PageHeader = ({ title }: { title: string }) => (
+    <div className="bg-primary text-light py-12 text-center">
+        <h1 className="text-4xl font-bold">{title}</h1>
+    </div>
+);
 
 // --- Section 1: Hero with Live Statistics ---
 const HeroWithStats = () => {
@@ -108,9 +115,9 @@ const ImageSliderSection = () => {
 const CoursesSection = () => {
     const { t } = useTranslation();
     const courses = [
-        { titleKey: 'landing_page.programs.program1_title', img: '/images/program1.jpg' },
-        { titleKey: 'landing_page.programs.program2_title', img: '/images/program2.jpg' },
-        { titleKey: 'landing_page.programs.program3_title', img: '/images/program3.jpg' }
+        { titleKey: 'landing_page.programs.program1_title', img: '/images/slider4.jpeg.jpeg' },
+        { titleKey: 'landing_page.programs.program2_title', img: '/images/slider2.jpeg' },
+        { titleKey: 'landing_page.programs.program3_title', img: '/images/slider3.jpeg' }
     ];
     return (
         <section className="py-16 bg-white">
@@ -176,17 +183,17 @@ const TestimonialsSection = () => {
                 <div className="grid md:grid-cols-3 gap-8">
                     <div className="bg-gray-50 p-8 rounded-lg shadow-lg">
                         <p className="text-gray-600 italic">"The best institution I have known. I recommend that anyone who wants to learn to read and write Arabic and recite the Holy Quran enroll here."</p>
-                        <p className="mt-4 font-bold text-right">- Wael Hakawati</p>
+                        <p className="mt-4 font-bold text-right">- Oussama</p>
                         <div className="mt-2"><StarRating rating={5} /></div>
                     </div>
                     <div className="bg-gray-50 p-8 rounded-lg shadow-lg">
                         <p className="text-gray-600 italic">"May Allah bless you and your efforts. The follow-up is very good, and the teacher's teaching and style are distinctive. Thank you very much."</p>
-                        <p className="mt-4 font-bold text-right">- Ahmed Kurdas</p>
+                        <p className="mt-4 font-bold text-right">- Yamoussa Soumah</p>
                         <div className="mt-2"><StarRating rating={5} /></div>
                     </div>
                      <div className="bg-gray-50 p-8 rounded-lg shadow-lg">
                         <p className="text-gray-600 italic">"When we came to Turkey, I was afraid for our children... an institute that teaches Syrian children the Quran... May God reward you."</p>
-                        <p className="mt-4 font-bold text-right">- Hamza Haj Ali</p>
+                        <p className="mt-4 font-bold text-right">- Hamza Ali</p>
                         <div className="mt-2"><StarRating rating={5} /></div>
                     </div>
                 </div>
@@ -221,25 +228,45 @@ const ContactSection = () => {
         }
     };
 
-    return(
+     {/* Contact Info Section className="w-full mt-4 py-3 px-6 bg-blue-600 text-white font-bold rounded hover:bg-blue-700" */}
+return(
         <section className="py-20 bg-gray-50">
-            <div className="max-w-4xl mx-auto px-4">
+            <div className="max-w-6xl mx-auto px-4">
                  <h2 className="text-4xl font-bold text-center mb-12">{t('landing_page.contact.title')}</h2>
-                 <form onSubmit={handleSubmit} className="bg-white p-8 rounded-lg shadow-lg">
-                    <div className="grid md:grid-cols-2 gap-4">
-                        <input type="text" name="name" placeholder={t('landing_page.contact.name')} className="w-full p-3 border rounded" required />
-                        <input type="email" name="email" placeholder={t('landing_page.contact.email')} className="w-full p-3 border rounded" required />
+                 <div className="grid md:grid-cols-2 gap-8 items-center bg-white p-8 rounded-lg shadow-xl">
+                    {/* Left side: Form */}
+                    <form onSubmit={handleSubmit}>
+                        <div className="grid md:grid-cols-2 gap-4">
+                            <input type="text" name="name" placeholder={t('landing_page.contact.name')} className="w-full p-3 border rounded-md" required />
+                            <input type="email" name="email" placeholder={t('landing_page.contact.email')} className="w-full p-3 border rounded-md" required />
+                        </div>
+                        <textarea name="message" placeholder={t('landing_page.contact.message')} rows={5} className="w-full p-3 border rounded-md mt-4" required></textarea>
+                        <button type="submit" className="w-full mt-4 py-3 px-6 bg-primary text-light font-bold bg-blue-600 text-white rounded hover:bg-blue-700 hover:opacity-90">
+                            {t('landing_page.contact.send_button')}
+                        </button>
+                        {status && <p className="mt-4 text-center">{status}</p>}
+                    </form>
+                    {/* Right side: Image and Details */}
+                    <div className="text-center">
+                        <img src="/images/contact.png" alt="Contact Us" className="rounded-lg shadow-md mb-6 w-full object-cover h-64" />
+                        <div className="space-y-4">
+                            <div className="flex items-center justify-center gap-3 text-lg">
+                                <FontAwesomeIcon icon={faPhone} className="text-primary"/>
+                                <span>+90 531 705 5332</span>
+                            </div>
+                            <div className="flex items-center justify-center gap-3 text-lg">
+                                <FontAwesomeIcon icon={faEnvelope} className="text-primary"/>
+                                <span>info@ejadah.com</span>
+                            </div>
+                        </div>
                     </div>
-                    <textarea name="message" placeholder={t('landing_page.contact.message')} rows={5} className="w-full p-3 border rounded mt-4" required></textarea>
-                    <button type="submit" className="w-full mt-4 py-3 px-6 bg-blue-600 text-white font-bold rounded hover:bg-blue-700">
-                        {t('landing_page.contact.send_button')}
-                    </button>
-                    {status && <p className="mt-4 text-center">{status}</p>}
-                 </form>
+                 </div>
             </div>
         </section>
-    );
+    );  
 };
+
+
 const Footer = () => {
     const { t } = useTranslation();
     return (
@@ -272,8 +299,8 @@ const Footer = () => {
                  {/* Column 4: Contact & Social */}
                  <div>
                     <h3 className="text-lg font-bold mb-4">{t('landing_page.footer_contact')}</h3>
-                    <p className="text-gray-300">info@ejada.com</p>
-                    <p className="text-gray-300">+1 234 567 890</p>
+                    <p className="text-gray-300">info@ejadah.com</p>
+                    <p className="text-gray-300">+90 531 705 5332</p>
                     {/* 2. Replace the old <i> tags with the <FontAwesomeIcon> component */}
                     <div className="flex justify-center md:justify-start space-x-4 mt-4 text-2xl">
                         <a href="#" aria-label="WhatsApp" className="text-gray-400 hover:text-white transition-colors">

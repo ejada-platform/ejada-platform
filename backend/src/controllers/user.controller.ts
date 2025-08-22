@@ -36,42 +36,39 @@ export const getUserById = async (req: Request, res: Response) => {
 // @access  Private (Admin)
 export const updateUser = async (req: Request, res: Response) => {
     try {
-        const user = await User.findById(req.params.id).select('+password');
+        const user = await User.findById(req.params.id);
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
         }
 
-        // Standard field updates
-        user.username = req.body.username || user.username;
-        user.role = req.body.role || user.role;
-
-        // --- THIS IS THE NEW, SAFER LOGIC FOR THE FEATURED STATUS ---
-        if (req.body.password) {
-            // If we are setting this user to be featured...
-            // First, un-feature ALL other students in the database.
-            await User.updateMany({ role: 'Student' }, { $set: { isFeatured: false } });
-            // Then, set this user to be featured.
-           user.password = req.body.password;
-        } else if (req.body.isFeatured === false) {
-            // If we are explicitly un-featuring this user
-            user.isFeatured = false;
-        }
-        // If isFeatured is not mentioned in the request body, we don't change it.
-        // --- END OF NEW LOGIC ---
-
-        const updatedUser = await user.save();
+        // --- THIS IS THE FIX ---
+        // Only update fields if they are provided in the request.
+        // This prevents Mongoose from trying to validate fields that aren't being changed.
+        const updates: any = {};
+        if (req.body.username) updates.username = req.body.username;
+        if (req.body.role) updates.role = req.body.role;
+        if (req.body.password) updates.password = req.body.password; // The pre-save hook will still hash this
         
-        // Respond with the full user object, including the new status
-        const responseUser = {
-            _id: updatedUser._id,
-            username: updatedUser.username,
-            role: updatedUser.role,
-            isFeatured: updatedUser.isFeatured
-        };
+        if (req.body.isFeatured === true) {
+            // Un-feature all other students first
+            await User.updateMany({ _id: { $ne: user._id }, role: 'Student' }, { $set: { isFeatured: false } });
+            updates.isFeatured = true;
+        } else if (req.body.isFeatured === false) {
+            updates.isFeatured = false;
+        }
 
-        res.status(200).json(responseUser);
+        // Instead of user.save(), we use findByIdAndUpdate.
+        // This is safer as it only modifies the fields we specify.
+        const updatedUser = await User.findByIdAndUpdate(req.params.id, { $set: updates }, {
+            new: true, // Return the updated document
+            runValidators: true, // Run validation on the fields we are changing
+            context: 'query' // Important for certain validators
+        }).select('-password');
+        
+        res.status(200).json(updatedUser);
 
     } catch (error: any) {
+        console.error("Error in updateUser:", error);
         res.status(500).json({ message: 'Server Error', error: error.message });
     }
 };

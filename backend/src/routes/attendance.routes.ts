@@ -1,13 +1,12 @@
-// src/routes/attendance.routes.ts
-
 import express from 'express';
-import { submitAttendance, getAttendanceForDate, getAttendanceForCircle } from '../controllers/attendance.controller';
+import { submitAttendance, getAttendanceForDate, getAttendanceForCircle, getAllAttendance } from '../controllers/attendance.controller';
 import { protect, authorize } from '../middleware/auth.middleware';
 
 const router = express.Router();
 
 // A Teacher submits the attendance for their circle
 router.route('/')
+    .get(protect, authorize('Admin'), getAllAttendance)
     .post(protect, authorize('Teacher', 'Admin'), submitAttendance);
 
     router.route('/circle/:circleId')

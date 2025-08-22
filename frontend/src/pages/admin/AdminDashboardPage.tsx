@@ -14,6 +14,44 @@ interface PlatformStats {
     totalHoursLogged: number;
 }
 
+// --- ADD A NEW SUB-COMPONENT FOR THE FORM ---
+const BroadcastForm = () => {
+    const { token } = useAuth();
+    const [message, setMessage] = useState('');
+    const [link, setLink] = useState('');
+    const [status, setStatus] = useState('');
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setStatus('Sending...');
+        try {
+            const config = { headers: { Authorization: `Bearer ${token}` } };
+            const payload = { message, link };
+            const { data } = await axios.post('http://localhost:5000/api/notifications/broadcast', payload, config);
+            setStatus(data.message); // Show success message from backend
+            setMessage('');
+            setLink('');
+        } catch (error) {
+            setStatus('Failed to send broadcast.');
+        }
+    };
+
+    return (
+        <div className="bg-white p-6 rounded-lg shadow">
+            <h2 className="text-2xl font-bold mb-4">Send Broadcast Notification</h2>
+            <p className="text-sm text-gray-500 mb-4">Send a notification (e.g., weekly Hadith) to ALL users.</p>
+            <form onSubmit={handleSubmit}>
+                <textarea value={message} onChange={e => setMessage(e.target.value)} placeholder="Your message..." className="w-full p-2 border rounded" required rows={3}></textarea>
+                <input type="text" value={link} onChange={e => setLink(e.target.value)} placeholder="Optional link (e.g., /library)" className="w-full p-2 border rounded mt-2" />
+                <button type="submit" className="w-full mt-4 py-2 px-4 bg-purple-600 text-white font-bold rounded hover:bg-purple-700">
+                    Send to All Users
+                </button>
+                {status && <p className="mt-2 text-center">{status}</p>}
+            </form>
+        </div>
+    );
+};
+
 const AdminDashboardPage = () => {
     const { t } = useTranslation();
     const { user, token } = useAuth();
@@ -66,6 +104,9 @@ const AdminDashboardPage = () => {
                 <div className="bg-white p-6 rounded-lg shadow">
                     <h3 className="text-lg font-bold text-gray-500">{t('admin_dashboard.stats.total_hours')}</h3>
                     <p className="text-4xl font-bold text-yellow-600">{stats?.totalHoursLogged}</p>
+                </div>
+                <div className="mt-8">
+                <BroadcastForm />
                 </div>
             </div>
 

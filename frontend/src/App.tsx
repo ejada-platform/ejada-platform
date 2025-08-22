@@ -1,9 +1,10 @@
-// src/App.tsx
-
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { BrowserRouter as Router, Routes, Route, Link, useNavigate } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSignInAlt, faUserPlus, faSun, faMoon } from '@fortawesome/free-solid-svg-icons';
+
 
 // Import all pages
 import RegisterPage from './pages/RegisterPage';
@@ -37,6 +38,27 @@ import NotificationBell from './components/NotificationBell';
 import ScrollToTopButton from './components/ScrollToTopButton';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import ResetPasswordPage from './pages/ResetPasswordPage';
+
+// --- NEW THEME SWITCHER COMPONENT ---
+const ThemeSwitcher = () => {
+    const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light');
+
+    useEffect(() => {
+        if (theme === 'dark') {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+        localStorage.setItem('theme', theme);
+    }, [theme]);
+
+    return (
+        <button onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')} className="text-xl">
+            <FontAwesomeIcon icon={theme === 'light' ? faMoon : faSun} />
+        </button>
+    );
+};
+
 
 // The Responsive Navigation Component
 const Navigation = () => {
@@ -74,7 +96,9 @@ const Navigation = () => {
     return (
         <header className="bg-gray-800 text-white p-4 sticky top-0 z-50 w-full">
             <div className="max-w-7xl mx-auto flex justify-between items-center">
-                <Link to="/" className="text-xl font-bold">Ejadah</Link>
+                <Link to={user ? "/dashboard" : "/"} className="text-xl font-bold">
+                    Ejadah
+                </Link>
 
                 <nav className="hidden md:flex items-center space-x-4">
                     
@@ -100,14 +124,15 @@ const Navigation = () => {
                         </>
                     ) : (
                         <>
-                            <Link to="/register" className="hover:underline">{t('register')}</Link>
-                            <Link to="/login" className="hover:underline">{t('login')}</Link>
+                            <Link to="/register" className="hover:underline"><FontAwesomeIcon icon={faUserPlus} />{t('register')}</Link>
+                            <Link to="/login" className="hover:underline"><FontAwesomeIcon icon={faSignInAlt} />{t('login')}</Link>
                         </>
                     )}
                      <div className="ml-4 border-l pl-4 border-gray-600">
                         <button onClick={() => changeLanguage('en')} className={`px-2 py-1 text-sm rounded ${i18n.language.startsWith('en') ? 'bg-white text-gray-800' : ''}`}>EN</button>
                         <button onClick={() => changeLanguage('ar')} className={`px-2 py-1 text-sm rounded ${i18n.language === 'ar' ? 'bg-white text-gray-800' : ''}`}>AR</button>
                     </div>
+                     <ThemeSwitcher />
                 </nav>
 
                 <div className="md:hidden">

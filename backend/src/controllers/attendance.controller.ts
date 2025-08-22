@@ -1,5 +1,3 @@
-// src/controllers/attendance.controller.ts
-
 import { Request, Response } from 'express';
 import Attendance from '../models/Attendance.model';
 import Circle from '../models/Circle.model';
@@ -69,6 +67,21 @@ export const getAttendanceForCircle = async (req: Request, res: Response) => {
             .populate('takenBy', 'username')
             .sort({ date: -1 }); // Sort by most recent date
         
+        res.status(200).json(attendanceRecords);
+    } catch (error: any) {
+        res.status(500).json({ message: 'Server Error', error: error.message });
+    }
+};
+
+// @desc    Get all attendance records on the platform
+// @route   GET /api/attendance
+// @access  Private (Admin)
+export const getAllAttendance = async (req: Request, res: Response) => {
+    try {
+        const attendanceRecords = await Attendance.find({})
+            .populate('circle', 'name')
+            .populate('takenBy', 'username')
+            .sort({ date: -1 });
         res.status(200).json(attendanceRecords);
     } catch (error: any) {
         res.status(500).json({ message: 'Server Error', error: error.message });

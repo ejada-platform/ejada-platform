@@ -6,12 +6,11 @@ import { protect, authorize } from '../middleware/auth.middleware';
 
 const router = express.Router();
 
-// Public route to get all resources
 router.route('/')
     .get(getResources)
-    .post(protect, authorize('Admin'), createResource); // Admin-only to create
+    // This is now a simple POST route again, without the upload middleware
+    .post(protect, authorize('Admin'), createResource);
 
-// Admin-only route to delete a specific resource
 router.route('/:id')
     .delete(protect, authorize('Admin'), deleteResource);
 
