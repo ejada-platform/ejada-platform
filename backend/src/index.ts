@@ -23,7 +23,7 @@ import calendarRoutes from './routes/calendar.routes';
 import parentRoutes from './routes/parent.routes';
 import resourceRoutes from './routes/resource.routes';
 import attendanceRoutes from './routes/attendance.routes';
-
+import badgeRoutes from './routes/badge.routes';    
 // --- SETUP ---
 dotenv.config();
 connectDB();
@@ -51,7 +51,7 @@ app.use('/api/resources', resourceRoutes);
 app.use('/api/attendance', attendanceRoutes);
 // --- THIS IS THE MISSING LINE ---
 app.use('/api/notifications', notificationRoutes);
-
+app.use('/api/badges', badgeRoutes);
 
 // --- SOCKET.IO CONNECTION LOGIC ---
 io.on('connection', (socket) => {

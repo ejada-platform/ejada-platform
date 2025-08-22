@@ -1,7 +1,7 @@
 import express from 'express';
-import { createCircle, getMyCircles, updateCircle, getAllCircles } from '../controllers/circle.controller';
+import { createCircle, getMyCircles, updateCircle, getAllCircles, getCircleById } from '../controllers/circle.controller';
 import { protect, authorize } from '../middleware/auth.middleware';
-
+//import { createCircle, getMyCircles, updateCircle, getAllCircles, getCircleById } from '../controllers/circle.controller';
 
 const router = express.Router();
 
@@ -16,6 +16,7 @@ router.route('/my-circles')
     .get(protect, getMyCircles); // We don't need authorize() here because the controller has the logic
 
 router.route('/:circleId')
+    .get(protect, authorize('Teacher', 'Admin'), getCircleById)
     .put(protect, authorize('Teacher', 'Admin'), updateCircle);
 
 export default router;

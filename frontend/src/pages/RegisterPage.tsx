@@ -11,13 +11,13 @@ import { Link } from 'react-router-dom';
 // Reusable component for the right-side branding panel
 const BrandingPanel = () => (
     <div className="hidden lg:flex w-1/2 flex-col items-center justify-center bg-gray-100 p-12 text-center">
-        <img src="/images/ejada-logo.png" alt="Ejada Logo" className="w-40 h-40 mb-6" />
-        <h2 className="text-3xl font-bold text-gray-800">Itqan Foundation</h2>
+        <img src="/images/logo.png" alt="Ejada Logo" className="w-40 h-40 mb-6" />
+        <h2 className="text-3xl font-bold text-gray-800">Ejadah Foundation</h2>
         <p className="text-gray-500">For Education And Development</p>
         <div className="mt-8 flex space-x-6">
-            <img src="/images/program-logo1.png" alt="Program 1" className="h-16" />
-            <img src="/images/program-logo2.png" alt="Program 2" className="h-16" />
-            <img src="/images/program-logo3.png" alt="Program 3" className="h-16" />
+            <img src="/images/program1.jpg" alt="Program 1" className="h-16" />
+            <img src="/images/program2.jpg" alt="Program 2" className="h-16" />
+            <img src="/images/program3.jpg" alt="Program 3" className="h-16" />
         </div>
     </div>
 );

@@ -11,7 +11,7 @@ import "slick-carousel/slick/slick-theme.css";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faWhatsapp, faInstagram, faYoutube, faFacebook } from '@fortawesome/free-brands-svg-icons';
 import { faPhone, faEnvelope } from '@fortawesome/free-solid-svg-icons'; 
-
+import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 // --- THIS IS THE NEW, SIMPLIFIED LIGHTBOX IMPORT ---
 import Lightbox from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css";
@@ -39,7 +39,15 @@ const HeroWithStats = () => {
     }, []);
 
     return (
-        <section className="relative bg-gray-700 text-white py-40 px-4 text-center">
+        <section 
+            className="relative bg-cover bg-center text-white py-40 px-4 text-center"
+            // --- THIS IS THE FINAL FIX ---
+            // It tells the component to use the image from your public folder as the background
+            style={{ backgroundImage: "url('/images/land.jpg')" }}
+        >
+            {/* This div adds a dark overlay, making the white text easier to read */}
+            <div className="absolute inset-0 bg-black opacity-60"></div>
+            
             <div className="relative z-10">
                 <h1 className="text-4xl md:text-6xl font-extrabold">{t('landing_page.hero_title')}</h1>
                 <p className="text-lg mt-4 max-w-3xl mx-auto text-gray-200">{t('landing_page.hero_subtitle')}</p>
@@ -176,32 +184,73 @@ const StarRating = ({ rating }: { rating: number }) => (
 );
 const TestimonialsSection = () => {
     const { t } = useTranslation();
+
+    // --- Custom, bigger arrow components ---
+    const NextArrow = (props: any) => {
+        const { onClick } = props;
+        return (
+            <button
+                className="absolute top-1/2 -right-4 md:-right-12 transform -translate-y-1/2 bg-white rounded-full h-12 w-12 flex items-center justify-center shadow-md z-10 text-primary hover:bg-gray-100 transition-colors"
+                onClick={onClick}
+                aria-label="Next testimonial"
+            >
+                <FontAwesomeIcon icon={faChevronRight} />
+            </button>
+        );
+    };
+
+    const PrevArrow = (props: any) => {
+        const { onClick } = props;
+        return (
+            <button
+                className="absolute top-1/2 -left-4 md:-left-12 transform -translate-y-1/2 bg-white rounded-full h-12 w-12 flex items-center justify-center shadow-md z-10 text-primary hover:bg-gray-100 transition-colors"
+                onClick={onClick}
+                aria-label="Previous testimonial"
+            >
+                <FontAwesomeIcon icon={faChevronLeft} />
+            </button>
+        );
+    };
+
+    const settings = {
+        dots: true,
+        infinite: true,
+        speed: 500,
+        slidesToShow: 1,
+        slidesToScroll: 1,
+        autoplay: true,
+        autoplaySpeed: 5000,
+        arrows: true,
+        nextArrow: <NextArrow />,
+        prevArrow: <PrevArrow />,
+    };
+
+    const testimonials = [
+        { quote: "The best institution I have known. I recommend that anyone who wants to learn to read and write Arabic and recite the Holy Quran enroll here.", author: "Oussama", rating: 5 },
+        { quote: "May Allah bless you and your efforts. The follow-up is very good, and the teacher's teaching and style are distinctive. Thank you very much.", author: "Yamoussa Soumah", rating: 5 },
+        { quote: "When we came to Turkey, I was afraid for our children... an institute that teaches Syrian children the Quran... May God reward you.", author: "Hamza Ali", rating: 5 },
+        { quote: "A truly blessed initiative that has helped my family connect with the Quran in a profound way. The teachers are patient and knowledgeable.", author: "Bilal Ibn Talib", rating: 5 }
+    ];
+
     return (
         <section className="py-20 bg-white">
-            <div className="max-w-6xl mx-auto px-4">
+            <div className="max-w-4xl mx-auto px-10 relative">
                 <h2 className="text-4xl font-bold text-center mb-12">{t('landing_page.testimonials_title')}</h2>
-                <div className="grid md:grid-cols-3 gap-8">
-                    <div className="bg-gray-50 p-8 rounded-lg shadow-lg">
-                        <p className="text-gray-600 italic">"The best institution I have known. I recommend that anyone who wants to learn to read and write Arabic and recite the Holy Quran enroll here."</p>
-                        <p className="mt-4 font-bold text-right">- Oussama</p>
-                        <div className="mt-2"><StarRating rating={5} /></div>
-                    </div>
-                    <div className="bg-gray-50 p-8 rounded-lg shadow-lg">
-                        <p className="text-gray-600 italic">"May Allah bless you and your efforts. The follow-up is very good, and the teacher's teaching and style are distinctive. Thank you very much."</p>
-                        <p className="mt-4 font-bold text-right">- Yamoussa Soumah</p>
-                        <div className="mt-2"><StarRating rating={5} /></div>
-                    </div>
-                     <div className="bg-gray-50 p-8 rounded-lg shadow-lg">
-                        <p className="text-gray-600 italic">"When we came to Turkey, I was afraid for our children... an institute that teaches Syrian children the Quran... May God reward you."</p>
-                        <p className="mt-4 font-bold text-right">- Hamza Ali</p>
-                        <div className="mt-2"><StarRating rating={5} /></div>
-                    </div>
-                </div>
+                <Slider {...settings}>
+                    {testimonials.map((testimonial, index) => (
+                        <div key={index} className="px-4">
+                            <div className="bg-gray-50 p-8 rounded-lg shadow-lg h-full flex flex-col text-center min-h-[250px] justify-center">
+                                <p className="text-gray-600 italic text-lg flex-grow">"{testimonial.quote}"</p>
+                                <p className="mt-4 font-bold">- {testimonial.author}</p>
+                                <div className="mt-2"><StarRating rating={testimonial.rating} /></div>
+                            </div>
+                        </div>
+                    ))}
+                </Slider>
             </div>
         </section>
     );
 };
-
 // --- Section 6: Contact Form ---
 const ContactSection = () => {
     const { t } = useTranslation();

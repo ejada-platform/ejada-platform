@@ -28,10 +28,15 @@ import UserManagementPage from './pages/admin/UserManagementPage';
 import ManageLibraryPage from './pages/admin/ManageLibraryPage';
 import ManageBadgesPage from './pages/admin/ManageBadgesPage';
 import AdminDashboardPage from './pages/admin/AdminDashboardPage';
+import AttendanceHistoryPage from './pages/admin/AttendanceHistoryPage';
+import AttendanceOverviewPage from './pages/teacher/AttendanceOverviewPage';
+
+//import TeacherAttendancePage from './pages/admin/TeacherAttendancePage';
 // Teacher Pages
+
 import EditCirclePage from './pages/teacher/EditCirclePage';
 import CreateAssignmentPage from './pages/teacher/CreateAssignmentPage';
-import TakeAttendancePage from './pages/teacher/TakeAttendancePage';
+//import TakeAttendancePage from './pages/teacher/TakeAttendancePage;
 // Import components
 import ProtectedRoute from './components/ProtectedRoute';
 import NotificationBell from './components/NotificationBell';
@@ -114,6 +119,7 @@ const Navigation = () => {
                             {user.role === 'Admin' && <Link to="/admin/users" className="hover:underline">{t('manage_users')}</Link>}
                             {user.role === 'Admin' && <Link to="/admin/library" className="hover:underline">{t('manage_library')}</Link>}
                             {user.role === 'Admin' && <Link to="/admin/badges" className="hover:underline">{t('manage_badges')}</Link>}
+                            {user.role === 'Admin' && <Link to="/admin/attendance-overview" className="font-bold hover:underline">{t('teacher_attendance')}</Link>}
                             {(user.role === 'Teacher' || user.role === 'Admin') && <Link to="/teacher/create-assignment" className="hover:underline">{t('create_assignment')}</Link>}
                             {(user.role === 'Teacher' || user.role === 'Admin') && <Link to="/teacher/work-logs" className="font-bold hover:underline">{t('my_work_logs')}</Link>}
                             {(user.role === 'Teacher' || user.role === 'Admin') && <Link to="/curriculum" className="hover:underline">{t('curriculum')}</Link>}
@@ -232,7 +238,7 @@ function App() {
                 <Route path="/teacher/create-assignment" element={<ProtectedRoute allowedRoles={['Teacher', 'Admin']}><CreateAssignmentPage /></ProtectedRoute>} />
                 <Route path="/teacher/work-logs" element={<ProtectedRoute allowedRoles={['Teacher', 'Admin']}><MyWorkLogsPage /></ProtectedRoute>} />
                 <Route path="/teacher/edit-circle/:circleId" element={<ProtectedRoute allowedRoles={['Teacher', 'Admin']}><EditCirclePage /></ProtectedRoute>} />
-                <Route path="/teacher/attendance/:circleId" element={<ProtectedRoute allowedRoles={['Teacher', 'Admin']}><TakeAttendancePage /></ProtectedRoute>} />
+                
                 
                 {/* Admin Routes */}
                 <Route path="/dashboard" element={<ProtectedRoute allowedRoles={['Student', 'Teacher', 'Admin', 'Parent']}><HomeRouter /></ProtectedRoute>} />
@@ -242,7 +248,18 @@ function App() {
                 <Route path="/admin/library" element={<ProtectedRoute allowedRoles={['Admin']}><ManageLibraryPage /></ProtectedRoute>} />
                 <Route path="/admin/badges" element={<ProtectedRoute allowedRoles={['Admin']}><ManageBadgesPage /></ProtectedRoute>} />
                 <Route path="/calendar" element={<AcademicCalendarPage />} />
-
+                 <Route
+                    path="/admin/attendance-overview"
+                    element={
+                        <ProtectedRoute allowedRoles={['Admin']}>
+                            <AttendanceOverviewPage />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/admin/attendance/:circleId"
+                    element={<ProtectedRoute allowedRoles={['Admin']}><AttendanceHistoryPage /></ProtectedRoute>}
+                />
             </Routes>
         </main>
          <ScrollToTopButton />

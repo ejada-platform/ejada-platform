@@ -85,3 +85,17 @@ export const getAllCircles = async (req: Request, res: Response) => {
         res.status(500).json({ message: 'Server Error', error: error.message });
     }
 };
+export const getCircleById = async (req: Request, res: Response) => {
+    try {
+        const circle = await Circle.findById(req.params.circleId)
+            .populate('students', 'username _id'); // We need the student IDs and usernames
+            
+        if (!circle) {
+            return res.status(404).json({ message: 'Circle not found' });
+        }
+        // We can add a security check here to ensure the user is the teacher or an admin
+        res.status(200).json(circle);
+    } catch (error: any) {
+        res.status(500).json({ message: 'Server Error', error: error.message });
+    }
+};
