@@ -161,13 +161,32 @@ const MyCirclesPage = () => {
                             {user?.role === 'Student' && (
                             <div className="mt-4">
                                 {circle.teacher && (
-                                    <p><strong>{t('my_circles_page.teacher_label')}</strong> {circle.teacher.username}</p>
+                                    <p className="text-gray-700 mb-4">
+                                        <strong>{t('my_circles_page.teacher_label')}</strong> {circle.teacher.username}
+                                    </p>
                                 )}
+
                                 {circle.liveClassUrl ? (
-                                    <a href={circle.liveClassUrl} /* ... */>
-                                        {t('my_circles_page.join_class_button')}
+                                    <a
+                                        href={circle.liveClassUrl}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="block bg-gradient-to-r from-blue-500 to-indigo-600 text-white p-4 rounded-lg shadow-md hover:shadow-lg transform hover:-translate-y-1 transition-all duration-300"
+                                    >
+                                        <div className="flex items-center justify-between">
+                                            <div>
+                                                <p className="font-bold text-lg">{t('my_circles_page.join_class_button')}</p>
+                                                <p className="text-sm opacity-90">Your lesson is waiting!</p>
+                                            </div>
+                                            {/* Play Icon */}
+                                            <div className="text-3xl">
+                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" viewBox="0 0 20 20" fill="currentColor">
+                                                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
+                                                </svg>
+                                            </div>
+                                        </div>
                                     </a>
-                                ) : (
+                                )  : (
                                     <p>{t('my_circles_page.no_link_message')}</p>
                                 )}
                             </div>
@@ -191,7 +210,7 @@ const MyCirclesPage = () => {
                                                             <span>{student.username}</span>
                                                             <button
                                                                 onClick={() => handleEvaluateClick(student._id)}
-                                                                className="px-3 py-1 bg-gray-200 text-gray-800 text-sm rounded hover:bg-gray-300"
+                                                                className="px-3 py-1 bg-blue-500 text-gray-800 text-sm rounded hover:bg-blue-500"
                                                             >
                                                                 {evaluatingStudentId === student._id ?  t('my_circles_page.close_button') : t('my_circles_page.evaluate_button')}
                                                             </button>

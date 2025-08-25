@@ -131,7 +131,7 @@ const CoursesSection = () => {
         <section className="py-16 bg-white">
             <div className="max-w-6xl mx-auto px-4">
                 <h2 className="text-4xl font-bold text-center mb-12">{t('landing_page.programs.title')}</h2>
-                <div className="grid md:grid-cols-3 gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                     {courses.map((course, i) => (
                         <div key={i} className="bg-white border border-gray-200 rounded-lg shadow-lg text-center p-6">
                             <img src={course.img} alt={t(course.titleKey)} className="w-full h-40 object-cover rounded-md mb-4" />
@@ -150,7 +150,7 @@ const VisionMissionSection = () => {
     const { t } = useTranslation();
     return(
         <section className="py-20 bg-gray-50">
-            <div className="max-w-6xl mx-auto px-4 grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="max-w-6xl mx-auto px-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
                 <div className="border border-gray-200 p-6 rounded-lg text-center bg-white shadow">
                     <div className="text-4xl mb-4">✉️</div>
                     <h3 className="text-xl font-bold">{t('landing_page.vision.message_title')}</h3>
@@ -282,7 +282,7 @@ return(
         <section className="py-20 bg-gray-50">
             <div className="max-w-6xl mx-auto px-4">
                  <h2 className="text-4xl font-bold text-center mb-12">{t('landing_page.contact.title')}</h2>
-                 <div className="grid md:grid-cols-2 gap-8 items-center bg-white p-8 rounded-lg shadow-xl">
+                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center bg-white p-8 rounded-lg shadow-xl">
                     {/* Left side: Form */}
                     <form onSubmit={handleSubmit}>
                         <div className="grid md:grid-cols-2 gap-4">
@@ -299,14 +299,14 @@ return(
                     <div className="text-center">
                         <img src="/images/contact.png" alt="Contact Us" className="rounded-lg shadow-md mb-6 w-full object-cover h-64" />
                         <div className="space-y-4">
-                            <div className="flex items-center justify-center gap-3 text-lg">
+                            <a href="tel:+90 531 705 5332" className="flex items-center justify-center gap-3 text-lg text-gray-800 hover:text-primary transition-colors">
                                 <FontAwesomeIcon icon={faPhone} className="text-primary"/>
                                 <span>+90 531 705 5332</span>
-                            </div>
-                            <div className="flex items-center justify-center gap-3 text-lg">
+                            </a>
+                            <a href="mailto:info@ejadah.com" className="flex items-center justify-center gap-3 text-lg text-gray-800 hover:text-primary transition-colors">
                                 <FontAwesomeIcon icon={faEnvelope} className="text-primary"/>
                                 <span>info@ejadah.com</span>
-                            </div>
+                            </a>
                         </div>
                     </div>
                  </div>
@@ -320,10 +320,10 @@ const Footer = () => {
     const { t } = useTranslation();
     return (
          <footer className="bg-gray-900 text-white pt-16 pb-8">
-            <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8 text-center md:text-left px-4">
+            <div className="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 text-center md:text-left px-4">
                 {/* Column 1: About */}
                 <div>
-                    <h3 className="text-xl font-bold mb-4">Ejada</h3>
+                    <h3 className="text-xl font-bold mb-4">Ejadah</h3>
                     <p className="text-gray-400">{t('landing_page.footer_about')}</p>
                 </div>
                 {/* Column 2: Pages */}
