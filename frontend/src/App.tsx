@@ -161,6 +161,7 @@ const Navigation = () => {
                             {user.role === 'Student' && <Link to="/my-progress" onClick={handleLinkClick} className="block px-2 py-1 hover:bg-gray-700 rounded font-bold">{t('my_progress')}</Link>}
                             {(user.role === 'Student' || user.role === 'Teacher') && <Link to="/my-circles" onClick={handleLinkClick} className="block px-2 py-1 hover:bg-gray-700 rounded">{t('my_circles')}</Link>}
                             
+                            {user.role === 'Admin' && <Link to="/admin/attendance-overview" onClick={handleLinkClick} className="block px-2 py-1 hover:bg-gray-700 rounded">{t('teacher_attendance')}</Link>}
                             {user.role === 'Admin' && <Link to="/admin/create-circle" onClick={handleLinkClick} className="block px-2 py-1 hover:bg-gray-700 rounded">{t('create_circle')}</Link>}
                             {user.role === 'Admin' && <Link to="/admin/users" onClick={handleLinkClick} className="block px-2 py-1 hover:bg-gray-700 rounded">{t('manage_users')}</Link>}
                             {user.role === 'Admin' && <Link to="/admin/library" onClick={handleLinkClick} className="block px-2 py-1 hover:bg-gray-700 rounded">{t('manage_library')}</Link>}
