@@ -14,9 +14,9 @@ export interface IUser extends Document {
     children?: Types.ObjectId[];
     resetPasswordToken?: string;
     resetPasswordExpire?: Date;
+    studentProfile?: Types.ObjectId; // <-- The new link to the detailed profile
 }
 
-// THIS IS THE CORRECTED SCHEMA
 const UserSchema: Schema<IUser> = new Schema({
     username: { type: String, required: true, unique: true },
     email: {
@@ -34,7 +34,6 @@ const UserSchema: Schema<IUser> = new Schema({
     isFeatured: {
         type: Boolean,
         default: false,
-        required: false // Explicitly state it's not required
     },
     children: [{
         type: mongoose.Schema.Types.ObjectId,
@@ -42,6 +41,10 @@ const UserSchema: Schema<IUser> = new Schema({
     }],
     resetPasswordToken: String,
     resetPasswordExpire: Date,
+    studentProfile: { // <-- The new field in the schema
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'StudentProfile'
+    }
 }, {
     timestamps: true,
     strict: false 

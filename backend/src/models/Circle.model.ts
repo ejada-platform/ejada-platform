@@ -1,10 +1,11 @@
+// src/models/Circle.model.ts
+
 import mongoose, { Schema, Document } from 'mongoose';
 
 interface IScheduleEntry {
     day: 'Sunday' | 'Monday' | 'Tuesday' | 'Wednesday' | 'Thursday' | 'Friday' | 'Saturday';
-    time: string; // e.g., "17:00" in 24-hour format
+    time: string;
 }
-
 
 export interface ICircle extends Document {
     name: string;
@@ -13,6 +14,7 @@ export interface ICircle extends Document {
     students: mongoose.Schema.Types.ObjectId[];
     liveClassUrl?: string;
     schedule?: IScheduleEntry[];
+    program: 'Reading <7' | 'Reading 7+' | 'Reciting' | 'Memorizing';
 }
 
 const CircleSchema: Schema = new Schema({
@@ -37,17 +39,22 @@ const CircleSchema: Schema = new Schema({
         type: String,
         trim: true
     },
-    schedule: [{ // <-- ADD THIS NEW SCHEMA PROPERTY
+    schedule: [{
         day: {
             type: String,
             enum: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
             required: true
         },
         time: {
-            type: String, // Storing as a string like "17:00" is simple and effective
+            type: String,
             required: true
         }
-    }]
+    }],
+     program: {
+        type: String,
+        enum: ['Reading <7', 'Reading 7+', 'Reciting', 'Memorizing'],
+        required: true
+    }
 }, {
     timestamps: true
 });

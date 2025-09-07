@@ -49,7 +49,9 @@ app.use('/api/calendar', calendarRoutes);
 app.use('/api/parent', parentRoutes);
 app.use('/api/resources', resourceRoutes);
 app.use('/api/attendance', attendanceRoutes);
+import applicationRoutes from './routes/application.routes'; 
 // --- THIS IS THE MISSING LINE ---
+app.use('/api/applications', applicationRoutes)
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/badges', badgeRoutes);
 

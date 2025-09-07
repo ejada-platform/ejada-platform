@@ -1,6 +1,6 @@
 // src/utils/sendEmail.ts
-import nodemailer from 'nodemailer';
-
+//import nodemailer from 'nodemailer';
+/*
 const sendEmail = async (options: { email: string, subject: string, message: string }) => {
     const transporter = nodemailer.createTransport({
         host: process.env.EMAIL_HOST,
@@ -21,4 +21,4 @@ const sendEmail = async (options: { email: string, subject: string, message: str
     await transporter.sendMail(message);
 };
 
-export default sendEmail;
+export default sendEmail;*/

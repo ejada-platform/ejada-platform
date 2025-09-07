@@ -25,15 +25,16 @@ export const showErrorAlert = (title: string, text: string) => {
 };
 
 // A reusable function for a confirmation dialog (like for deleting)
-export const showConfirmationDialog = (title: string, text: string) => {
+// A reusable function for a confirmation dialog
+export const showConfirmationDialog = (title: string, text: string, confirmButtonText: string = 'Yes, do it!') => {
     return MySwal.fire({
         title: `<p>${title}</p>`,
         text: text,
         icon: 'warning',
         showCancelButton: true,
-        confirmButtonColor: '#d33',
-        cancelButtonColor: '#3085d6',
-        confirmButtonText: 'Yes, delete it!',
+        confirmButtonColor: '#3085d6', // Blue for confirm
+        cancelButtonColor: '#d33',   // Red for cancel
+        confirmButtonText: confirmButtonText,
         cancelButtonText: 'Cancel',
     });
 };

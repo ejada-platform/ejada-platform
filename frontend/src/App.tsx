@@ -7,7 +7,7 @@ import { faSignInAlt, faUserPlus, faSun, faMoon } from '@fortawesome/free-solid-
 
 
 // Import all pages
-import RegisterPage from './pages/RegisterPage';
+//import RegisterPage from './pages/RegisterPage';
 import LoginPage from './pages/LoginPage';
 import StudentDashboard from './pages/student/StudentDashboard';
 import TeacherDashboard from './pages/teacher/TeacherDashboard';
@@ -22,6 +22,8 @@ import SupportPage from './pages/SupportPage';
 import TutorialsPage from './pages/TutorialsPage';
 import AcademicCalendarPage from './pages/AcademicCalendarPage'; 
 import LandingPage from './pages/LandingPage';
+import EnrollmentPage from './pages/EnrollmentPage';
+import ApplicationReviewPage from './pages/admin/ApplicationReviewPage'; 
 // Admin Pages
 import CreateCirclePage from './pages/admin/CreateCirclePage';
 import UserManagementPage from './pages/admin/UserManagementPage';
@@ -120,6 +122,11 @@ const Navigation = () => {
                             {user.role === 'Admin' && <Link to="/admin/library" className="hover:underline">{t('manage_library')}</Link>}
                             {user.role === 'Admin' && <Link to="/admin/badges" className="hover:underline">{t('manage_badges')}</Link>}
                             {user.role === 'Admin' && <Link to="/admin/attendance-overview" className="font-bold hover:underline">{t('teacher_attendance')}</Link>}
+                            {user.role === 'Admin' && (
+        <>
+            <Link to="/admin/applications" className="font-bold hover:underline">Review Applications</Link>
+        </>
+    )}
                             {(user.role === 'Teacher' || user.role === 'Admin') && <Link to="/teacher/create-assignment" className="hover:underline">{t('create_assignment')}</Link>}
                             {(user.role === 'Teacher' || user.role === 'Admin') && <Link to="/teacher/work-logs" className="font-bold hover:underline">{t('my_work_logs')}</Link>}
                             {(user.role === 'Teacher' || user.role === 'Admin') && <Link to="/curriculum" className="hover:underline">{t('curriculum')}</Link>}
@@ -130,7 +137,7 @@ const Navigation = () => {
                         </>
                     ) : (
                         <>
-                            <Link to="/register" className="hover:underline"><FontAwesomeIcon icon={faUserPlus} />{t('register')}</Link>
+                            <Link to="/enroll" className="hover:underline"><FontAwesomeIcon icon={faUserPlus} />{t('register')}</Link>
                             <Link to="/login" className="hover:underline"><FontAwesomeIcon icon={faSignInAlt} />{t('login')}</Link>
                         </>
                     )}
@@ -177,7 +184,7 @@ const Navigation = () => {
                         </>
                     ) : (
                         <div className="border-t border-gray-700 mt-2 pt-2">
-                            <Link to="/register" onClick={handleLinkClick} className="block px-2 py-1 hover:bg-gray-700 rounded">{t('register')}</Link>
+                            <Link to="/enroll" onClick={handleLinkClick} className="block px-2 py-1 hover:bg-gray-700 rounded">{t('register')}</Link>
                             <Link to="/login" onClick={handleLinkClick} className="block px-2 py-1 hover:bg-gray-700 rounded">{t('login')}</Link>
                         </div>
                     )}
@@ -219,8 +226,8 @@ function App() {
                 <Route path="/forgot-password" element={<ForgotPasswordPage />} />
                     <Route path="/reset-password/:resetToken" element={<ResetPasswordPage />} />
                 <Route path="/" element={<LandingPage />} />
-                <Route path="/register" element={<RegisterPage />} />
                 <Route path="/login" element={<LoginPage />} />
+                <Route path="/enroll" element={<EnrollmentPage />} />
                 <Route path="/library" element={<DigitalLibraryPage />} />
                 <Route path="/support" element={<SupportPage />} />
                 <Route path="/tutorials" element={<TutorialsPage />} />
@@ -261,7 +268,16 @@ function App() {
                     path="/admin/attendance/:circleId"
                     element={<ProtectedRoute allowedRoles={['Admin']}><AttendanceHistoryPage /></ProtectedRoute>}
                 />
+                <Route
+                    path="/admin/applications"
+                    element={
+                        <ProtectedRoute allowedRoles={['Admin']}>
+                            <ApplicationReviewPage />
+                        </ProtectedRoute>
+                    }
+                />
             </Routes>
+            
         </main>
          <ScrollToTopButton />
     </Router>
