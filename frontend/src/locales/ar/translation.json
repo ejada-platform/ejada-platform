@@ -169,13 +169,24 @@
             "delete_success_text": "لقد تم حذف المستخدم.",
             "delete_error_title": "خطأ!",
             "delete_error_text": "فشل حذف المستخدم." },
-        "manage_library": { "add_title": "إضافة مصدر جديد", "title_label": "العنوان", "url_label": "رابط المصدر", "category_label": "الفئة", "description_label": "الوصف", "submit_button": "إضافة المصدر", "existing_title": "إدارة المصادر الحالية", "delete_button": "حذف", "success_add": "تمت إضافة المصدر بنجاح!", "success_delete": "تم حذف المصدر بنجاح.","delete_button": "حذف",
+        "manage_library": {
+            "add_title": "إضافة مصدر جديد",
+            "title_label": "العنوان",
+            "upload_file_label": "رفع ملف (PDF، إلخ)",
+            "price_label": "السعر ($) - ضع 0 للقراءة المجانية",
+            "category_label": "الفئة",
+            "description_label": "الوصف",
+            "submit_button": "إضافة المصدر",
+            "existing_title": "إدارة المصادر الحالية",
+            "delete_button": "حذف",
+            "success_add": "تمت إضافة المصدر بنجاح!",
             "delete_confirm_title": "هل أنت متأكد؟",
             "delete_confirm_text": "سيتم حذف هذا المصدر بشكل دائم.",
             "delete_success_title": "تم الحذف!",
             "delete_success_text": "لقد تم حذف المصدر.",
             "delete_error_title": "خطأ!",
-            "delete_error_text": "فشل حذف المصدر." },
+            "delete_error_text": "فشل حذف المصدر."
+        },
         "manage_badges": { "add_title": "إنشاء شارة جديدة", "name_label": "اسم الشارة", "icon_url_label": "رابط الأيقونة", "description_label": "الوصف", "submit_button": "إنشاء الشارة", "existing_title": "الشارات المتاحة", "success_message": "تم إنشاء الشارة بنجاح!" }
     },
     "digital_library_page": {

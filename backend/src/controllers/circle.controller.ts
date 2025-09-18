@@ -1,9 +1,20 @@
 import { Request, Response } from 'express'; 
 import Circle, { ICircle } from '../models/Circle.model';
 
+export const getAllCircles = async (req: Request, res: Response) => {
+    try {
+        const circles = await Circle.find({})
+            .populate('teacher', 'username')
+            .populate('students', 'username');
+        res.status(200).json(circles);
+    } catch (error: any) {
+        res.status(500).json({ message: 'Server Error', error: error.message });
+    }
+};
+
 export const createCircle = async (req: Request, res: Response) => {
     // Admins will provide the name, teacher ID, and an array of student IDs
-    const { name, description, teacher, students, liveClassUrl, schedule } = req.body;
+    const { name, description, teacher, students, liveClassUrl, schedule, program } = req.body;
 
     try {
         const circle = await Circle.create({
@@ -12,7 +23,8 @@ export const createCircle = async (req: Request, res: Response) => {
             teacher,
             students,
             liveClassUrl,
-            schedule // <-- Include the schedule in the circle creation
+            schedule,// <-- Include the schedule in the circle creation
+            program
         });
         res.status(201).json(circle);
     } catch (error: any) {
@@ -75,16 +87,7 @@ export const updateCircle = async (req: Request, res: Response) => {
     }
 };
 
-export const getAllCircles = async (req: Request, res: Response) => {
-    try {
-        const circles = await Circle.find({})
-            .populate('teacher', 'username')
-            .populate('students', 'username');
-        res.status(200).json(circles);
-    } catch (error: any) {
-        res.status(500).json({ message: 'Server Error', error: error.message });
-    }
-};
+
 export const getCircleById = async (req: Request, res: Response) => {
     try {
         const circle = await Circle.findById(req.params.circleId)

@@ -5,6 +5,7 @@ export interface IAssignment extends Document {
     description: string;
     dueDate?: Date;
     circle: mongoose.Schema.Types.ObjectId; // Link to the Educational Circle
+    assignedTo: mongoose.Schema.Types.ObjectId[];
     createdBy: mongoose.Schema.Types.ObjectId; // Link to the Teacher who created it
 }
 
@@ -26,6 +27,11 @@ const AssignmentSchema: Schema = new Schema({
         ref: 'Circle',
         required: true
     },
+    assignedTo: [{ // The new array of student User IDs
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    }],
     createdBy: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',

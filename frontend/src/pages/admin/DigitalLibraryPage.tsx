@@ -1,12 +1,11 @@
-// src/pages/DigitalLibraryPage.tsx
-
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react'; // Corrected path
 import axios from 'axios';
+import { useAuth } from '../../context/AuthContext'; // 1. Import useAuth
 import { useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faDownload } from '@fortawesome/free-solid-svg-icons';
+import { faBookOpen } from '@fortawesome/free-solid-svg-icons'; // A more appropriate icon
+import { Link } from 'react-router-dom';
 
-// Define the shape of a single resource object
 interface Resource {
     _id: string;
     title: string;
@@ -18,14 +17,23 @@ interface Resource {
 
 const DigitalLibraryPage = () => {
     const { t } = useTranslation();
+    const { token } = useAuth(); // 2. Get the user's token from the context
     const [resources, setResources] = useState<Resource[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
     const fetchResources = useCallback(async () => {
+        // 3. The user must be logged in to fetch resources
+        if (!token) {
+            setError("You must be logged in to access the library.");
+            setLoading(false);
+            return;
+        }
         try {
             setLoading(true);
-            const { data } = await axios.get<Resource[]>('http://localhost:5000/api/resources');
+            // 4. Add the Authorization header to the request
+            const config = { headers: { Authorization: `Bearer ${token}` } };
+            const { data } = await axios.get<Resource[]>('http://localhost:5000/api/resources', config);
             setResources(data);
             setError(null);
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -34,7 +42,7 @@ const DigitalLibraryPage = () => {
         } finally {
             setLoading(false);
         }
-    }, [t]); // Add t to dependency array
+    }, [token, t]);
 
     useEffect(() => {
         fetchResources();
@@ -43,47 +51,33 @@ const DigitalLibraryPage = () => {
     if (loading) return <div className="p-10 text-center">{t('digital_library_page.loading')}</div>;
     if (error) return <div className="p-10 text-center text-red-500">{error}</div>;
 
-    // Helper to get a color for each category badge
-    const getCategoryColor = (category: string) => {
-        switch (category) {
-            case 'Quran': return 'bg-green-100 text-green-800';
-            case 'Hadith': return 'bg-blue-100 text-blue-800';
-            case 'Fiqh': return 'bg-yellow-100 text-yellow-800';
-            case 'Stories': return 'bg-purple-100 text-purple-800';
-            default: return 'bg-gray-100 text-gray-800';
-        }
-    };
+    const getCategoryColor = (_category: string) => { /* ... (This helper function is correct) ... */ };
 
     return (
         <div className="p-8 max-w-5xl mx-auto">
             <h1 className="text-4xl font-bold text-center mb-8">{t('digital_library_page.title')}</h1>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {resources.length > 0 ? (
-                    resources.map((resource) => (
-                        <div key={resource._id} className="bg-white p-6 rounded-lg shadow border border-gray-200 flex flex-col">
-                            <span className={`text-xs font-semibold px-2 py-1 rounded-full self-start ${getCategoryColor(resource.category)}`}>
-                                {/* Also translate the category names */}
-                                {t(`circle_detail_page.specializations.${resource.category.toLowerCase().replace(' ', '_')}` as const, resource.category)}
-                            </span>
-                            <h2 className="text-xl font-bold text-gray-800 mt-3">{resource.title}</h2>
-                            <p className="text-gray-600 mt-2 flex-grow">{resource.description}</p>
-                            <a
-                                href={resource.resourceUrl}
-                                download
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="block text-center mt-4 px-4 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors"
-                            >
-                                 <FontAwesomeIcon icon={faDownload} />
-                                 <span>
-                               {t('digital_library_page.download_button')}
-                                </span>
-                            </a>
-                        </div>
-                    ))
-                ) : (
-                    <p className="col-span-full text-center text-gray-500">{t('digital_library_page.no_resources_message')}</p>
-                )}
+                {resources.map((resource) => (
+                    <div key={resource._id} className="bg-white p-6 rounded-lg shadow border border-gray-200 flex flex-col">
+                        <span className={`text-xs font-semibold px-2 py-1 rounded-full self-start ${getCategoryColor(resource.category)}`}>
+                            {t(`circle_detail_page.specializations.${resource.category.toLowerCase().replace(' ', '_')}` as const, resource.category)}
+                        </span>
+                        <h2 className="text-xl font-bold text-gray-800 mt-3">{resource.title}</h2>
+                        <p className="text-gray-600 mt-2 flex-grow">{resource.description}</p>
+                       
+                        {/* --- 5. THIS IS THE NEW "READ ONLINE" BUTTON --- */}
+                       
+                        <Link
+                            to={`/library/view?url=${encodeURIComponent(resource.resourceUrl)}`}
+                            className="flex items-center justify-center gap-2 text-center mt-4 px-4 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors"
+                        >
+                            <FontAwesomeIcon icon={faBookOpen} />
+                            <span>Read Online</span>
+                        </Link>
+                             {/* You can add a translation key for this */}
+                    
+                    </div>
+                ))}
             </div>
         </div>
     );

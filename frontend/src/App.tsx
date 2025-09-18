@@ -33,13 +33,11 @@ import AdminDashboardPage from './pages/admin/AdminDashboardPage';
 import AttendanceHistoryPage from './pages/admin/AttendanceHistoryPage';
 import AttendanceOverviewPage from './pages/teacher/AttendanceOverviewPage';
 
-//import TeacherAttendancePage from './pages/admin/TeacherAttendancePage';
-// Teacher Pages
 
 import EditCirclePage from './pages/teacher/EditCirclePage';
 import CreateAssignmentPage from './pages/teacher/CreateAssignmentPage';
-//import TakeAttendancePage from './pages/teacher/TakeAttendancePage;
-// Import components
+import BookViewerPage from './pages/BookViewerPage';
+
 import ProtectedRoute from './components/ProtectedRoute';
 import NotificationBell from './components/NotificationBell';
 import ScrollToTopButton from './components/ScrollToTopButton';
@@ -275,6 +273,10 @@ function App() {
                             <ApplicationReviewPage />
                         </ProtectedRoute>
                     }
+                />
+                <Route 
+                    path="/library/view" 
+                    element={<ProtectedRoute allowedRoles={['Student', 'Teacher', 'Admin', 'Parent']}><BookViewerPage /></ProtectedRoute>} 
                 />
             </Routes>
             

@@ -1,8 +1,6 @@
-// src/controllers/resource.controller.ts
-
 import { Request, Response } from 'express';
 import Resource from '../models/Resource.model';
-
+import cloudinary from '../config/cloudinary';
 // @desc    Get all resources
 // @route   GET /api/resources
 // @access  Public
@@ -20,20 +18,58 @@ export const getResources = async (req: Request, res: Response) => {
 // @access  Private (Admin)
 export const createResource = async (req: Request, res: Response) => {
     const admin = req.user!;
-    // We now expect the resourceUrl directly from the form body
-    const { title, description, resourceUrl, category } = req.body;
+    const { title, description, category, price } = req.body;
+
+    if (!req.file) {
+        return res.status(400).json({ message: 'Please upload a file' });
+    }
+    const fileToUpload = req.file;
 
     try {
+        // --- THIS IS THE NEW, SAFER UPLOAD LOGIC ---
+        const result = await new Promise<{ secure_url?: string; error?: any }>((resolve, reject) => {
+            const uploadStream = cloudinary.uploader.upload_stream(
+                { 
+                    upload_preset: "ejada_public",
+                    resource_type: "auto",
+                },
+                // This is the standard callback format for this library
+                (error, result) => {
+                    if (error) {
+                        // If Cloudinary itself sends an error (like file size), reject the promise
+                        return reject(error);
+                    }
+                    // If successful, resolve with the result
+                    resolve(result as any);
+                }
+            );
+            uploadStream.end(fileToUpload.buffer);
+        });
+        
+        // After the promise, we check again to be absolutely sure we have a URL
+        if (!result || !result.secure_url) {
+            throw new Error('Cloudinary upload did not return a secure URL.');
+        }
+        // --- END OF NEW LOGIC ---
+
         const resource = await Resource.create({
             title,
             description,
-            resourceUrl, // Use the URL provided by the Admin
             category,
+            resourceUrl: result.secure_url,
+            price: parseFloat(price) || 0,
             createdBy: admin._id,
         });
+
         res.status(201).json(resource);
+
     } catch (error: any) {
-        res.status(400).json({ message: 'Failed to create resource', error: error.message });
+        console.error("!!! UPLOAD FAILED, REASON:", error);
+        // Now, we can catch the specific error from Cloudinary
+        if (error && error.message && error.message.includes('File size too large')) {
+            return res.status(400).json({ message: 'File size is too large for the free plan.' });
+        }
+        res.status(400).json({ message: 'Failed to create resource. Please try again.' });
     }
 };
 

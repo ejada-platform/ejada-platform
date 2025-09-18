@@ -30,8 +30,8 @@ const tailwindConfig: Config = {
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
-    // 3. Pass the correctly typed configuration object to the plugin
-    tailwindcss(tailwindConfig),
+    // 3. Pass the correctly typed configuration object to the plugin. The tailwindcss plugin for Vite does not accept a configuration object directly.
+    tailwindcss(),
     react()
   ],
 })
