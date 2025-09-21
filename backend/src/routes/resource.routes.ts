@@ -2,7 +2,7 @@ import express from 'express';
 import { getResources, createResource, deleteResource } from '../controllers/resource.controller';
 import { protect, authorize } from '../middleware/auth.middleware';
 import upload from '../middleware/upload.middleware'; // Import upload
-
+import { proxyResource } from '../controllers/resource.controller';
 
 const router = express.Router();
 
@@ -13,5 +13,7 @@ router.route('/')
 
 router.route('/:id')
     .delete(protect, authorize('Admin'), deleteResource);
+
+router.get('/proxy', protect, proxyResource);
 
 export default router;

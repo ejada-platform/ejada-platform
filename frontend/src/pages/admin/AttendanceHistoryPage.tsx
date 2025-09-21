@@ -8,7 +8,7 @@ import { useAuth } from '../../context/AuthContext';
 interface AttendanceRecord {
     _id: string;
     date: string;
-    takenBy: { username: string };
+    takenBy: { username: string } | null; // It can be null
     records: { student: string, status: string }[];
 }
 
@@ -44,7 +44,13 @@ const AttendanceHistoryPage = () => {
                 {records.length > 0 ? records.map(record => (
                     <div key={record._id} className="bg-white p-4 rounded-lg shadow">
                         <p className="font-bold text-lg">{new Date(record.date).toLocaleDateString()}</p>
-                        <p className="text-sm text-gray-500">Taken by: {record.takenBy.username}</p>
+                        
+                        {/* --- THIS IS THE FIX --- */}
+                        {/* We check if 'takenBy' exists before trying to access its 'username' */}
+                        <p className="text-sm text-gray-500">
+                            Taken by: {record.takenBy ? record.takenBy.username : 'Unknown Teacher'}
+                        </p>
+                        
                         <p className="text-sm mt-2">
                             <span className="text-green-600 font-semibold">{record.records.filter(r => r.status === 'Present').length} Present</span>,{' '}
                             <span className="text-red-600 font-semibold">{record.records.filter(r => r.status === 'Absent').length} Absent</span>

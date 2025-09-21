@@ -1,67 +1,80 @@
-import React, { useState } from 'react';
-import { useLocation } from 'react-router-dom';
-import { Document, Page, pdfjs } from 'react-pdf';
-import 'react-pdf/dist/Page/AnnotationLayer.css';
-import 'react-pdf/dist/Page/TextLayer.css';
+// src/pages/BookViewerPage.tsx
 
-// --- THIS IS THE FINAL, CORRECTED WORKER CONFIGURATION ---
-// We now point to the local file that our new Vite plugin provides.
-pdfjs.GlobalWorkerOptions.workerSrc = 'pdf.worker.min.js';
+import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import axios from 'axios';
 
 const BookViewerPage = () => {
     const location = useLocation();
+    const { token } = useAuth();
     const bookUrl = new URLSearchParams(location.search).get('url');
 
-    const [numPages, setNumPages] = useState<number | null>(null);
-    const [pageNumber, setPageNumber] = useState(1);
+    const [pdfSrc, setPdfSrc] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
-    function onDocumentLoadSuccess({ numPages }: { numPages: number }) {
-        setNumPages(numPages);
-        setLoading(false);
-    }
-    
-    function onDocumentLoadError(error: Error) {
-        let friendlyError = `Error while loading PDF: ${error.message}.`;
-        if (bookUrl && !bookUrl.endsWith('.pdf')) {
-            friendlyError += " Please ensure the URL is a direct link to a .pdf file.";
-        }
-        setError(friendlyError);
-        setLoading(false);
+    useEffect(() => {
+        // This function will be called when the component mounts
+        const fetchPdf = async () => {
+            // We must wait to ensure the token is loaded from localStorage by the AuthContext
+            if (!token || !bookUrl) {
+                // If the token isn't ready yet, we wait. This effect will re-run when it is.
+                // If the bookUrl is missing, we show an error.
+                if (!bookUrl) setError("Cannot display PDF without a URL.");
+                setLoading(false);
+                return;
+            }
+
+            try {
+                setLoading(true);
+                const proxiedUrl = `http://localhost:5000/api/resources/proxy?url=${encodeURIComponent(bookUrl)}`;
+                
+                const response = await axios.get(proxiedUrl, {
+                    headers: { Authorization: `Bearer ${token}` },
+                    responseType: 'blob'
+                });
+
+                const localUrl = URL.createObjectURL(response.data as Blob);
+                setPdfSrc(localUrl);
+
+            } catch (err) {
+                setError("Failed to load the PDF document. The link may be invalid or you may not have permission.");
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchPdf();
+
+        // Cleanup function
+        return () => {
+            if (pdfSrc) {
+                URL.revokeObjectURL(pdfSrc);
+            }
+        };
+    }, [bookUrl, token]); // The key is to re-run this effect when the token becomes available
+
+    if (loading) {
+        return <div className="p-8 text-center">Loading document...</div>;
     }
 
-    if (!bookUrl) {
-        return <div className="p-8 text-center">Error: No book URL was provided.</div>;
+    if (error) {
+        return <div className="p-8 text-center text-red-500">{error}</div>;
     }
-
-    // We must provide a CORS proxy for Cloudinary URLs
-    const corsProxyUrl = `https://cors-anywhere.herokuapp.com/${bookUrl}`;
 
     return (
-        <div className="p-4 md:p-8 flex flex-col items-center bg-gray-100 min-h-screen">
-            {numPages && (
-                <div className="w-full max-w-4xl bg-white p-2 rounded-lg shadow-lg mb-4 flex items-center justify-center space-x-4 sticky top-24 z-10">
-                    <button onClick={() => setPageNumber(p => Math.max(1, p - 1))} disabled={pageNumber <= 1} className="px-4 py-2 bg-primary text-light rounded disabled:bg-gray-400">Previous</button>
-                    <p className="font-semibold">Page {pageNumber} of {numPages}</p>
-                    <button onClick={() => setPageNumber(p => Math.min(numPages, p + 1))} disabled={pageNumber >= numPages} className="px-4 py-2 bg-primary text-light rounded disabled:bg-gray-400">Next</button>
-                </div>
+        <div className="w-full h-screen">
+            {pdfSrc ? (
+                <embed 
+                    src={pdfSrc} 
+                    type="application/pdf" 
+                    width="100%" 
+                    height="100%" 
+                />
+            ) : (
+                <div className="p-8 text-center">Preparing document...</div>
             )}
-            
-            <div className="max-w-4xl w-full">
-                <Document
-                    file={corsProxyUrl} // Use the CORS proxy URL
-                    onLoadSuccess={onDocumentLoadSuccess}
-                    onLoadError={onDocumentLoadError}
-                    loading={<div className="text-center p-8">Loading document...</div>}
-                >
-                    <div className="flex justify-center shadow-lg">
-                        <Page pageNumber={pageNumber} width={Math.min(window.innerWidth * 0.9, 800)} />
-                    </div>
-                </Document>
-            </div>
-            
-            {error && <p className="text-red-500 mt-4">{error}</p>}
         </div>
     );
 };

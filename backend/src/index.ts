@@ -1,5 +1,3 @@
-// src/index.ts
-
 import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
@@ -24,6 +22,11 @@ import parentRoutes from './routes/parent.routes';
 import resourceRoutes from './routes/resource.routes';
 import attendanceRoutes from './routes/attendance.routes';
 import badgeRoutes from './routes/badge.routes';    
+import workLogRoutes from './routes/workLog.routes';
+import payrollRoutes from './routes/payroll.routes'; 
+//import certificatteRoutes from './routes/certificate.routes';
+ // The missing import
+
 // --- SETUP ---
 dotenv.config();
 connectDB();
@@ -50,10 +53,17 @@ app.use('/api/parent', parentRoutes);
 app.use('/api/resources', resourceRoutes);
 app.use('/api/attendance', attendanceRoutes);
 import applicationRoutes from './routes/application.routes'; 
+import certificateRoutes from './routes/certificate.routes';
+import checkoutRoutes from './routes/checkout.routes';
+
 // --- THIS IS THE MISSING LINE ---
 app.use('/api/applications', applicationRoutes)
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/badges', badgeRoutes);
+app.use('/api/worklogs', workLogRoutes);
+app.use('/api/certificates', certificateRoutes);
+app.use('/api/payroll', payrollRoutes);
+app.use('/api/checkout', checkoutRoutes);
 
 // --- SOCKET.IO CONNECTION LOGIC ---
 io.on('connection', (socket) => {

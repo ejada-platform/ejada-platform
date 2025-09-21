@@ -1,6 +1,8 @@
 import { Request, Response } from 'express';
 import Resource from '../models/Resource.model';
 import cloudinary from '../config/cloudinary';
+import fetch from 'node-fetch';
+
 // @desc    Get all resources
 // @route   GET /api/resources
 // @access  Public
@@ -86,5 +88,33 @@ export const deleteResource = async (req: Request, res: Response) => {
         res.status(200).json({ message: 'Resource removed successfully' });
     } catch (error: any) {
         res.status(500).json({ message: 'Server Error', error: error.message });
+    }
+};
+
+// @desc    Proxy a resource file to bypass CORS
+// @route   GET /api/resources/proxy
+// @access  Private
+export const proxyResource = async (req: Request, res: Response) => {
+    try {
+        const { url } = req.query;
+        if (!url || typeof url !== 'string') {
+            return res.status(400).send('URL is required');
+        }
+        
+        // Fetch the file from Cloudinary from our server
+        const resourceResponse = await fetch(url);
+        if (!resourceResponse.ok) {
+            return res.status(resourceResponse.status).send(resourceResponse.statusText);
+        }
+        
+        // Set the correct content type header
+        res.setHeader('Content-Type', resourceResponse.headers.get('content-type') || 'application/pdf');
+        
+        // Stream the file back to the user
+        resourceResponse.body.pipe(res);
+
+    } catch (error) {
+        console.error("Proxy Error:", error);
+        res.status(500).send('Failed to proxy resource');
     }
 };

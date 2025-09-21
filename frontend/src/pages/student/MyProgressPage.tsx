@@ -5,6 +5,8 @@ import axios from 'axios';
 import { useAuth } from '../../context/AuthContext';
 import StarStudent from '../../components/StartStudent';
 import { useTranslation } from 'react-i18next'; // 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCertificate } from '@fortawesome/free-solid-svg-icons';
 
 
 // --- Type Definitions for the data we expect from the API ---
@@ -22,11 +24,35 @@ interface StudentStats {
     totalSubmissions: number;
 }
 
+interface Certificate {
+    certificateUrl: string | undefined;
+    _id: string;
+    program: string;
+    issueDate: string;
+    awardedBy: { username: string };
+}
+
+const handleDownload = (url: string, filename: string) => {
+    axios.get(url, { responseType: 'blob' }) // Fetch the file as a binary blob
+        .then((res) => {
+            const href = window.URL.createObjectURL(res.data as Blob); // Explicitly type 'res.data' as 'Blob'
+            const link = document.createElement('a'); // Explicitly type 'res.data' as 'Blob'
+            link.href = href;
+            link.setAttribute('download', `${filename}.pdf`); // Set the filename for the download
+            document.body.appendChild(link); 
+            link.click();
+            document.body.removeChild(link);
+            window.URL.revokeObjectURL(href);
+        })
+        .catch(console.error);
+};
+
 const MyProgressPage = () => {
     const { t } = useTranslation();
     const { user, token } = useAuth();
     const [evaluations, setEvaluations] = useState<Evaluation[]>([]);
     const [stats, setStats] = useState<StudentStats | null>(null);
+    const [certificates, setCertificates] = useState<Certificate[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
@@ -41,9 +67,11 @@ const MyProgressPage = () => {
             const config = { headers: { Authorization: `Bearer ${token}` } };
             const evaluationsPromise = axios.get<Evaluation[]>(`http://localhost:5000/api/evaluations/student/${user._id}`, config);
             const statsPromise = axios.get<StudentStats>(`http://localhost:5000/api/stats/student/${user._id}`, config);
-            const [evaluationsResponse, statsResponse] = await Promise.all([evaluationsPromise, statsPromise]);
+            const certificatesPromise = axios.get<Certificate[]>(`http://localhost:5000/api/certificates/student/${user._id}`, config);
+            const [evaluationsResponse, statsResponse, certificatesResponse] = await Promise.all([evaluationsPromise, statsPromise, certificatesPromise]);
             setEvaluations(evaluationsResponse.data);
             setStats(statsResponse.data);
+            setCertificates(certificatesResponse.data);
             setError(null);
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (err: any) {
@@ -92,6 +120,35 @@ const MyProgressPage = () => {
                     </div>
                 </div>
             )}
+
+             {/* --- NEW CERTIFICATES SECTION --- */}
+             <h2 className="text-2xl font-bold mb-4 mt-8">My Certificates</h2>
+            {certificates.length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {certificates.map(cert => (
+                        <div key={cert._id} className="bg-white p-4 rounded-lg shadow border-l-4 border-yellow-400 flex items-center">
+                            <FontAwesomeIcon icon={faCertificate} className="text-5xl text-yellow-400 mr-4" />
+                            <div>
+                                <p className="font-bold text-lg">Certificate of Completion</p>
+                                <p className="font-semibold text-primary">{cert.program}</p>
+                                <p className="text-sm text-gray-500">Issued on: {new Date(cert.issueDate).toLocaleDateString()}</p>
+                            </div>
+
+                            <button 
+                                onClick={() => cert.certificateUrl && handleDownload(cert.certificateUrl, `Ejada_Certificate_${cert.program}`)}
+                                className="bg-green-500 text-white font-bold px-4 py-2 rounded hover:bg-green-600"
+                            >
+                                Download Certificate
+                            </button>
+
+                        </div>
+                        
+                    ))}
+                </div>
+            ) : (
+                <p className="text-blue-500 text-center">You have not earned any certificates yet.</p>
+            )}
+
 
             <h2 className="text-2xl font-bold mb-4">{t('my_progress_page.history_title')}</h2>
             <div className="space-y-4">

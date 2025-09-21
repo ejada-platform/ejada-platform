@@ -32,17 +32,21 @@ import ManageBadgesPage from './pages/admin/ManageBadgesPage';
 import AdminDashboardPage from './pages/admin/AdminDashboardPage';
 import AttendanceHistoryPage from './pages/admin/AttendanceHistoryPage';
 import AttendanceOverviewPage from './pages/teacher/AttendanceOverviewPage';
-
+import TeacherAttendancePage from './pages/teacher/TeacherAttendancePage';
 
 import EditCirclePage from './pages/teacher/EditCirclePage';
 import CreateAssignmentPage from './pages/teacher/CreateAssignmentPage';
 import BookViewerPage from './pages/BookViewerPage';
+import CheckoutSuccessPage from './pages/CheckoutSuccessPage';
 
 import ProtectedRoute from './components/ProtectedRoute';
 import NotificationBell from './components/NotificationBell';
 import ScrollToTopButton from './components/ScrollToTopButton';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import ResetPasswordPage from './pages/ResetPasswordPage';
+import PayrollPage from './pages/admin/PayrollPage'; 
+import ManageTemplatesPage from './pages/admin/ManageTemplatesPage';
+
 
 // --- NEW THEME SWITCHER COMPONENT ---
 const ThemeSwitcher = () => {
@@ -115,16 +119,16 @@ const Navigation = () => {
                         <>
                             {user.role === 'Student' && <Link to="/my-progress" className="font-bold hover:underline">{t('my_progress')}</Link>}
                             {(user.role === 'Student' || user.role === 'Teacher') && <Link to="/my-circles" className="hover:underline">{t('my_circles')}</Link>}
+                           
                             {user.role === 'Admin' && <Link to="/admin/create-circle" className="hover:underline">{t('create_circle')}</Link>}
                             {user.role === 'Admin' && <Link to="/admin/users" className="hover:underline">{t('manage_users')}</Link>}
                             {user.role === 'Admin' && <Link to="/admin/library" className="hover:underline">{t('manage_library')}</Link>}
                             {user.role === 'Admin' && <Link to="/admin/badges" className="hover:underline">{t('manage_badges')}</Link>}
                             {user.role === 'Admin' && <Link to="/admin/attendance-overview" className="font-bold hover:underline">{t('teacher_attendance')}</Link>}
-                            {user.role === 'Admin' && (
-        <>
-            <Link to="/admin/applications" className="font-bold hover:underline">Review Applications</Link>
-        </>
-    )}
+                            {user.role === 'Admin' && (<Link to="/admin/applications" className="font-bold hover:underline">Review Applications</Link>)}
+                            {user.role === 'Admin' && (<Link to="/admin/payroll" className="font-bold hover:underline">{t('teacher_payroll')}</Link>)}
+                            {user.role === 'Admin' && (<Link to="/admin/templates" className="font-bold hover:underline">Manage Templates</Link>)}
+
                             {(user.role === 'Teacher' || user.role === 'Admin') && <Link to="/teacher/create-assignment" className="hover:underline">{t('create_assignment')}</Link>}
                             {(user.role === 'Teacher' || user.role === 'Admin') && <Link to="/teacher/work-logs" className="font-bold hover:underline">{t('my_work_logs')}</Link>}
                             {(user.role === 'Teacher' || user.role === 'Admin') && <Link to="/curriculum" className="hover:underline">{t('curriculum')}</Link>}
@@ -222,7 +226,7 @@ function App() {
             <Routes>
                 {/* Public Routes */}
                 <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-                    <Route path="/reset-password/:resetToken" element={<ResetPasswordPage />} />
+                <Route path="/reset-password/:resetToken" element={<ResetPasswordPage />} />
                 <Route path="/" element={<LandingPage />} />
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/enroll" element={<EnrollmentPage />} />
@@ -244,7 +248,7 @@ function App() {
                 <Route path="/teacher/create-assignment" element={<ProtectedRoute allowedRoles={['Teacher', 'Admin']}><CreateAssignmentPage /></ProtectedRoute>} />
                 <Route path="/teacher/work-logs" element={<ProtectedRoute allowedRoles={['Teacher', 'Admin']}><MyWorkLogsPage /></ProtectedRoute>} />
                 <Route path="/teacher/edit-circle/:circleId" element={<ProtectedRoute allowedRoles={['Teacher', 'Admin']}><EditCirclePage /></ProtectedRoute>} />
-                
+                <Route path="/teacher/attendance/:circleId"  element={<ProtectedRoute allowedRoles={['Teacher', 'Admin']}><TeacherAttendancePage /></ProtectedRoute>}/>
                 
                 {/* Admin Routes */}
                 <Route path="/dashboard" element={<ProtectedRoute allowedRoles={['Student', 'Teacher', 'Admin', 'Parent']}><HomeRouter /></ProtectedRoute>} />
@@ -254,30 +258,13 @@ function App() {
                 <Route path="/admin/library" element={<ProtectedRoute allowedRoles={['Admin']}><ManageLibraryPage /></ProtectedRoute>} />
                 <Route path="/admin/badges" element={<ProtectedRoute allowedRoles={['Admin']}><ManageBadgesPage /></ProtectedRoute>} />
                 <Route path="/calendar" element={<AcademicCalendarPage />} />
-                 <Route
-                    path="/admin/attendance-overview"
-                    element={
-                        <ProtectedRoute allowedRoles={['Admin']}>
-                            <AttendanceOverviewPage />
-                        </ProtectedRoute>
-                    }
-                />
-                <Route
-                    path="/admin/attendance/:circleId"
-                    element={<ProtectedRoute allowedRoles={['Admin']}><AttendanceHistoryPage /></ProtectedRoute>}
-                />
-                <Route
-                    path="/admin/applications"
-                    element={
-                        <ProtectedRoute allowedRoles={['Admin']}>
-                            <ApplicationReviewPage />
-                        </ProtectedRoute>
-                    }
-                />
-                <Route 
-                    path="/library/view" 
-                    element={<ProtectedRoute allowedRoles={['Student', 'Teacher', 'Admin', 'Parent']}><BookViewerPage /></ProtectedRoute>} 
-                />
+                <Route path="/admin/attendance-overview" element={<ProtectedRoute allowedRoles={['Admin']}><AttendanceOverviewPage /></ProtectedRoute>}/>
+                <Route path="/admin/attendance/:circleId" element={<ProtectedRoute allowedRoles={['Admin']}><AttendanceHistoryPage /></ProtectedRoute>}/>
+                <Route path="/admin/applications" element={<ProtectedRoute allowedRoles={['Admin']}><ApplicationReviewPage /></ProtectedRoute>}/>
+                <Route path="/library/view" element={<ProtectedRoute allowedRoles={['Student', 'Teacher', 'Admin', 'Parent']}><BookViewerPage /></ProtectedRoute>}/>
+                <Route path="/admin/payroll" element={<ProtectedRoute allowedRoles={['Admin']}><PayrollPage /> </ProtectedRoute>}/>
+                <Route path="/admin/templates" element={<ProtectedRoute allowedRoles={['Admin']}><ManageTemplatesPage /></ProtectedRoute>}/>
+                <Route path="/checkout-success" element={<ProtectedRoute allowedRoles={['Student', 'Teacher', 'Admin', 'Parent']}><CheckoutSuccessPage /></ProtectedRoute>}/>
             </Routes>
             
         </main>

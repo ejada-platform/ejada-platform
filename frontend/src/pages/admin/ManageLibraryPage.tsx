@@ -26,7 +26,7 @@ const ManageLibraryPage = () => {
     const [category, setCategory] = useState<'Quran' | 'Hadith' | 'Fiqh' | 'Stories' | 'Other'>('Quran');
     const [price, setPrice] = useState(0);
     const [resourceFile, setResourceFile] = useState<File | null>(null);
-
+    
     const fetchResources = useCallback(async () => {
         if (!token) return;
         try {
@@ -61,6 +61,7 @@ const ManageLibraryPage = () => {
         formData.append('description', description);
         formData.append('category', category);
         formData.append('price', price.toString());
+        formData.append('price', price.toString())
         formData.append('resourceFile', resourceFile);
         try {
             const config = { headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${token}` } };
@@ -128,6 +129,18 @@ const ManageLibraryPage = () => {
                     <div>
                         <label className="block font-bold mb-1">{t('admin_pages.manage_library.description_label')}</label>
                         <textarea value={description} onChange={e => setDescription(e.target.value)} className="w-full p-2 border rounded" rows={3} required />
+                    </div>
+                    <div>
+                        <label className="block font-bold mb-1">{t('admin_pages.manage_library.price_label')}</label>
+                        <input 
+                            type="number" 
+                            step="0.01" 
+                            min="0" 
+                            value={price} 
+                            onChange={e => setPrice(parseFloat(e.target.value))} 
+                            className="w-full p-2 border rounded-md" 
+                            required 
+                        />
                     </div>
                     <button type="submit" disabled={isUploading} className="w-full py-2 px-4 bg-blue-600 text-white font-bold rounded hover:bg-blue-700 disabled:bg-blue-300">
                         {isUploading ? 'Uploading...' : t('admin_pages.manage_library.submit_button')}

@@ -1,5 +1,3 @@
-// src/models/WorkLog.model.ts
-
 import mongoose, { Schema, Document } from 'mongoose';
 
 export interface IWorkLog extends Document {
@@ -8,6 +6,7 @@ export interface IWorkLog extends Document {
     date: Date;
     duration: number; // Duration in hours (e.g., 1, 1.5, 2)
     notes?: string; // Optional notes about the session
+    attendees: mongoose.Schema.Types.ObjectId[];
 }
 
 const WorkLogSchema: Schema = new Schema({
@@ -34,6 +33,10 @@ const WorkLogSchema: Schema = new Schema({
         type: String,
         trim: true,
     },
+    attendees: [{ 
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    }]
 }, {
     timestamps: true,
 });
