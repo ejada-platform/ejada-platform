@@ -87,75 +87,27 @@ export const awardCertificate = async (req: Request, res: Response) => {
     const { studentId, program } = req.body;
 
     try {
-        const student = await User.findById(studentId);
+        // 1. Find the blank template for the selected program
         const template = await CertificateTemplate.findOne({ program });
-        if (!student || !template) {
-            return res.status(404).json({ message: 'Student or certificate template not found for this program.' });
+        if (!template) {
+            return res.status(404).json({ message: `No certificate template found for the '${program}' program. Please upload one first.` });
         }
 
-        // Fetch the PDF template from Cloudinary as a binary data buffer
-        const response = await axios.get(template.templateUrl, { 
-            responseType: 'arraybuffer' 
-        });
-        const existingPdfBytes = response.data;
-
-        // Load the PDF from the buffer
-        const pdfDoc = await PDFDocument.load(existingPdfBytes);
-        const font = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
-        const firstPage = pdfDoc.getPages()[0];
-
-        // Write the student's name and date on the PDF
-        firstPage.drawText(student.username, { 
-            x: 200, // Adjust these coordinates based on your template design
-            y: 300, 
-            font, 
-            size: 30, 
-            color: rgb(0.18, 0.33, 0.4) 
-        });
-        firstPage.drawText(new Date().toLocaleDateString(), { 
-            x: 250, 
-            y: 200, 
-            font, 
-            size: 18 
-        });
-
-        // Save the modified PDF into a new buffer
-        const pdfBytes = await pdfDoc.save();
-
-        // Upload the new, personalized PDF to Cloudinary
-        const result = await new Promise<any>((resolve, reject) => {
-            const uploadStream = cloudinary.uploader.upload_stream(
-                { 
-                    upload_preset: "ejada_public", 
-                    resource_type: "auto", 
-                    folder: "generated_certificates" 
-                },
-                (error, result) => { 
-                    if (result) {
-                        resolve(result);
-                    } else {
-                        reject(error);
-                    }
-                }
-            );
-            uploadStream.end(Buffer.from(pdfBytes));
-        });
-
-        if (!result || !result.secure_url) {
-            throw new Error('Failed to upload generated certificate to Cloudinary.');
-        }
-
-        // Create the final certificate record in our database
+        // 2. Create the certificate record, using the TEMPLATE'S URL
+        // The certificate is now just a record that points to the beautiful template image.
         const certificate = await Certificate.create({
             student: studentId,
             program,
             awardedBy: user._id,
-            certificateUrl: result.secure_url,
+            certificateUrl: template.templateUrl, // Use the URL from the template
         });
         res.status(201).json(certificate);
 
     } catch (error: any) {
+        if (error.code === 11000) {
+            return res.status(400).json({ message: 'This student has already received a certificate for this program.' });
+        }
         console.error("AWARD CERTIFICATE FAILED:", error);
-        res.status(400).json({ message: 'Failed to award certificate. Please ensure the template is a valid PDF.', error: error.message });
+        res.status(400).json({ message: 'Failed to award certificate', error: error.message });
     }
 };

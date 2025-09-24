@@ -31,7 +31,7 @@ const HeroWithStats = () => {
     useEffect(() => {
         const fetchStats = async () => {
             try {
-                const { data } = await axios.get('http://localhost:5000/api/stats/overview');
+                const { data } = await axios.get<{ totalStudents: number; totalTeachers: number; totalCircles: number }>('http://localhost:5000/api/stats/overview');
                 if (data) setStats(data);
             } catch (error) { console.error("Failed to fetch stats", error); }
         };
@@ -51,7 +51,7 @@ const HeroWithStats = () => {
             <div className="relative z-10">
                 <h1 className="text-4xl md:text-6xl font-extrabold">{t('landing_page.hero_title')}</h1>
                 <p className="text-lg mt-4 max-w-3xl mx-auto text-gray-200">{t('landing_page.hero_subtitle')}</p>
-                <Link to="/register" className="mt-8 inline-block bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-8 rounded-full transition-colors">
+                <Link to="/enroll" className="mt-8 inline-block bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-8 rounded-full transition-colors">
                     {t('landing_page.hero_cta_button')}
                 </Link>
             </div>
@@ -109,11 +109,11 @@ const ImageSliderSection = () => {
                 open={!!openVideo}
                 close={() => setOpenVideo(null)}
                 slides={openVideo ? [{
-                    type: "html",
-                    html: `<div style="position: relative; width: 100%; height: 100%;"><iframe src="https://www.youtube.com/embed/${openVideo}?autoplay=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></iframe></div>`
+                    type: "video" as "video", // Change type to "video"
+                    sources: [{ src: `https://www.youtube.com/embed/${openVideo}?autoplay=1`, type: "video/youtube" }]
                 }] : []}
                 render={{
-                    slide: ({ slide }) => (slide.type === 'html' ? <div style={{ width: '100%', height: 'calc(100vh - 120px)' }} dangerouslySetInnerHTML={{ __html: slide.html }} /> : undefined),
+                    slide: ({ slide }) => (slide.type === 'video' ? <div style={{ width: '100%', height: 'calc(100vh - 120px)' }} dangerouslySetInnerHTML={{ __html: slide.html }} /> : undefined),
                 }}
             />
         </section>
@@ -136,7 +136,7 @@ const CoursesSection = () => {
                         <div key={i} className="bg-white border border-gray-200 rounded-lg shadow-lg text-center p-6">
                             <img src={course.img} alt={t(course.titleKey)} className="w-full h-40 object-cover rounded-md mb-4" />
                             <h3 className="text-xl font-bold mb-4">{t(course.titleKey)}</h3>
-                            <Link to="/register" className="inline-block bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-6 rounded-lg transition-colors">{t('landing_page.programs.register_now')}</Link>
+                            <Link to="/enroll" className="inline-block bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-6 rounded-lg transition-colors">{t('landing_page.programs.register_now')}</Link>
                         </div>
                     ))}
                 </div>

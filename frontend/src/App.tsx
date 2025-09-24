@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { BrowserRouter as Router, Routes, Route, Link, useNavigate } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSignInAlt, faUserPlus, faSun, faMoon } from '@fortawesome/free-solid-svg-icons';
+import { faSignInAlt, faSun, faMoon } from '@fortawesome/free-solid-svg-icons';
 
 
 // Import all pages
@@ -20,10 +20,10 @@ import DigitalLibraryPage from './pages/admin/DigitalLibraryPage';
 import MyWorkLogsPage from './pages/teacher/MyWorkLogsPage';
 import SupportPage from './pages/SupportPage';
 import TutorialsPage from './pages/TutorialsPage';
-import AcademicCalendarPage from './pages/AcademicCalendarPage'; 
+import AcademicCalendarPage from './pages/AcademicCalendarPage';
 import LandingPage from './pages/LandingPage';
 import EnrollmentPage from './pages/EnrollmentPage';
-import ApplicationReviewPage from './pages/admin/ApplicationReviewPage'; 
+import ApplicationReviewPage from './pages/admin/ApplicationReviewPage';
 // Admin Pages
 import CreateCirclePage from './pages/admin/CreateCirclePage';
 import UserManagementPage from './pages/admin/UserManagementPage';
@@ -44,7 +44,7 @@ import NotificationBell from './components/NotificationBell';
 import ScrollToTopButton from './components/ScrollToTopButton';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import ResetPasswordPage from './pages/ResetPasswordPage';
-import PayrollPage from './pages/admin/PayrollPage'; 
+import PayrollPage from './pages/admin/PayrollPage';
 import ManageTemplatesPage from './pages/admin/ManageTemplatesPage';
 
 
@@ -71,7 +71,7 @@ const ThemeSwitcher = () => {
 
 // The Responsive Navigation Component
 const Navigation = () => {
-    const { t, i18n } = useTranslation(); 
+    const { t, i18n } = useTranslation();
     const { user, logout, isLoading } = useAuth();
     const navigate = useNavigate();
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -80,13 +80,13 @@ const Navigation = () => {
         i18n.changeLanguage(lng);
         setIsMobileMenuOpen(false);
     };
-    
+
     const handleLogout = () => {
         logout();
         setIsMobileMenuOpen(false);
         navigate('/login');
     };
-    
+
     const handleLinkClick = () => {
         setIsMobileMenuOpen(false);
     };
@@ -101,7 +101,7 @@ const Navigation = () => {
             </header>
         );
     }
- 
+
     return (
         <header className="bg-gray-800 text-white p-4 sticky top-0 z-50 w-full">
             <div className="max-w-7xl mx-auto flex justify-between items-center">
@@ -109,14 +109,17 @@ const Navigation = () => {
                     Ejadah
                 </Link>
 
-                <nav className="hidden md:flex items-center space-x-4">
+                {/* --- CORRECTED DESKTOP NAVIGATION --- */}
+                {/* Added `flex-wrap` to allow items to wrap to the next line */}
+                <nav className="hidden md:flex items-center space-x-4 flex-wrap justify-end">
                     
                     <Link to="/calendar" className="hover:underline">{t('Calendar')}</Link>
-                    <Link to="/library" className="hover:underline">{t('library')}</Link>
+                   
                     <Link to="/support" className="hover:underline">{t('Support')}</Link>
                     <Link to="/tutorials" className="hover:underline">{t('Tutorials')}</Link>
                     {user ? (
                         <>
+                            <Link to="/library" className="hover:underline">{t('library')}</Link>
                             {user.role === 'Student' && <Link to="/my-progress" className="font-bold hover:underline">{t('my_progress')}</Link>}
                             {(user.role === 'Student' || user.role === 'Teacher') && <Link to="/my-circles" className="hover:underline">{t('my_circles')}</Link>}
                            
@@ -139,7 +142,7 @@ const Navigation = () => {
                         </>
                     ) : (
                         <>
-                            <Link to="/enroll" className="hover:underline"><FontAwesomeIcon icon={faUserPlus} />{t('register')}</Link>
+                            
                             <Link to="/login" className="hover:underline"><FontAwesomeIcon icon={faSignInAlt} />{t('login')}</Link>
                         </>
                     )}
@@ -175,6 +178,9 @@ const Navigation = () => {
                             {user.role === 'Admin' && <Link to="/admin/users" onClick={handleLinkClick} className="block px-2 py-1 hover:bg-gray-700 rounded">{t('manage_users')}</Link>}
                             {user.role === 'Admin' && <Link to="/admin/library" onClick={handleLinkClick} className="block px-2 py-1 hover:bg-gray-700 rounded">{t('manage_library')}</Link>}
                             {user.role === 'Admin' && <Link to="/admin/badges" onClick={handleLinkClick} className="block px-2 py-1 hover:bg-gray-700 rounded">{t('manage_badges')}</Link>}
+                            {user.role === 'Admin' && (<Link to="/admin/applications" onClick={handleLinkClick} className="block px-2 py-1 hover:bg-gray-700 rounded font-bold">Review Applications</Link>)}
+                            {user.role === 'Admin' && (<Link to="/admin/payroll" onClick={handleLinkClick} className="block px-2 py-1 hover:bg-gray-700 rounded font-bold">{t('teacher_payroll')}</Link>)}
+                            {user.role === 'Admin' && (<Link to="/admin/templates" onClick={handleLinkClick} className="block px-2 py-1 hover:bg-gray-700 rounded font-bold">Manage Templates</Link>)}
                             
                             {(user.role === 'Teacher' || user.role === 'Admin') && <Link to="/teacher/create-assignment" onClick={handleLinkClick} className="block px-2 py-1 hover:bg-gray-700 rounded">{t('create_assignment')}</Link>}
                             {(user.role === 'Teacher' || user.role === 'Admin') && <Link to="/teacher/work-logs" onClick={handleLinkClick} className="block px-2 py-1 hover:bg-gray-700 rounded font-bold">{t('my_work_logs')}</Link>}
@@ -186,7 +192,7 @@ const Navigation = () => {
                         </>
                     ) : (
                         <div className="border-t border-gray-700 mt-2 pt-2">
-                            <Link to="/enroll" onClick={handleLinkClick} className="block px-2 py-1 hover:bg-gray-700 rounded">{t('register')}</Link>
+                           
                             <Link to="/login" onClick={handleLinkClick} className="block px-2 py-1 hover:bg-gray-700 rounded">{t('login')}</Link>
                         </div>
                     )}
