@@ -88,7 +88,7 @@ const ImageSliderSection = () => {
     const settings = { dots: true, infinite: true, speed: 500, slidesToShow: 1, slidesToScroll: 1, autoplay: true, autoplaySpeed: 4000, arrows: true };
 
     return (
-        <section className="pt-28 pb-16 bg-gray-500">
+        <section className="pt-28 pb-16 bg-[#ada687]">
             <div className="max-w-5xl mx-auto px-12">
                 <Slider {...settings}>
                     {slides.map((slide, index) => (
@@ -128,7 +128,7 @@ const CoursesSection = () => {
         { titleKey: 'landing_page.programs.program3_title', img: '/images/slider3.jpeg' }
     ];
     return (
-        <section className="py-16 bg-white">
+        <section className="py-16 bg-[#ada687]">
             <div className="max-w-6xl mx-auto px-4">
                 <h2 className="text-4xl font-bold text-center mb-12">{t('landing_page.programs.title')}</h2>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -149,7 +149,7 @@ const CoursesSection = () => {
 const VisionMissionSection = () => {
     const { t } = useTranslation();
     return(
-        <section className="py-20 bg-gray-50">
+        <section className="bg-[#ada687] py-20 ">
             <div className="max-w-6xl mx-auto px-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
                 <div className="border border-gray-200 p-6 rounded-lg text-center bg-white shadow">
                     <div className="text-4xl mb-4">✉️</div>
@@ -319,7 +319,7 @@ return(
 const Footer = () => {
     const { t } = useTranslation();
     return (
-         <footer className="bg-gray-900 text-white pt-16 pb-8">
+         <footer className="bg-[#375466] text-white pt-16 pb-8">
             <div className="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 text-center md:text-left px-4">
                 {/* Column 1: About */}
                 <div>

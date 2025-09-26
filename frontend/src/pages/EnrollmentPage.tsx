@@ -1,5 +1,3 @@
-// src/pages/EnrollmentPage.tsx
-
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
@@ -10,11 +8,11 @@ import 'react-phone-number-input/style.css'; // Don't forget the styles
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 // We only import the icons we are actually using
-import { faUser, faVenusMars, faChild, faUserTie, faCalendarAlt, faSchool, faGlobe, faCity, faFlag, faEnvelope } from '@fortawesome/free-solid-svg-icons';
+import { faUser, faVenusMars, faChild, faUserTie, faCalendarAlt, faGlobe, faCity, faFlag, faEnvelope, faBookOpen } from '@fortawesome/free-solid-svg-icons';
 
 const initialFormData = {
     fullName: '', gender: '', fatherName: '', motherName: '', dateOfBirth: '',
-    schoolClass: '', countryOfResidence: '', city: '', nationality: '', email: ''
+    program: '' , countryOfResidence: '', city: '', nationality: '', email: ''
 };
 
 // Reusable component for a styled input field
@@ -62,7 +60,7 @@ const EnrollmentPage = () => {
         setLoading(true);
         try {
             // Tell Axios what to expect
-            const payload = { ...formData, phoneNumber, agreedToFees, howDidYouHear, program: 'Reading 7+' };
+            const payload = { ...formData, phoneNumber, agreedToFees, howDidYouHear };
             const { data } = await axios.post<{ success: boolean; message: string; }>('http://localhost:5000/api/applications', payload);
             setMessage(data.message);
             setFormData(initialFormData);
@@ -110,7 +108,24 @@ const EnrollmentPage = () => {
                     <InputField icon={faUserTie} name="fatherName" placeholder={t("Name of the Father")} value={formData.fatherName} onChange={handleChange} />
                     <InputField icon={faChild} name="motherName" placeholder={t("Name of the mother")} value={formData.motherName} onChange={handleChange} />
                     <InputField icon={faCalendarAlt} name="dateOfBirth" value={formData.dateOfBirth} onChange={handleChange} type="date" />
-                    <InputField icon={faSchool} name="schoolClass" placeholder={t("school class")} value={formData.schoolClass} onChange={handleChange} required={false}/>
+                    {/* --- CHANGE #3: Added the Program Selection Dropdown --- */}
+                    <div className="relative">
+                        <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400"><FontAwesomeIcon icon={faBookOpen} /></span>
+                        <select 
+                            name="program" 
+                            value={formData.program} 
+                            onChange={handleChange} 
+                            className="w-full p-3 pl-10 border rounded-md bg-white" 
+                            required
+                        >
+                            <option value="" disabled>{t('Choose a Program')}</option>
+                            <option value="Reading 7+">{t('Reading (7+)')}</option>
+                            <option value="Reading <7">{t('Reading (Under 7)')}</option>
+                            <option value="Memorizing">{t('Memorization')}</option>
+                            <option value="Reciting">{t('Reciting (for Non-Arabs)')}</option>
+                        </select>
+                    </div>
+                    
                     <InputField icon={faGlobe} name="countryOfResidence" placeholder={t("Country of residence?")} value={formData.countryOfResidence} onChange={handleChange} />
                     <InputField icon={faCity} name="city" placeholder={t("the city name")} value={formData.city} onChange={handleChange} />
                     <InputField icon={faFlag} name="nationality" placeholder={t("Nationality")} value={formData.nationality} onChange={handleChange} />

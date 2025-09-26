@@ -103,7 +103,7 @@ const Navigation = () => {
     }
 
     return (
-        <header className="bg-gray-800 text-white p-4 sticky top-0 z-50 w-full">
+        <header className="bg-[#375466] text-white p-4 sticky top-0 z-50 w-full">
             <div className="max-w-7xl mx-auto flex justify-between items-center">
                 <Link to={user ? "/dashboard" : "/"} className="text-xl font-bold">
                     Ejadah
@@ -138,7 +138,7 @@ const Navigation = () => {
                             <span className="text-gray-300">|</span>
                             <span className="font-semibold">{t('welcome_user', { username: user.username })}</span>
                             <NotificationBell />
-                            <button onClick={handleLogout} className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">{t('logout')}</button>
+                            <button onClick={handleLogout} className="bg-[#ada687] hover:bg-[#ada687] text-white font-bold py-2 px-4 rounded">{t('logout')}</button>
                         </>
                     ) : (
                         <>
