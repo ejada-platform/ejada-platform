@@ -10,7 +10,7 @@ export interface IUser extends Document {
     password?: string;
     role: 'Student' | 'Teacher' | 'Admin' | 'Parent';
     generatedCode?: string;
-    isFeatured?: boolean;
+    //isFeatured?: boolean;
     children?: Types.ObjectId[];
     resetPasswordToken?: string;
     resetPasswordExpire?: Date;
@@ -31,10 +31,10 @@ const UserSchema: Schema<IUser> = new Schema({
     password: { type: String, required: true, select: false },
     role: { type: String, enum: ['Student', 'Teacher', 'Admin', 'Parent'], required: true },
     generatedCode: { type: String, unique: true, sparse: true },
-    isFeatured: {
-        type: Boolean,
-        default: false,
-    },
+    //isFeatured: {
+      //  type: Boolean,
+       // default: false,
+    //},
     children: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'

@@ -103,17 +103,17 @@ const UserManagementPage = () => {
         }
     };
 
-    const handleFeature = async (userToFeature: User) => {
-        if (!token) return;
-        try {
-            const config = { headers: { Authorization: `Bearer ${token}` } };
-            await axios.put(`http://localhost:5000/api/users/${userToFeature._id}`, { isFeatured: true }, config);
-            showSuccessAlert('Success!', `${userToFeature.username} is now the Star Student!`);
-            fetchUsers();
-        } catch {
-            showErrorAlert('Error!', 'Failed to update the featured student.');
-        }
-    };
+   // const handleFeature = async (userToFeature: User) => {
+   //     if (!token) return;
+   //     try {
+   //         const config = { headers: { Authorization: `Bearer ${token}` } };
+   //         await axios.put(`http://localhost:5000/api/users/${userToFeature._id}`, { isFeatured: true }, config);
+   //         showSuccessAlert('Success!', `${userToFeature.username} is now the Star Student!`);
+   //         fetchUsers();
+   //     } catch {
+   //         showErrorAlert('Error!', 'Failed to update the featured student.');
+   //     }
+   // };
 
     const handleEditClick = (user: User) => {
         setSelectedUser(user);
@@ -184,14 +184,14 @@ const UserManagementPage = () => {
                                             Award Cert.
                                         </button>
                                     )}
-                                    {user.role === 'Student' && !user.isFeatured && (
+                                    {/* {user.role === 'Student' && !user.isFeatured && (
                                         <button 
                                             onClick={() => handleFeature(user)}
                                             className="px-3 py-1 bg-green-500 text-white text-sm rounded hover:bg-green-600 transition-colors"
                                         >
                                             {t('admin_pages.manage_users.star_student_status')}
                                         </button>
-                                    )}
+                                    )} */}
                                     <button 
                                         onClick={() => handleEditClick(user)}
                                         className="px-3 py-1 bg-yellow-500 text-white text-sm rounded hover:bg-yellow-600 transition-colors"
@@ -240,14 +240,14 @@ const UserManagementPage = () => {
                                             Award Cert.
                                         </button>
                                     )}
-                                    {user.role === 'Student' && !user.isFeatured && (
+                                 {/*    {user.role === 'Student' && !user.isFeatured && (
                                         <button 
                                             onClick={() => handleFeature(user)}
                                             className="flex-grow px-3 py-2 bg-green-500 text-white text-sm rounded hover:bg-green-600 transition-colors"
                                         >
                                             {t('admin_pages.manage_users.star_student_status')}
                                         </button>
-                                    )}
+                                    )} */}
                                     <button 
                                         onClick={() => handleEditClick(user)}
                                         className="flex-grow px-3 py-2 bg-yellow-500 text-white text-sm rounded hover:bg-yellow-600 transition-colors"

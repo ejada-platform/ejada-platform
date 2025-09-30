@@ -1,10 +1,9 @@
-// src/pages/MyCirclesPage.tsx
-
 import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTranslation } from 'react-i18next';
+import { showConfirmationDialog, showErrorAlert, showSuccessAlert } from '../services/alert.service';
 
 // --- TYPE DEFINITIONS ---
 interface PopulatedUser {
@@ -23,6 +22,7 @@ interface CircleData {
     students?: PopulatedUser[];
     liveClassUrl?: string;
     schedule?: ScheduleEntry[];
+    starStudent?: string;
 }
 
 // ==================================================================
@@ -127,6 +127,22 @@ const MyCirclesPage = () => {
     if (loading) return <div className="p-10">{t('my_circles_page.loading')}</div>;
     if (error) return <div className="p-10 text-red-500">{error}</div>;
 
+    const handleSetStarStudent = async (circleId: string, studentId: string) => {
+        const result = await showConfirmationDialog('Set Star Student?', 'This will make them the featured student for this circle.');
+        if (result.isConfirmed) {
+            try {
+                const config = { headers: { Authorization: `Bearer ${token}` } };
+                const payload = { starStudent: studentId };
+                await axios.put(`http://localhost:5000/api/circles/${circleId}`, payload, config);
+                showSuccessAlert('Success!', 'Star Student has been updated.');
+                fetchMyCircles(); // Refresh the data to show the new star
+            } catch (err) {
+                showErrorAlert('Error!', 'Failed to set star student.');
+            }
+        }
+    };
+
+    
     return (
         <div className="p-8 max-w-4xl mx-auto">
             <h1 className="text-3xl font-bold mb-6">{t('my_circles_page.title')}</h1>
@@ -160,6 +176,16 @@ const MyCirclesPage = () => {
                             {/* Student's view can be added here if needed */}
                             {user?.role === 'Student' && (
                             <div className="mt-4">
+                                 {/* The new banner that shows if the logged-in student is the star of THIS circle */}
+                                 {circle.starStudent === user._id && (
+                                    <div className="p-3 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-800 rounded-md mb-4">
+                                        <p className="font-bold flex items-center">
+                                            <span className="text-xl mr-2">★</span>
+                                            Congratulations! You are the Star Student of this circle!
+                                        </p>
+                                    </div>
+                                )}
+                                
                                 {circle.teacher && (
                                     <p className="text-gray-700 mb-4">
                                         <strong>{t('my_circles_page.teacher_label')}</strong> {circle.teacher.username}
@@ -207,7 +233,17 @@ const MyCirclesPage = () => {
                                                 {circle.students.map(student => (
                                                     <li key={student._id} className="p-2 border-t">
                                                         <div className="flex justify-between items-center">
-                                                            <span>{student.username}</span>
+                                                            <span>{student.username}
+                                                            {circle.starStudent === student._id && <span className="ml-2 text-yellow-400">★</span>}
+                                                            </span>
+                                                            </div>
+                                                        <div className="space-x-2">
+                                                                 {/* --- NEW BUTTON --- */}
+                                                                 {circle.starStudent !== student._id && (
+                                                                     <button onClick={() => handleSetStarStudent(circle._id, student._id)} className="px-3 py-1 bg-green-500 text-white text-sm rounded">
+                                                                         Make Star
+                                                                     </button>
+                                                                 )}
                                                             <button
                                                                 onClick={() => handleEvaluateClick(student._id)}
                                                                 className="px-3 py-1 bg-blue-500 text-gray-800 text-sm rounded hover:bg-blue-500"

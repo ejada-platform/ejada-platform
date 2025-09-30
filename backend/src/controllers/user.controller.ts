@@ -49,13 +49,13 @@ export const updateUser = async (req: Request, res: Response) => {
         if (req.body.role) updates.role = req.body.role;
         if (req.body.password) updates.password = req.body.password; // The pre-save hook will still hash this
         
-        if (req.body.isFeatured === true) {
-            // Un-feature all other students first
-            await User.updateMany({ _id: { $ne: user._id }, role: 'Student' }, { $set: { isFeatured: false } });
-            updates.isFeatured = true;
-        } else if (req.body.isFeatured === false) {
-            updates.isFeatured = false;
-        }
+        //if (req.body.isFeatured === true) {
+        //    // Un-feature all other students first
+        //    await User.updateMany({ _id: { $ne: user._id }, role: 'Student' }, { $set: { isFeatured: false } });
+        //    updates.isFeatured = true;
+        //} else if (req.body.isFeatured === false) {
+        //    updates.isFeatured = false;
+        //}
 
         // Instead of user.save(), we use findByIdAndUpdate.
         // This is safer as it only modifies the fields we specify.

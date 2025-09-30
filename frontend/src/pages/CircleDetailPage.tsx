@@ -6,6 +6,7 @@ import { useParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTranslation } from 'react-i18next';
 
+
 // --- TYPE DEFINITIONS ---
 interface Assignment { _id: string; title: string; description: string; dueDate?: string; createdBy: { _id: string; username: string }; createdAt: string; }
 interface Submission { _id: string; student: { _id: string; username: string }; content: string; status: 'Submitted' | 'Reviewed'; grade?: string; feedback?: string; createdAt: string; }

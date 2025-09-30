@@ -15,6 +15,7 @@ export interface ICircle extends Document {
     liveClassUrl?: string;
     schedule?: IScheduleEntry[];
     program: 'Reading <7' | 'Reading 7+' | 'Reciting' | 'Memorizing';
+    starStudent?: mongoose.Schema.Types.ObjectId;
 }
 
 const CircleSchema: Schema = new Schema({
@@ -54,6 +55,10 @@ const CircleSchema: Schema = new Schema({
         type: String,
         enum: ['Reading <7', 'Reading 7+', 'Reciting', 'Memorizing'],
         required: true
+    },
+    starStudent: { 
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
     }
 }, {
     timestamps: true
