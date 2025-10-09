@@ -233,9 +233,11 @@ const MyCirclesPage = () => {
                                                 {circle.students.map(student => (
                                                     <li key={student._id} className="p-2 border-t">
                                                         <div className="flex justify-between items-center">
-                                                            <span>{student.username}
-                                                            {circle.starStudent === student._id && <span className="ml-2 text-yellow-400">★</span>}
-                                                            </span>
+                                                            <Link to={`/teacher/student-progress/${student._id}`} className="font-semibold hover:underline text-primary">
+                                                                <span>{student.username}
+                                                                    {circle.starStudent === student._id && <span className="ml-2 text-yellow-400">★</span>}
+                                                                </span>
+                                                            </Link>
                                                             </div>
                                                         <div className="space-x-2">
                                                                  {/* --- NEW BUTTON --- */}

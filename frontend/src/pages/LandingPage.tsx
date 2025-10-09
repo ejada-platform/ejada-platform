@@ -39,11 +39,11 @@ const HeroWithStats = () => {
     }, []);
 
     return (
-        <section 
-            className="relative bg-cover bg-center text-white py-40 px-4 text-center"
+        <section id="home"
+            className="relative bg-cover bg-center text-white py-70 px-8 text-center"
             // --- THIS IS THE FINAL FIX ---
             // It tells the component to use the image from your public folder as the background
-            style={{ backgroundImage: "url('/images/land.jpg')" }}
+            style={{ backgroundImage: "url('/images/landing.png')" }}
         >
             {/* This div adds a dark overlay, making the white text easier to read */}
             <div className="absolute inset-0 bg-black opacity-60"></div>
@@ -54,22 +54,6 @@ const HeroWithStats = () => {
                 <Link to="/enroll" className="mt-8 inline-block bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-8 rounded-full transition-colors">
                     {t('landing_page.hero_cta_button')}
                 </Link>
-            </div>
-            <div className="absolute -bottom-16 left-1/2 -translate-x-1/2 w-full max-w-4xl px-4">
-                <div className="bg-white bg-opacity-90 backdrop-blur-sm rounded-xl shadow-lg p-6 grid grid-cols-1 md:grid-cols-3 gap-4 text-gray-800">
-                    <div className="text-center">
-                        <p className="text-4xl font-bold text-blue-600">{stats.totalStudents}</p>
-                        <p className="text-md">{t('landing_page.stats.students')}</p>
-                    </div>
-                    <div className="text-center">
-                        <p className="text-4xl font-bold text-blue-600">{stats.totalTeachers}</p>
-                        <p className="text-md">{t('landing_page.stats.teachers')}</p>
-                    </div>
-                    <div className="text-center">
-                        <p className="text-4xl font-bold text-blue-600">{stats.totalCircles}</p>
-                        <p className="text-md">{t('landing_page.stats.circles')}</p>
-                    </div>
-                </div>
             </div>
         </section>
     );
@@ -88,7 +72,7 @@ const ImageSliderSection = () => {
     const settings = { dots: true, infinite: true, speed: 500, slidesToShow: 1, slidesToScroll: 1, autoplay: true, autoplaySpeed: 4000, arrows: true };
 
     return (
-        <section className="pt-28 pb-16 bg-[#ada687]">
+        <section id="gallery" className="pt-28 pb-16 bg-[#ada687]">
             <div className="max-w-5xl mx-auto px-12">
                 <Slider {...settings}>
                     {slides.map((slide, index) => (
@@ -125,13 +109,15 @@ const CoursesSection = () => {
     const courses = [
         { titleKey: 'landing_page.programs.program1_title', img: '/images/slider4.jpeg.jpeg' },
         { titleKey: 'landing_page.programs.program2_title', img: '/images/slider2.jpeg' },
+        { titleKey: 'landing_page.programs.program3_title', img: '/images/slider3.jpeg' },
         { titleKey: 'landing_page.programs.program3_title', img: '/images/slider3.jpeg' }
     ];
+
     return (
-        <section className="py-16 bg-[#ada687]">
+        <section id='programs' className="py-20 bg-[#ada687]">
             <div className="max-w-6xl mx-auto px-4">
                 <h2 className="text-4xl font-bold text-center mb-12">{t('landing_page.programs.title')}</h2>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
                     {courses.map((course, i) => (
                         <div key={i} className="bg-white border border-gray-200 rounded-lg shadow-lg text-center p-6">
                             <img src={course.img} alt={t(course.titleKey)} className="w-full h-40 object-cover rounded-md mb-4" />
@@ -145,32 +131,124 @@ const CoursesSection = () => {
     );
 };
 
-// --- Section 4: Vision & Goals ---
+
+// --- NEW Section 4a: Projects (6 Rows of Pictures) ---
+ {/*
+const ProjectsSection = () => {
+    const { t } = useTranslation();
+    // Create 8 placeholder images (replace with real paths)
+    //const projectImages = Array.from({ length: 8 }, (_, i) => `/images/projects/project${i + 1}.jpg`);
+    const projectImages = [
+        "/images/slider4.jpeg.jpeg",
+        "/images/slider2.jpeg",
+        "/images/slider3.jpeg",
+        "/images/program2.jpg",
+        "/images/program3.jpg",
+        "/images/contact.png",
+        "/images/slider1.jpeg", // Repeating for placeholder
+        "/images/slider2.jpeg"  // Repeating for placeholder
+    ];
+    return (
+        <section id="projects" className="py-20 bg-white">
+            <div className="max-w-7xl mx-auto px-4">
+                <h2 className="text-4xl font-bold text-center mb-12 text-gray-800">{t('Our Projects')}</h2>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    {projectImages.map((src, index) => (
+                        <div key={index} className="aspect-square relative overflow-hidden rounded-lg shadow-lg group cursor-pointer">
+                            <img 
+                                src={src} 
+                                alt={`Project ${index + 1}`} 
+                                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" 
+                            />
+                             Optional: Add a subtle overlay for a pro look on hover 
+                            <div className="absolute inset-0 bg-black bg-opacity-10 group-hover:bg-opacity-0 transition-all duration-300"></div>
+                        </div>
+                    ))}
+                </div>
+                <div className="text-center mt-10">
+                     <Link to="/visuals" className="inline-block border border-gray-700 text-gray-700 hover:bg-gray-100 font-semibold py-2 px-6 rounded-lg transition-colors">
+                        {t('View All Projects')}
+                    </Link>
+                </div>
+            </div>
+        </section>
+    );
+};*/}
+
+{/*
+// --- NEW Section 4b: Publications (6 Rows of Pictures) ---
+const PublicationsSection = () => {
+    const { t } = useTranslation();
+    // Create 8 placeholder images (replace with real paths)
+    //const publicationImages = Array.from({ length: 8 }, (_, i) => `/images/publications/pub${i + 1}.jpg`);
+
+    const publicationImages = [
+        "/images/slider3.jpeg",
+        '/images/slider2.jpeg',
+        '/images/program3.jpg',
+        '/images/slider1.jpeg',
+        '/images/program2.jpg',
+        '/images/landing.png', // Corrected from land.jpg to a known image
+        '/images/slider3.jpeg', // Repeating for placeholder
+        '/images/slider2.jpeg'  // Repeating for placeholder
+    
+    ];
+
+    return (
+        <section id="publications" className="py-20 bg-gray-50">
+            <div className="max-w-7xl mx-auto px-4">
+                <h2 className="text-4xl font-bold text-center mb-12 text-gray-800">{t('Our Publications')}</h2>
+                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-4"> 
+                    {publicationImages.map((src, index) => (
+                        <div key={index} className="
+                        aspect-[4/3] relative
+                        overflow-hidden rounded-lg 
+                        shadow-lg group 
+                        cursor-pointer 
+                        bg-white">
+                              <img 
+                                src={src} 
+                                alt={`Publication ${index + 1}`} 
+                                className="
+                                w-full h-full object-cover 
+                                transition-transform 
+                                duration-500 
+                                group-hover:scale-110" 
+                                />
+                            Optional: Add a subtle overlay for a pro look on hover 
+                            <div className="absolute inset-0 bg-black bg-opacity-10 group-hover:bg-opacity-0 transition-all duration-300"></div>
+                        </div>
+                    ))}
+                </div>
+                 <div className="text-center mt-10">
+                     <Link to="/library" className="inline-block bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-8 rounded-lg shadow-md transition-colors">
+                        {t('Explore Library')}
+                    </Link>
+                </div>
+            </div>
+        </section>
+    );
+};*/}
+
+// --- Section 4: Vision & Goals (IMPROVED) ---
 const VisionMissionSection = () => {
     const { t } = useTranslation();
+    const items = [
+        { icon: '✉️', titleKey: 'landing_page.vision.message_title', textKey: 'landing_page.vision.message_text' },
+        { icon: '💎', titleKey: 'landing_page.vision.values_title', textKey: 'landing_page.vision.values_text' },
+        { icon: '👁️', titleKey: 'landing_page.vision.vision_title', textKey: 'landing_page.vision.vision_text' },
+        { icon: '🎯', titleKey: 'landing_page.vision.goals_title', textKey: 'landing_page.vision.goals_text' }
+    ];
     return(
-        <section className="bg-[#ada687] py-20 ">
+        <section id='vision' className="bg-white py-20">
             <div className="max-w-6xl mx-auto px-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                <div className="border border-gray-200 p-6 rounded-lg text-center bg-white shadow">
-                    <div className="text-4xl mb-4">✉️</div>
-                    <h3 className="text-xl font-bold">{t('landing_page.vision.message_title')}</h3>
-                    <p className="text-gray-600 mt-2">{t('landing_page.vision.message_text')}</p>
-                </div>
-                 <div className="border border-gray-200 p-6 rounded-lg text-center bg-white shadow">
-                    <div className="text-4xl mb-4">💎</div>
-                    <h3 className="text-xl font-bold">{t('landing_page.vision.values_title')}</h3>
-                    <p className="text-gray-600 mt-2">{t('landing_page.vision.values_text')}</p>
-                </div>
-                 <div className="border border-gray-200 p-6 rounded-lg text-center bg-white shadow">
-                    <div className="text-4xl mb-4">👁️</div>
-                    <h3 className="text-xl font-bold">{t('landing_page.vision.vision_title')}</h3>
-                    <p className="text-gray-600 mt-2">{t('landing_page.vision.vision_text')}</p>
-                </div>
-                 <div className="border border-gray-200 p-6 rounded-lg text-center bg-white shadow">
-                    <div className="text-4xl mb-4">🎯</div>
-                    <h3 className="text-xl font-bold">{t('landing_page.vision.goals_title')}</h3>
-                    <p className="text-gray-600 mt-2">{t('landing_page.vision.goals_text')}</p>
-                </div>
+                {items.map((item, i) => (
+                    <div key={i} className="p-8 rounded-xl text-center bg-gray-50 shadow-lg transition-all duration-300 hover:shadow-xl border-t-4 border-[#375466]">
+                        <div className="text-5xl mb-4">{item.icon}</div>
+                        <h3 className="text-xl font-bold text-gray-800">{t(item.titleKey)}</h3>
+                        <p className="text-gray-600 mt-3">{t(item.textKey)}</p>
+                    </div>
+                ))}
             </div>
         </section>
     );
@@ -233,7 +311,7 @@ const TestimonialsSection = () => {
     ];
 
     return (
-        <section className="py-20 bg-white">
+        <section id='testimonials' className="py-20 bg-white">
             <div className="max-w-4xl mx-auto px-10 relative">
                 <h2 className="text-4xl font-bold text-center mb-12">{t('landing_page.testimonials_title')}</h2>
                 <Slider {...settings}>
@@ -277,9 +355,10 @@ const ContactSection = () => {
         }
     };
 
-     {/* Contact Info Section className="w-full mt-4 py-3 px-6 bg-blue-600 text-white font-bold rounded hover:bg-blue-700" */}
+    
+    {/* Contact Info Section className="w-full mt-4 py-3 px-6 bg-blue-600 text-white font-bold rounded hover:bg-blue-700" */}
 return(
-        <section className="py-20 bg-gray-50">
+        <section id='contact' className="py-20 bg-gray-50">
             <div className="max-w-6xl mx-auto px-4">
                  <h2 className="text-4xl font-bold text-center mb-12">{t('landing_page.contact.title')}</h2>
                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center bg-white p-8 rounded-lg shadow-xl">
@@ -382,6 +461,8 @@ const LandingPage = () => {
             <CoursesSection />
             <TestimonialsSection />
             <VisionMissionSection />
+           {/* <ProjectsSection /> 
+            <PublicationsSection />*/}
             <ContactSection />
             <Footer />
         </>

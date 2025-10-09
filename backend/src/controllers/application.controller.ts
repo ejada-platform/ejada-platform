@@ -1,12 +1,12 @@
-// src/controllers/application.controller.ts
-
 import { Request, Response } from 'express';
-import crypto from 'crypto';
+//import crypto from 'crypto';
 import { Types } from 'mongoose';
 
 import Application from '../models/Application.model';
 import User from '../models/User.model';
 import StudentProfile from '../models/StudentProfile.model';
+import StudentProgress from '../models/StudentProgress.model'; // Import StudentProgress
+import Section from '../models/Section.model'; // Import Section
 
 // @desc    Submit a new student application
 // @route   POST /api/applications
@@ -90,6 +90,19 @@ export const approveApplication = async (req: Request, res: Response) => {
 
         user.studentProfile = studentProfile._id as Types.ObjectId;
         
+         // 1. Find the very first section of the student's chosen program
+         const firstSection = await Section.findOne({ program: application.program, order: 1 });
+         if (!firstSection) {
+             return res.status(400).json({ message: `Cannot approve: The '${application.program}' program has no sections. Please build the curriculum first.` });
+         }
+
+        await StudentProgress.create({
+            student: user._id,
+            program: application.program,
+            currentSection: firstSection._id,
+            completedAssessments: []
+        });
+
         await studentProfile.save();
         await user.save();
         

@@ -37,17 +37,17 @@ export const createCircle = async (req: Request, res: Response) => {
 
 export const getMyCircles = async (req: Request, res: Response) => {
     const user = req.user!; 
-    
     const userId = user._id;
     const userRole = user.role;
     let circles: ICircle[] = [];
 
     try {
         if (userRole === 'Teacher' || userRole === 'Admin') {
-            // If the user is a Teacher or Admin, find circles where they are the teacher
-            circles = await Circle.find({ teacher: userId }).populate('students', 'username');
+            // --- THIS IS THE FIX ---
+            // We now populate both the username AND the _id
+            circles = await Circle.find({ teacher: userId }).populate('students', 'username _id');
         } else if (userRole === 'Student') {
-            // If the user is a Student, find circles where they are in the students array
+            // Students don't need the student list, so this is fine
             circles = await Circle.find({ students: userId }).populate('teacher', 'username');
         }
         res.status(200).json(circles);

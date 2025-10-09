@@ -24,6 +24,8 @@ import attendanceRoutes from './routes/attendance.routes';
 import badgeRoutes from './routes/badge.routes';    
 import workLogRoutes from './routes/workLog.routes';
 import payrollRoutes from './routes/payroll.routes'; 
+import curriculumBuilderRoutes from './routes/curriculumBuilder.routes';
+
 //import certificatteRoutes from './routes/certificate.routes';
  // The missing import
 
@@ -55,15 +57,18 @@ app.use('/api/attendance', attendanceRoutes);
 import applicationRoutes from './routes/application.routes'; 
 import certificateRoutes from './routes/certificate.routes';
 import checkoutRoutes from './routes/checkout.routes';
+import progressRoutes from './routes/progress.routes';
 
 // --- THIS IS THE MISSING LINE ---
 app.use('/api/applications', applicationRoutes)
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/badges', badgeRoutes);
 app.use('/api/worklogs', workLogRoutes);
+app.use('/api/curriculum-builder', curriculumBuilderRoutes);
 app.use('/api/certificates', certificateRoutes);
 app.use('/api/payroll', payrollRoutes);
 app.use('/api/checkout', checkoutRoutes);
+app.use('/api/progress', progressRoutes);
 
 // --- SOCKET.IO CONNECTION LOGIC ---
 io.on('connection', (socket) => {
