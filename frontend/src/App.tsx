@@ -94,8 +94,8 @@ const PublicHeaderContent = ({ changeLanguage, i18n }: { changeLanguage: (lng: s
         { href: "/#programs", label: t('Educational courses') }, 
         { href: "/#gallery", label: t('Visuals') }, 
         { href: "/enroll", label: t('Our applications') }, 
-        { href: "/library", label: t('Our publications') },
-        { href: "/#projects", label: t('Our projects') }, 
+       // { href: "/library", label: t('Our publications') },
+       // { href: "/#projects", label: t('Our projects') }, 
     ];
 
     return (
