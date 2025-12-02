@@ -1,5 +1,3 @@
-// src/pages/student/MyProgressPage.tsx
-
 import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { useAuth } from '../../context/AuthContext';
@@ -33,12 +31,12 @@ interface Certificate {
 }
 
 const handleDownload = (url: string, filename: string) => {
-    axios.get(url, { responseType: 'blob' }) // Fetch the file as a binary blob
+    axios.get(url, { responseType: 'blob' }) 
         .then((res) => {
-            const href = window.URL.createObjectURL(res.data as Blob); // Explicitly type 'res.data' as 'Blob'
-            const link = document.createElement('a'); // Explicitly type 'res.data' as 'Blob'
+            const href = window.URL.createObjectURL(res.data as Blob); 
+            const link = document.createElement('a'); 
             link.href = href;
-            link.setAttribute('download', `${filename}.pdf`); // Set the filename for the download
+            link.setAttribute('download', `${filename}.png`);
             document.body.appendChild(link); 
             link.click();
             document.body.removeChild(link);
@@ -170,7 +168,7 @@ const MyProgressPage = () => {
                         </div>
                     ))
                 ) : (
-                    <div className="bg-white p-4 rounded-lg shadow text-center text-gray-500">
+                    <div className="bg-green-600 p-2 rounded-lg shadow text-center text-white font-bold text-3xl">
                         <p>{t('my_progress_page.no_evaluations')}</p>
                     </div>
                 )}

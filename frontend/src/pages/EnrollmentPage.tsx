@@ -1,13 +1,9 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
-
-// --- THIS IS THE CRITICAL MISSING IMPORT ---
 import PhoneInput from 'react-phone-number-input';
-import 'react-phone-number-input/style.css'; // Don't forget the styles
-
+import 'react-phone-number-input/style.css'; 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-// We only import the icons we are actually using
 import { faUser, faVenusMars, faChild, faUserTie, faCalendarAlt, faGlobe, faCity, faFlag, faEnvelope, faBookOpen } from '@fortawesome/free-solid-svg-icons';
 
 const initialFormData = {
@@ -59,7 +55,6 @@ const EnrollmentPage = () => {
         }
         setLoading(true);
         try {
-            // Tell Axios what to expect
             const payload = { ...formData, phoneNumber, agreedToFees, howDidYouHear };
             const { data } = await axios.post<{ success: boolean; message: string; }>('http://localhost:5000/api/applications', payload);
             setMessage(data.message);

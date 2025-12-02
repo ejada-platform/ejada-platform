@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 
 import { useAuth } from '../../context/AuthContext';
-//import StarStudent from '../../components/StartStudent'; // Make sure this path is correct
+//import StarStudent from '../../components/StartStudent'; 
 import { useTranslation } from 'react-i18next';
 
 const StudentDashboard = () => {

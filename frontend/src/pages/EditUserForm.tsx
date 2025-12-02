@@ -1,5 +1,3 @@
-// src/pages/admin/EditUserForm.tsx
-
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Select from 'react-select';
@@ -7,7 +5,7 @@ import { useAuth, type User } from '../context/AuthContext';
 import { useTranslation } from 'react-i18next';
 
 interface EditUserFormProps {
-    user: User & { children?: string[] }; // Ensure the user prop can have children
+    user: User & { children?: string[] }; 
     onSuccess: () => void;
     onCancel: () => void;
 }
@@ -29,14 +27,12 @@ const EditUserForm = ({ user, onSuccess, onCancel }: EditUserFormProps) => {
     const [selectedChildren, setSelectedChildren] = useState<SelectOption[]>([]);
     const [loadingStudents, setLoadingStudents] = useState(false);
 
-    // This effect runs when the component mounts or the user prop changes
+    
     useEffect(() => {
-        // Reset state when a new user is selected
         setUsername(user.username);
         setRole(user.role);
         setMessage('');
 
-        // If the user being edited is a Parent, fetch all students
         if (user.role === 'Parent') {
             const fetchStudents = async () => {
                 if (!token) return;
@@ -50,7 +46,6 @@ const EditUserForm = ({ user, onSuccess, onCancel }: EditUserFormProps) => {
                         .map(s => ({ value: s._id, label: s.username }));
                     setAllStudents(studentOptions);
 
-                    // Pre-select the children that are already linked to this parent
                     if (user.children) {
                         const preSelected = studentOptions.filter(opt => user.children!.includes(opt.value));
                         setSelectedChildren(preSelected);
@@ -73,7 +68,6 @@ const EditUserForm = ({ user, onSuccess, onCancel }: EditUserFormProps) => {
 
         try {
             const config = { headers: { Authorization: `Bearer ${token}` } };
-            // Construct the payload based on the role
             const payload: any = { username, role };
             if (role === 'Parent') {
                 payload.children = selectedChildren.map(c => c.value);
@@ -82,8 +76,7 @@ const EditUserForm = ({ user, onSuccess, onCancel }: EditUserFormProps) => {
             await axios.put(`http://localhost:5000/api/users/${user._id}`, payload, config);
             
             alert('User updated successfully!');
-            onSuccess(); // This will close the modal and refresh the user list
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            onSuccess(); 
         } catch (err: any) {
             setMessage(err.response?.data?.message || 'Failed to update user.');
         }
@@ -109,12 +102,11 @@ const EditUserForm = ({ user, onSuccess, onCancel }: EditUserFormProps) => {
                 >
                     <option value="Student">{t('register_page.role_student')}</option>
                     <option value="Teacher">{t('register_page.role_teacher')}</option>
-                    <option value="Parent">Parent</option> {/* Added Parent role */}
+                    <option value="Parent">Parent</option> 
                     <option value="Admin">Admin</option>
                 </select>
             </div>
             
-            {/* Conditional section for linking students to parents */}
             {role === 'Parent' && (
                 <div className="mb-6">
                     <label className="block font-bold mb-1">Linked Student Accounts</label>

@@ -62,7 +62,7 @@ export const approveApplication = async (req: Request, res: Response) => {
         const user = new User({
             username,
             email: application.email,
-            password,
+            password: password,
             role: 'Student',
         });
         

@@ -1,5 +1,3 @@
-// src/controllers/stats.controller.ts
-
 import { Request, Response } from 'express';
 import Evaluation from '../models/Evaluation.model';
 import Submission from '../models/Submission.model';

@@ -1,5 +1,3 @@
-// src/pages/parent/ParentDashboardPage.tsx
-
 import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { useAuth } from '../../context/AuthContext';

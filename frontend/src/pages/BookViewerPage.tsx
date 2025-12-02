@@ -1,5 +1,3 @@
-// src/pages/BookViewerPage.tsx
-
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
@@ -14,18 +12,13 @@ const BookViewerPage = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
-    useEffect(() => {
-        // This function will be called when the component mounts
-        const fetchPdf = async () => {
-            // We must wait to ensure the token is loaded from localStorage by the AuthContext
-            if (!token || !bookUrl) {
-                // If the token isn't ready yet, we wait. This effect will re-run when it is.
-                // If the bookUrl is missing, we show an error.
+    useEffect(() => {        
+        const fetchPdf = async () => {            
+            if (!token || !bookUrl) {           
                 if (!bookUrl) setError("Cannot display PDF without a URL.");
                 setLoading(false);
                 return;
             }
-
             try {
                 setLoading(true);
                 const proxiedUrl = `http://localhost:5000/api/resources/proxy?url=${encodeURIComponent(bookUrl)}`;
@@ -47,13 +40,13 @@ const BookViewerPage = () => {
 
         fetchPdf();
 
-        // Cleanup function
+   
         return () => {
             if (pdfSrc) {
                 URL.revokeObjectURL(pdfSrc);
             }
         };
-    }, [bookUrl, token]); // The key is to re-run this effect when the token becomes available
+    }, [bookUrl, token]);
 
     if (loading) {
         return <div className="p-8 text-center">Loading document...</div>;

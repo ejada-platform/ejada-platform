@@ -1,5 +1,3 @@
-// src/pages/CircleDetailPage.tsx
-
 import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
@@ -242,7 +240,7 @@ const LessonLogList = ({ circleId, logCount }: { circleId: string; logCount: num
 
     useEffect(() => {
         fetchLogs();
-    }, [fetchLogs, logCount]); // Add logCount as a dependency to re-fetch when a new log is made
+    }, [fetchLogs, logCount]); 
 
     if (loading) return <p className="mt-8">{t('circle_detail_page.loading_history')}</p>;
 

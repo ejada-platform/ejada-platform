@@ -1,5 +1,3 @@
-// src/pages/admin/CreateCirclePage.tsx
-
 import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import Select from 'react-select';
@@ -59,7 +57,6 @@ const CreateCirclePage = () => {
         setLoading(true);
         try {
             const config = { headers: { Authorization: `Bearer ${token}` } };
-            // This payload now correctly includes all the required fields
             const payload = {
                 name,
                 description,
@@ -71,12 +68,10 @@ const CreateCirclePage = () => {
             };
             await axios.post('http://localhost:5000/api/circles', payload, config);
             showSuccessAlert('Success!', t('admin_pages.create_circle.success_message'));
-            // Reset the form
             setName(''); setDescription(''); setLiveClassUrl('');
             setSchedule([{ day: 'Monday', time: '17:00' }]);
             setProgram('Reading 7+'); setTeacher(null); setStudents([]);
         } catch (err: any) {
-            // This will now show the specific validation error from the backend
             showErrorAlert('Error!', err.response?.data?.message || 'Failed to create circle.');
         } finally {
             setLoading(false);

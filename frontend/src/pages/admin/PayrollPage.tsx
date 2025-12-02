@@ -1,5 +1,3 @@
-// src/pages/admin/PayrollPage.tsx
-
 import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import Select from 'react-select';

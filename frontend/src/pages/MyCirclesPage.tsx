@@ -135,7 +135,7 @@ const MyCirclesPage = () => {
                 const payload = { starStudent: studentId };
                 await axios.put(`http://localhost:5000/api/circles/${circleId}`, payload, config);
                 showSuccessAlert('Success!', 'Star Student has been updated.');
-                fetchMyCircles(); // Refresh the data to show the new star
+                fetchMyCircles(); 
             } catch (err) {
                 showErrorAlert('Error!', 'Failed to set star student.');
             }
@@ -176,8 +176,7 @@ const MyCirclesPage = () => {
                             {/* Student's view can be added here if needed */}
                             {user?.role === 'Student' && (
                             <div className="mt-4">
-                                 {/* The new banner that shows if the logged-in student is the star of THIS circle */}
-                                 {circle.starStudent === user._id && (
+                                {circle.starStudent === user._id && (
                                     <div className="p-3 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-800 rounded-md mb-4">
                                         <p className="font-bold flex items-center">
                                             <span className="text-xl mr-2">★</span>

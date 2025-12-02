@@ -1,5 +1,3 @@
-// src/pages/admin/ApplicationReviewPage.tsx
-
 import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { useAuth } from '../../context/AuthContext';
@@ -34,8 +32,7 @@ const ApproveApplicationForm = ({ applicationId, onSuccess, onCancel }: { applic
             const config = { headers: { Authorization: `Bearer ${token}` } };
             const payload = { username, password };
             await axios.post(`http://localhost:5000/api/applications/${applicationId}/approve`, payload, config);
-            
-            // On success, pass the credentials up to the parent to display
+     
             onSuccess(username, password);
         } catch (err: any) {
             setError(err.response?.data?.message || 'Failed to approve application.');
@@ -75,8 +72,6 @@ const ApplicationReviewPage = () => {
     const [applications, setApplications] = useState<Application[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
-    
-    // State for managing the modal
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedAppId, setSelectedAppId] = useState<string | null>(null);
 
@@ -105,12 +100,11 @@ const ApplicationReviewPage = () => {
 
     const handleApprovalSuccess = (username: string, password: string) => {
         setIsModalOpen(false);
-        // Use a beautiful SweetAlert2 pop-up to show the credentials to the Admin
         showSuccessAlert(
             'User Created Successfully!',
             `Please copy and send these credentials to the user:\n\nUsername: ${username}\nPassword: ${password}`
         );
-        fetchApplications(); // Refresh the list of pending applications
+        fetchApplications(); 
     };
 
     if (loading) return <div className="p-8 text-center">Loading applications...</div>;

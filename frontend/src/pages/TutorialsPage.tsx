@@ -1,11 +1,9 @@
-// src/pages/TutorialsPage.tsx
-
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
-// This is a reusable component for embedding a single video
+
 const VideoPlayer = ({ title, description, youtubeVideoId }: { title: string; description: string; youtubeVideoId: string }) => {
-    // A check to ensure we don't try to render a placeholder
+  
     if (youtubeVideoId.startsWith('REPLACE_WITH')) {
         return (
             <div className="bg-white p-4 rounded-lg shadow border">
@@ -45,13 +43,13 @@ const TutorialsPage = () => {
             id: 1,
             titleKey: 'tutorials_page.video1_title',
             descriptionKey: 'tutorials_page.video1_desc',
-            youtubeVideoId: 'REPLACE_WITH_YOUR_YOUTUBE_ID_1'
+            youtubeVideoId: 'YTpEzbNUZlk'
         },
         {
             id: 2,
             titleKey: 'tutorials_page.video2_title',
             descriptionKey: 'tutorials_page.video2_desc',
-            youtubeVideoId: 'REPLACE_WITH_YOUR_YOUTUBE_ID_2'
+            youtubeVideoId: 'JAqmbIPmXKI'
         }
     ];
 

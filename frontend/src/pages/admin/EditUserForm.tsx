@@ -1,5 +1,3 @@
-// src/pages/admin/EditUserForm.tsx
-
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Select from 'react-select';
@@ -31,7 +29,7 @@ const EditUserForm = ({ user, onSuccess, onCancel }: EditUserFormProps) => {
     useEffect(() => {
         setUsername(user.username);
         setRole(user.role);
-        setPassword(''); // Reset password field when user changes
+        setPassword('');
         setMessage('');
 
         if (user.role === 'Parent') {

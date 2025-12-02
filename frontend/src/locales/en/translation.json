@@ -187,10 +187,18 @@
             "delete_error_title": "Error!",
             "delete_error_text": "Failed to delete the resource."
  },
-        "manage_badges": { "add_title": "Create New Badge", "name_label": "Badge Name", "icon_url_label": "Icon URL", "description_label": "Description", "submit_button": "Create Badge", "existing_title": "Available Badges", "success_message": "Badge created successfully!" }
+        "manage_badges": { 
+            "add_title": "Create New Badge",
+             "name_label": "Badge Name", 
+             "icon_url_label": "Icon URL", 
+             "description_label": "Description", 
+             "submit_button": "Create Badge", 
+             "existing_title": "Available Badges", 
+             "delete_button": "Delete", 
+             "success_message": "Badge created successfully!" }
     },
     "digital_library_page": {
-         "download_button": "Download",
+        "download_button": "Download",
         "title": "Digital Library",
         "loading": "Loading Resources...",
         "error": "Failed to fetch resources.",

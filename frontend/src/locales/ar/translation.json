@@ -105,6 +105,16 @@
         "no_evaluations": "ليس لديك أي تقييمات بعد.",
         "loading": "جاري تحميل تقدمك...",
         "error": "فشل تحميل بيانات التقدم."
+    },    "student_progress": {
+        "title": "تقدم الطالب",
+        "select_student": "اختر طالبًا لعرض تقدمه",
+        "no_student_selected": "الرجاء اختيار طالب من القائمة لعرض تقدمه.",
+        "loading_progress": "جاري تحميل تقدم الطالب...",
+        "error_loading_progress": "فشل تحميل تقدم الطالب.",
+        "no_data_available": "لا توجد بيانات تقدم متاحة لهذا الطالب بعد."
+    },
+    "student_progress":{
+
     },
     "star_student_component": {
         "title": "★ نجم الشهر ★"

@@ -1,5 +1,3 @@
-// src/pages/admin/AdminDashboardPage.tsx
-
 import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
@@ -28,7 +26,7 @@ const BroadcastForm = () => {
             const config = { headers: { Authorization: `Bearer ${token}` } };
             const payload = { message, link };
             const { data } = await axios.post('http://localhost:5000/api/notifications/broadcast', payload, config);
-            setStatus(data.message); // Show success message from backend
+            setStatus(data.message); 
             setMessage('');
             setLink('');
         } catch (error) {
@@ -66,14 +64,13 @@ const AdminDashboardPage = () => {
             const config = { headers: { Authorization: `Bearer ${token}` } };
             const { data } = await axios.get<PlatformStats>('http://localhost:5000/api/stats/overview', config);
             setStats(data);
-            setError(null); // Clear any previous errors on successful fetch
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            setError(null); 
         } catch (err: any) {
             setError(err.response?.data?.message || t('admin_dashboard.error'));
         } finally {
             setLoading(false);
         }
-    }, [token, t]); // Add t to dependency array
+    }, [token, t]); 
 
     useEffect(() => {
         fetchPlatformStats();
@@ -222,11 +219,8 @@ const AdminDashboardPage = () => {
                 <div className="mt-8">
                 <BroadcastForm />
                 </div>
-            </div>
-           
-        </div>
-
-        
+            </div>           
+        </div>        
     );
 };
 

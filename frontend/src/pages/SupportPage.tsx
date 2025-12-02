@@ -1,8 +1,6 @@
-// src/pages/SupportPage.tsx
-
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import Accordion from '../components/Accordion'; // <-- 1. IMPORT THE NEW COMPONENT
+import Accordion from '../components/Accordion'; 
 
 const SupportPage = () => {
     const { t } = useTranslation();

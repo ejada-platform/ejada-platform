@@ -9,12 +9,12 @@ interface Section {
     title: string;
     order: number;
     description?: string;
-    hasAssessment?: boolean; // We'll add this on the frontend
+    hasAssessment?: boolean;
 }
 interface Assessment {
     _id: string;
     title: string;
-    section: string; // Just the ID
+    section: string; 
 }
 
 const programs = ['Reading <7', 'Reading 7+', 'Reciting', 'Memorizing'];

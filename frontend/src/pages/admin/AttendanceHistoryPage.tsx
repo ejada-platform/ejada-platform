@@ -1,5 +1,3 @@
-// src/pages/admin/AttendanceHistoryPage.tsx
-
 import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
@@ -45,8 +43,6 @@ const AttendanceHistoryPage = () => {
                     <div key={record._id} className="bg-white p-4 rounded-lg shadow">
                         <p className="font-bold text-lg">{new Date(record.date).toLocaleDateString()}</p>
                         
-                        {/* --- THIS IS THE FIX --- */}
-                        {/* We check if 'takenBy' exists before trying to access its 'username' */}
                         <p className="text-sm text-gray-500">
                             Taken by: {record.takenBy ? record.takenBy.username : 'Unknown Teacher'}
                         </p>

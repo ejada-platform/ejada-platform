@@ -1,5 +1,3 @@
-// src/pages/teacher/StudentProgressPage.tsx
-
 import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';

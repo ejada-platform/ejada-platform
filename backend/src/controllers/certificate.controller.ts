@@ -1,22 +1,12 @@
-// src/controllers/certificate.controller.ts
-
 import { Request, Response } from 'express';
 import Certificate from '../models/Certificate.model';
 import CertificateTemplate from '../models/CertificateTemplate.model';
 import User from '../models/User.model';
 import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
 import cloudinary from '../config/cloudinary';
-import axios from 'axios'; // Import axios
-
-// ... (getCertificatesForStudent and getTemplates are correct)
-
-// ==================================================================
-// === THIS IS THE CORRECTED awardCertificate FUNCTION ===
+import axios from 'axios'; 
 
 
-// @desc    Get all certificates for a specific student
-// @route   GET /api/certificates/student/:studentId
-// @access  Private (Authenticated Users)
 export const getCertificatesForStudent = async (req: Request, res: Response) => {
     try {
         const certificates = await Certificate.find({ student: req.params.studentId })
@@ -28,9 +18,6 @@ export const getCertificatesForStudent = async (req: Request, res: Response) => 
 };
 
 
-// ==================================================================
-// === THIS IS THE CORRECTED uploadTemplate FUNCTION ===
-// ==================================================================
 export const uploadTemplate = async (req: Request, res: Response) => {
     const { program } = req.body;
     if (!req.file) { return res.status(400).json({ message: 'Please upload a file' }); }
@@ -66,7 +53,7 @@ export const getTemplates = async (req: Request, res: Response) => {
     }
 };
 
-// --- We need a new function to DELETE templates ---
+
 export const deleteTemplate = async (req: Request, res: Response) => {
     try {
         const { program } = req.body;
@@ -87,19 +74,18 @@ export const awardCertificate = async (req: Request, res: Response) => {
     const { studentId, program } = req.body;
 
     try {
-        // 1. Find the blank template for the selected program
+       
         const template = await CertificateTemplate.findOne({ program });
         if (!template) {
             return res.status(404).json({ message: `No certificate template found for the '${program}' program. Please upload one first.` });
         }
 
-        // 2. Create the certificate record, using the TEMPLATE'S URL
-        // The certificate is now just a record that points to the beautiful template image.
+
         const certificate = await Certificate.create({
             student: studentId,
             program,
             awardedBy: user._id,
-            certificateUrl: template.templateUrl, // Use the URL from the template
+            certificateUrl: template.templateUrl, 
         });
         res.status(201).json(certificate);
 

@@ -14,7 +14,7 @@ import curriculumRoutes from './routes/curriculum.routes';
 import assignmentRoutes from './routes/assignment.routes';
 import submissionRoutes from './routes/submission.routes';
 import evaluationRoutes from './routes/evaluation.routes';
-import notificationRoutes from './routes/notification.routes'; // The missing one
+import notificationRoutes from './routes/notification.routes'; 
 import statsRoutes from './routes/stats.routes';
 import lessonLogRoutes from './routes/lessonLog.routes';
 import calendarRoutes from './routes/calendar.routes';
@@ -26,8 +26,6 @@ import workLogRoutes from './routes/workLog.routes';
 import payrollRoutes from './routes/payroll.routes'; 
 import curriculumBuilderRoutes from './routes/curriculumBuilder.routes';
 
-//import certificatteRoutes from './routes/certificate.routes';
- // The missing import
 
 // --- SETUP ---
 dotenv.config();
@@ -58,6 +56,8 @@ import applicationRoutes from './routes/application.routes';
 import certificateRoutes from './routes/certificate.routes';
 import checkoutRoutes from './routes/checkout.routes';
 import progressRoutes from './routes/progress.routes';
+import sectionRoutes from './routes/section.routes';
+
 
 // --- THIS IS THE MISSING LINE ---
 app.use('/api/applications', applicationRoutes)
@@ -69,6 +69,7 @@ app.use('/api/certificates', certificateRoutes);
 app.use('/api/payroll', payrollRoutes);
 app.use('/api/checkout', checkoutRoutes);
 app.use('/api/progress', progressRoutes);
+app.use('/api/sections', sectionRoutes);
 
 // --- SOCKET.IO CONNECTION LOGIC ---
 io.on('connection', (socket) => {

@@ -57,8 +57,12 @@ export const registerUser = async (req: Request, res: Response) => {
             res.status(400).json({ message: 'Invalid user data' });
         }
     } catch (error) {
-        res.status(500).json({ message: 'Server Error' });
+      res.status(500).json({ message: 'Server Error' });
     }
+   // catch (error: any) { // Use 'any' type temporarily to access message property
+   //     console.error("REGISTRATION ERROR DETAILS:", error); // <-- The critical line to see the error
+   //     res.status(500).json({ message: 'Server Error', details: error.message });
+   // }
 };
 
 // We will add the loginUser function here in the next step

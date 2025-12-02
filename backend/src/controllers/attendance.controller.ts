@@ -7,7 +7,7 @@ import Circle from '../models/Circle.model';
 // @access  Private (Teacher, Admin)
 export const submitAttendance = async (req: Request, res: Response) => {
     const teacher = req.user!;
-    const { circleId, date, records } = req.body; // records is an array: [{ student: 'studentId', status: 'Present' }]
+    const { circleId, date, records } = req.body; 
 
     try {
         // Security Check: Ensure the user is the teacher of this circle
@@ -19,7 +19,6 @@ export const submitAttendance = async (req: Request, res: Response) => {
             return res.status(403).json({ message: 'User is not the teacher of this circle' });
         }
 
-        // Use findOneAndUpdate with 'upsert' to either create a new record or update an existing one for that day
         const attendance = await Attendance.findOneAndUpdate(
             { circle: circleId, date: new Date(date) },
             { 
@@ -60,12 +59,12 @@ export const getAttendanceForDate = async (req: Request, res: Response) => {
 
 // @access  Private (Admin, Teacher of the circle)
 export const getAttendanceForCircle = async (req: Request, res: Response) => {
-    // ... (Add security check to ensure user is admin or teacher of this circle)
+   
     try {
         const { circleId } = req.params;
         const attendanceRecords = await Attendance.find({ circle: circleId })
             .populate('takenBy', 'username')
-            .sort({ date: -1 }); // Sort by most recent date
+            .sort({ date: -1 }); 
         
         res.status(200).json(attendanceRecords);
     } catch (error: any) {

@@ -41,13 +41,10 @@ const HeroWithStats = () => {
     return (
         <section id="home"
             className="relative bg-cover bg-center text-white py-70 px-8 text-center"
-            // --- THIS IS THE FINAL FIX ---
-            // It tells the component to use the image from your public folder as the background
             style={{ backgroundImage: "url('/images/landing.png')" }}
         >
-            {/* This div adds a dark overlay, making the white text easier to read */}
-            <div className="absolute inset-0 bg-black opacity-60"></div>
-            
+
+            <div className="absolute inset-0 bg-black opacity-60"></div>            
             <div className="relative z-10">
                 <h1 className="text-4xl md:text-6xl font-extrabold">{t('landing_page.hero_title')}</h1>
                 <p className="text-lg mt-4 max-w-3xl mx-auto text-gray-200">{t('landing_page.hero_subtitle')}</p>
@@ -87,15 +84,14 @@ const ImageSliderSection = () => {
                     ))}
                 </Slider>
             </div>
-
             {/* --- The New Lightbox Implementation --- */}
             <Lightbox
                 open={!!openVideo}
                 close={() => setOpenVideo(null)}
-                slides={openVideo ? [{
-                    type: "video" as "video", // Change type to "video"
-                    sources: [{ src: `https://www.youtube.com/embed/${openVideo}?autoplay=1`, type: "video/youtube" }]
-                }] : []}
+                slides={openVideo ? [{ 
+                    type: "video", 
+                    sources: [{ src: `https://www.youtube.com/embed/${openVideo}?autoplay=1`, type: "video/youtube" }] 
+                }] : [] as any}
                 render={{
                     slide: ({ slide }) => (slide.type === 'video' ? <div style={{ width: '100%', height: 'calc(100vh - 120px)' }} dangerouslySetInnerHTML={{ __html: slide.html }} /> : undefined),
                 }}
@@ -356,7 +352,6 @@ const ContactSection = () => {
     };
 
     
-    {/* Contact Info Section className="w-full mt-4 py-3 px-6 bg-blue-600 text-white font-bold rounded hover:bg-blue-700" */}
 return(
         <section id='contact' className="py-20 bg-gray-50">
             <div className="max-w-6xl mx-auto px-4">

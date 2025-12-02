@@ -1,5 +1,3 @@
-// src/pages/CurriculumPage.tsx
-
 import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
@@ -40,7 +38,7 @@ const CurriculumPage = () => {
         } finally {
             setLoading(false);
         }
-    }, [token, t]); // Add t to dependency array
+    }, [token, t]); 
 
     useEffect(() => {
         fetchCurricula();

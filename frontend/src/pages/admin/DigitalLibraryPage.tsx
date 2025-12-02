@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useCallback } from 'react'; // Corrected path
+import React, { useState, useEffect, useCallback } from 'react'; 
 import axios from 'axios';
-import { useAuth } from '../../context/AuthContext'; // 1. Import useAuth
+import { useAuth } from '../../context/AuthContext'; 
 import { useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBookOpen, faShoppingCart } from '@fortawesome/free-solid-svg-icons'; // A more appropriate icon
+import { faBookOpen, faShoppingCart } from '@fortawesome/free-solid-svg-icons'; 
 import { Link } from 'react-router-dom';
 
 interface Resource {
@@ -19,13 +19,13 @@ interface Resource {
 
 const DigitalLibraryPage = () => {
     const { t } = useTranslation();
-    const { token } = useAuth(); // 2. Get the user's token from the context
+    const { token } = useAuth(); 
     const [resources, setResources] = useState<Resource[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
     const fetchResources = useCallback(async () => {
-        // 3. The user must be logged in to fetch resources
+        
         if (!token) {
             setError("You must be logged in to access the library.");
             setLoading(false);
@@ -33,7 +33,6 @@ const DigitalLibraryPage = () => {
         }
         try {
             setLoading(true);
-            // 4. Add the Authorization header to the request
             const config = { headers: { Authorization: `Bearer ${token}` } };
             const { data } = await axios.get<Resource[]>('http://localhost:5000/api/resources', config);
             setResources(data);
@@ -82,7 +81,6 @@ const DigitalLibraryPage = () => {
                         <h2 className="text-2xl font-bold text-primary">{resource.title.toUpperCase()}</h2>
                         <p className="text-gray-600 mt-2 flex-grow">{resource.description}</p>
                         
-                        {/* --- THIS IS THE NEW CONDITIONAL LOGIC --- */}
                         {resource.isFree ? (
                             <Link
                                 to={`/library/view?url=${encodeURIComponent(resource.resourceUrl)}`}

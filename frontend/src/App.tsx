@@ -87,7 +87,6 @@ const LanguageThemeBox = ({ i18n, changeLanguage }: { i18n: any, changeLanguage:
 const PublicHeaderContent = ({ changeLanguage, i18n }: { changeLanguage: (lng: string) => void, i18n: any }) => {
     const { t } = useTranslation();
 
-    // Mapping the links from the image to anchor IDs and routes
     const imageNavLinks = [
         { href: "/", label: t('Home'), isHome: true },
         { href: "/#vision", label: t('Who we are') }, 

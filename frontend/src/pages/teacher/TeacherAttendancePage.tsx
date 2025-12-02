@@ -1,5 +1,3 @@
-// src/pages/teacher/TakeAttendancePage.tsx
-
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
@@ -107,7 +105,7 @@ const TeacherAttendancePage = () => {
                         );
                     })}
                 </div>
-                <button type="submit" className="w-full mt-6 py-3 px-4 bg-primary text-light font-bold rounded-lg hover:opacity-90">
+                <button type="submit" className="w-full mt-6 py-3 px-4 bg-green-800 text-white font-bold rounded-lg hover:opacity-90">
                     Save Session Record
                 </button>
             </form>

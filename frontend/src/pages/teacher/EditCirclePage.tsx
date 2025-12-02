@@ -1,5 +1,3 @@
-// src/pages/teacher/EditCirclePage.tsx
-
 import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';

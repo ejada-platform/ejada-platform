@@ -1,10 +1,8 @@
-// src/pages/admin/AttendanceOverviewPage.tsx
-
 import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { useAuth, type User } from '../../context/AuthContext';
-//import { useTranslation } from 'react-i18next'; // Import useTranslation
+import { useTranslation } from 'react-i18next';
 
 interface CircleForAdmin {
     _id: string;
@@ -18,7 +16,7 @@ interface AttendanceRecord {
 }
 
 const AttendanceOverviewPage = () => {
-   // const { t } = useTranslation(); // Initialize translation
+    const { t } = useTranslation(); // Initialize translation
     const { token } = useAuth();
     const [circles, setCircles] = useState<CircleForAdmin[]>([]);
     const [latestAttendanceMap, setLatestAttendanceMap] = useState<Map<string, string>>(new Map());

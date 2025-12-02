@@ -26,8 +26,7 @@ const localizer = dateFnsLocalizer({
     locales,
 });
 
-// --- FIX #1: Moved CreateEventForm to be a standalone component ---
-// It is no longer defined inside AcademicCalendarPage
+
 const CreateEventForm = ({ onEventCreated }: { onEventCreated: () => void }) => {
     const { token } = useAuth();
     const [title, setTitle] = useState('');
@@ -137,8 +136,8 @@ const AcademicCalendarPage = () => {
                     events={events}
                     startAccessor="start"
                     endAccessor="end"
-                    style={{ flex: 1 }} // This makes the calendar fill the parent's space
-                    className="dark-calendar" // Optional: for dark mode styling
+                    style={{ flex: 1 }} 
+                    className="dark-calendar" 
                 />
             </div>
         </div>

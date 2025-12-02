@@ -1,5 +1,3 @@
-// src/pages/LoginPage.tsx
-
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
@@ -13,7 +11,6 @@ interface LoginResponse extends User {
     generatedCode?: string;
 }
 
-// Reusable component for the right-side branding panel
 const BrandingPanel = () => (
     <div className="hidden lg:flex w-1/2 flex-col items-center justify-center bg-gray-100 p-12 text-center">
         <img src="/images/slider1.jpeg" alt="Ejada Logo" className="w-40 h-40 mb-6" />
@@ -50,10 +47,7 @@ const LoginPage = () => {
         setMessage('');
         setIsLoading(true);
         try {
-            // --- THIS IS THE FIX ---
-            // Your backend expects the key to be 'username', not 'email'.
-            const payload = { username, password };
-            
+            const payload = { username, password };            
             const response = await axios.post<LoginResponse>('http://localhost:5000/api/auth/login', payload);
             const { token, ...userData } = response.data;
             login(userData, token);
@@ -140,8 +134,6 @@ const LoginPage = () => {
                     {message && <p className="mt-4 text-center text-sm text-red-400">{message}</p>}
                 </div>
             </div>
-            
-            {/* --- Right Side: Branding (Unchanged) --- */}
             <BrandingPanel />
         </div>
     );
