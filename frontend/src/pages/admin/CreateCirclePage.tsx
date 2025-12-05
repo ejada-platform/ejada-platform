@@ -8,12 +8,14 @@ import { showSuccessAlert, showErrorAlert } from '../../services/alert.service';
 interface ScheduleEntry { day: string; time: string; }
 interface SelectOption { value: string; label: string; }
 
+const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+const programValues: ('Reading <7' | 'Reading 7+' | 'Reciting' | 'Memorizing')[] = ['Reading 7+', 'Reading <7', 'Reciting', 'Memorizing'];
+
 const CreateCirclePage = () => {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const { token } = useAuth();
     const [users, setUsers] = useState<User[]>([]);
-    
-    // Form State
+
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
     const [liveClassUrl, setLiveClassUrl] = useState('');
@@ -46,12 +48,10 @@ const CreateCirclePage = () => {
 
     const addScheduleEntry = () => setSchedule([...schedule, { day: 'Wednesday', time: '17:00' }]);
     const removeScheduleEntry = (index: number) => setSchedule(schedule.filter((_, i) => i !== index));
-
-    // --- THIS IS THE FINAL, CORRECTED handleSubmit FUNCTION ---
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!name || !teacher || !program) {
-            showErrorAlert('Missing Fields', 'Please ensure Name, Program, and Teacher are selected.');
+            showErrorAlert(t('admin_pages.create_circle.alert_missing_fields'), t('admin_pages.create_circle.alert_missing_fields_message'));
             return;
         }
         setLoading(true);
@@ -67,12 +67,12 @@ const CreateCirclePage = () => {
                 students: students.map(s => s.value),
             };
             await axios.post('http://localhost:5000/api/circles', payload, config);
-            showSuccessAlert('Success!', t('admin_pages.create_circle.success_message'));
+            showSuccessAlert(t('admin_pages.create_circle.alert_success_title'), t('admin_pages.create_circle.success_message'));
             setName(''); setDescription(''); setLiveClassUrl('');
             setSchedule([{ day: 'Monday', time: '17:00' }]);
             setProgram('Reading 7+'); setTeacher(null); setStudents([]);
         } catch (err: any) {
-            showErrorAlert('Error!', err.response?.data?.message || 'Failed to create circle.');
+            showErrorAlert(t('admin_pages.create_circle.alert_error_title'), err.response?.data?.message || t('admin_pages.create_circle.alert_error_message'));
         } finally {
             setLoading(false);
         }
@@ -80,9 +80,11 @@ const CreateCirclePage = () => {
     
     const teacherOptions = users.filter(u => u.role === 'Teacher').map(u => ({ value: u._id, label: u.username }));
     const studentOptions = users.filter(u => u.role === 'Student').map(u => ({ value: u._id, label: u.username }));
+    const getTranslatedDay = (day: string) => t(`admin_pages.create_circle.day_${day.toLowerCase()}`);
+    const getTranslatedProgram = (program: string) => t(`admin_pages.create_circle.program_${program.toLowerCase().replace(/[ <+]/g, '_')}`);
 
     return (
-        <div className="p-8 max-w-2xl mx-auto">
+        <div className="p-8 max-w-2xl mx-auto" dir={i18n.dir()}> 
             <h1 className="text-3xl font-bold mb-6">{t('admin_pages.create_circle.title')}</h1>
             <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow space-y-4">
                 <div>
@@ -101,8 +103,9 @@ const CreateCirclePage = () => {
                     <label className="block font-bold mb-2">{t('admin_pages.create_circle.schedule_label')}</label>
                     {schedule.map((entry, index) => (
                         <div key={index} className="flex items-center space-x-2 mb-2">
+                            {/* Schedule Day Dropdown */}
                             <select value={entry.day} onChange={e => handleScheduleChange(index, 'day', e.target.value)} className="p-2 border rounded-md w-1/2 bg-white">
-                                {['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'].map(day => <option key={day}>{day}</option>)}
+                                {daysOfWeek.map(day => <option key={day} value={day}>{getTranslatedDay(day)}</option>)}
                             </select>
                             <input type="time" value={entry.time} onChange={e => handleScheduleChange(index, 'time', e.target.value)} className="p-2 border rounded-md w-1/2" />
                             {schedule.length > 1 && <button type="button" onClick={() => removeScheduleEntry(index)} className="px-2 py-1 bg-red-500 text-white rounded">&times;</button>}
@@ -111,12 +114,14 @@ const CreateCirclePage = () => {
                     <button type="button" onClick={addScheduleEntry} className="text-sm text-blue-600 hover:underline">{t('admin_pages.create_circle.add_day_button')}</button>
                 </div>
                 <div>
-                    <label className="block font-bold mb-1">Program</label>
+                    <label className="block font-bold mb-1">{t('admin_pages.create_circle.program_label')}</label>
                     <select value={program} onChange={e => setProgram(e.target.value as any)} className="w-full p-2 border rounded-md bg-white">
-                        <option value="Reading 7+">Reading (7+)</option>
-                        <option value="Reading <7">Reading (&lt;7)</option>
-                        <option value="Reciting">Reciting</option>
-                        <option value="Memorizing">Memorizing</option>
+                        {/* Program Dropdown */}
+                        {programValues.map(p => (
+                            <option key={p} value={p}>
+                                {getTranslatedProgram(p)}
+                            </option>
+                        ))}
                     </select>
                 </div>
                 <div>
@@ -128,7 +133,7 @@ const CreateCirclePage = () => {
                     <Select options={studentOptions} value={students} onChange={newValue => setStudents(newValue as SelectOption[])} isMulti />
                 </div>
                 <button type="submit" disabled={loading} className="w-full py-2 px-4 bg-blue-500 text-white font-bold rounded hover:opacity-90 disabled:bg-gray-400">
-                    {loading ? 'Creating...' : t('admin_pages.create_circle.submit_button')}
+                    {loading ? t('admin_pages.create_circle.button_creating') : t('admin_pages.create_circle.submit_button')}
                 </button>
             </form>
         </div>

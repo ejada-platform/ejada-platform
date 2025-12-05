@@ -144,12 +144,12 @@ const CreateAssignmentPage = () => {
                 {/* 2. NEW: Select Section (Appears after circle is selected and sections are loaded) */}
                 {selectedCircle && sections.length > 0 && (
                     <div>
-                        <label className="block font-bold mb-1">Select Section</label>
+                        <label className="block font-bold mb-1">{t('create_assignment_page.select_section')}</label>
                         <Select 
                             options={sectionOptions} 
                             value={selectedSection} 
                             onChange={setSelectedSection} 
-                            placeholder="Select the relevant section" 
+                            placeholder={t('create_assignment_page.select_section_placeholder')} 
                             required 
                         />
                     </div>
@@ -158,13 +158,13 @@ const CreateAssignmentPage = () => {
                 {/* 3. Assign To (Students) */}
                 {selectedCircle && (
                     <div>
-                        <label className="block font-bold mb-1">Assign To</label>
+                        <label className="block font-bold mb-1">{t('create_assignment_page.assign_to')}</label>
                         <Select
                             isMulti
                             options={studentOptions}
                             value={selectedStudents}
                             onChange={newValue => setSelectedStudents(newValue as SelectOption[])}
-                            placeholder="Select students (default is all)"
+                            placeholder={t('create_assignment_page.assign_to_placeholder')}
                         />
                     </div>
                 )}

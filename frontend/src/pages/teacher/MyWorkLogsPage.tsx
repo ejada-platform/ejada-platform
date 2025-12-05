@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useAuth } from '../../context/AuthContext';
 import { useTranslation } from 'react-i18next';
 
-interface WorkLog { _id: string; circle: { name: string }; date: string; duration: number; notes?: string; }
+interface WorkLog { _id: string; circle: { name: string }; date: string; duration: number; notes?: string;}
 
 const MyWorkLogsPage = () => {
     const { t } = useTranslation();
@@ -11,7 +11,6 @@ const MyWorkLogsPage = () => {
     const [logs, setLogs] = useState<WorkLog[]>([]);
     const [totalHours, setTotalHours] = useState(0);
     const [loading, setLoading] = useState(true);
-
     const fetchWorkLogs = useCallback(async () => {
         if (!token) return;
         try {

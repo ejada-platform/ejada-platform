@@ -209,7 +209,7 @@ const Navigation = () => {
                    
                     {/* Admin Links */}
                     {user.role === 'Admin' && (<Link to="/admin/users" className="hover:underline">{t('manage_users')}</Link>)}
-                    {user.role === 'Admin' && (<Link to="/admin/applications" className="font-bold hover:underline">Review Applications</Link>)}
+                    {user.role === 'Admin' && (<Link to="/admin/applications" className="font-bold hover:underline">{t('review_applications')}</Link>)}
                     
                     {/* Teacher Links */}
                     {(user.role === 'Teacher' || user.role === 'Admin') && <Link to="/teacher/create-assignment" className="hover:underline">{t('create_assignment')}</Link>}

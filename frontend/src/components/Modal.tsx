@@ -1,5 +1,3 @@
-// src/components/Modal.tsx
-
 import React from 'react';
 
 interface ModalProps {
@@ -8,7 +6,6 @@ interface ModalProps {
     children: React.ReactNode;
     title: string;
 }
-
 const Modal = ({ isOpen, onClose, children, title }: ModalProps) => {
     if (!isOpen) {
         return null;

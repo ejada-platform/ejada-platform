@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Select from 'react-select';
 import { useAuth, type User } from '../../context/AuthContext';
@@ -20,7 +20,7 @@ interface PayrollReport {
 }
 
 const PayrollPage = () => {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation(); // ADDED useTranslation
     const { token } = useAuth();
     const [teachers, setTeachers] = useState<SelectOption[]>([]);
     const [loading, setLoading] = useState(true);
@@ -57,7 +57,8 @@ const PayrollPage = () => {
     const handleCalculate = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!selectedTeacher || !startDate || !endDate) {
-            showErrorAlert('Missing Information', 'Please select a teacher and a full date range.');
+            // Use translated keys for error alert
+            showErrorAlert(t('payroll_page.alert_missing_info'), t('payroll_page.alert_missing_info_message'));
             return;
         }
         setIsCalculating(true);
@@ -72,35 +73,36 @@ const PayrollPage = () => {
             const { data } = await axios.post<PayrollReport>('http://localhost:5000/api/payroll/calculate', payload, config);
             setReport(data);
         } catch (err: any) {
-            showErrorAlert('Error!', err.response?.data?.message || 'Failed to calculate payroll.');
+            // Use translated keys for error alert
+            showErrorAlert(t('payroll_page.alert_error_title'), err.response?.data?.message || t('payroll_page.alert_error_message'));
         } finally {
             setIsCalculating(false);
         }
     };
 
-    if (loading) return <div className="p-8 text-center">Loading teacher data...</div>;
+    if (loading) return <div className="p-8 text-center">{t('payroll_page.loading_data')}</div>;
 
     return (
-        <div className="p-8 max-w-6xl mx-auto">
-            <h1 className="text-3xl font-bold mb-6">Teacher Payroll Calculator</h1>
+        <div className="p-8 max-w-6xl mx-auto" dir={i18n.dir()}> {/* Applied RTL */}
+            <h1 className="text-3xl font-bold mb-6">{t('payroll_page.page_title')}</h1>
             
             {/* --- Controls Section --- */}
             <form onSubmit={handleCalculate} className="bg-white p-6 rounded-lg shadow-md mb-8 grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
                 <div className="md:col-span-2">
-                    <label className="block font-bold mb-1">Select Teacher</label>
+                    <label className="block font-bold mb-1">{t('payroll_page.select_teacher_label')}</label>
                     <Select options={teachers} value={selectedTeacher} onChange={setSelectedTeacher} required />
                 </div>
                 <div>
-                    <label className="block font-bold mb-1">Start Date</label>
+                    <label className="block font-bold mb-1">{t('payroll_page.start_date_label')}</label>
                     <input type="date" value={startDate} onChange={e => setStartDate(e.target.value)} className="w-full p-2 border rounded-md" required />
                 </div>
                 <div>
-                    <label className="block font-bold mb-1">End Date</label>
+                    <label className="block font-bold mb-1">{t('payroll_page.end_date_label')}</label>
                     <input type="date" value={endDate} onChange={e => setEndDate(e.target.value)} className="w-full p-2 border rounded-md" required />
                 </div>
                 <div>
                     <button type="submit" disabled={isCalculating} className="w-full py-2 px-4 bg-green-500 text-white font-bold rounded-md hover:opacity-90 disabled:bg-gray-300">
-                        {isCalculating ? 'Calculating...' : 'Generate Report'}
+                        {isCalculating ? t('payroll_page.button_calculating') : t('payroll_page.button_generate_report')}
                     </button>
                 </div>
             </form>
@@ -108,33 +110,36 @@ const PayrollPage = () => {
             {/* --- Report Display Section --- */}
             {report && (
                 <div className="bg-white p-6 rounded-lg shadow-md">
-                    <h2 className="text-2xl font-bold mb-4">Payroll Report for {selectedTeacher?.label}</h2>
+                    <h2 className="text-2xl font-bold mb-4">
+                        {t('payroll_page.report_title_prefix')} {selectedTeacher?.label}
+                    </h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                         <div className="bg-blue-50 p-4 rounded-lg text-center">
-                            <h3 className="text-lg font-bold text-gray-500">Total Hours Worked</h3>
+                            <h3 className="text-lg font-bold text-gray-500">{t('payroll_page.total_hours_title')}</h3>
                             <p className="text-3xl font-bold text-blue-600">{report.totalHours}</p>
                         </div>
                         <div className="bg-green-50 p-4 rounded-lg text-center">
-                            <h3 className="text-lg font-bold text-gray-500">Total Earnings</h3>
+                            <h3 className="text-lg font-bold text-gray-500">{t('payroll_page.total_earnings_title')}</h3>
                             <p className="text-3xl font-bold text-green-600">${report.totalEarnings}</p>
                         </div>
                     </div>
 
-                    <h3 className="text-xl font-bold mb-2">Detailed Breakdown</h3>
+                    <h3 className="text-xl font-bold mb-2">{t('payroll_page.breakdown_title')}</h3>
                     <div className="overflow-x-auto">
                         <table className="w-full text-left">
                             <thead className="border-b">
                                 <tr>
-                                    <th className="py-2">Date</th>
-                                    <th className="py-2">Duration (Hrs)</th>
-                                    <th className="py-2">Attendees</th>
-                                    <th className="py-2">Session Earnings</th>
+                                    <th className="py-2">{t('payroll_page.table_header_date')}</th>
+                                    <th className="py-2">{t('payroll_page.table_header_duration')}</th>
+                                    <th className="py-2">{t('payroll_page.table_header_attendees')}</th>
+                                    <th className="py-2">{t('payroll_page.table_header_earnings')}</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {report.breakdown.map((entry, index) => (
                                     <tr key={index} className="border-b hover:bg-gray-50">
-                                        <td className="py-2">{new Date(entry.date).toLocaleDateString()}</td>
+                                        {/* Format date according to locale */}
+                                        <td className="py-2">{new Date(entry.date).toLocaleDateString(i18n.language)}</td> 
                                         <td className="py-2">{entry.duration}</td>
                                         <td className="py-2">{entry.attendees}</td>
                                         <td className="py-2">${entry.sessionEarnings}</td>

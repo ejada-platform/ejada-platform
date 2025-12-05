@@ -18,6 +18,7 @@
     "manage_library": "Manage Library",
     "manage_badges": "Manage Badges",
     "teacher_attendance": "Teacher Attendance",
+    "review_applications": "Review Applications",
 
     "landing_page": {
         "hero_title": "Master the Holy Quran with Ejada",
@@ -70,8 +71,14 @@
         "password_label": "Password",
         "submit_button": "Login",
         "error_credentials": "Invalid credentials",
-        "error_generic": "An error occurred during login."
-    },
+        "error_generic": "An error occurred during login.",
+        
+        "platform_slogan": "For Education And Development",
+        "forgot_password_link": "Forgot your password?",
+        "signing_in": "Signing In...",
+        "placeholder_username": "Your email address or username",
+        "placeholder_password": "Your password"
+      },
     "register_page": {
         "title": "Register for Ejada",
         "username_label": "Username",
@@ -113,6 +120,45 @@
         "title": "Teacher Dashboard",
         "welcome_message": "Welcome, {{username}}! This is where you will manage your students and lessons."
     },
+    "student_progress_page":{
+        "loading_progress": "Loading Student Progress...",
+        "error_not_found": "Could not find progress records for this student.",
+        "page_title": "Student Progress",        
+        "current_section_title": "Current Section",
+        "conduct_assessment_button": "Conduct Assessment for this Section",        
+        "completed_sections_title": "Completed Sections",
+        "assessed_on": "Assessed on:",
+        "No_sections_completed": "No sections have been completed yet.",        
+        "grade_passed": "Passed",
+        "grade_needs_improvement": "Needs Improvement",        
+        "modal_assess_title": "Assess:",        
+        "form_grade_label": "Assessment Grade",
+        "form_notes_label": "Notes",
+        "form_button_cancel": "Cancel",
+        "form_button_saving": "Saving...",
+        "form_button_confirm": "Confirm Assessment",        
+        "alert_success_title": "Success!",
+        "alert_success_message": "Assessment has been recorded.",
+        "alert_error_title": "Error!",
+        "alert_error_message": "Failed to record assessment."
+    },
+    "teacher_attendance_page": {
+        "loading_students": "Loading students...",
+        "circle_not_found": "Circle not found",
+        "title_prefix": "Record Session for",
+        "session_date_label": "Session Date",
+        "duration_label": "Duration (Hours)",
+        "notes_label": "Lesson Notes (Optional)",
+        "attendance_title": "Student Attendance",
+        "status_present": "Present",
+        "status_absent": "Absent",
+        "status_excused": "Excused",
+        "save_button": "Save Session Record",
+        "alert_success_title": "Success!",
+        "alert_success_message": "Attendance and work hours have been logged successfully.",
+        "alert_error_title": "Error!",
+        "alert_error_message": "Failed to save data."
+      },
     "my_work_logs_page": {
         "title": "My Work Logs",
         "total_hours": "Total Hours Logged",
@@ -162,7 +208,7 @@
     },
     "admin_pages": {
         "create_circle": { "title": "Create New Educational Circle", "name_label": "Circle Name", "url_label": "Live Class URL (Zoom Link)", "description_label": "Description", "schedule_label": "Class Schedule", "add_day_button": "+ Add another day", "teacher_label": "Select Teacher", "students_label": "Select Students", "submit_button": "Create Circle", "success_message": "Circle created successfully!" },
-        "manage_users": { "title": "User Management", "username_header": "Username", "role_header": "Role", "status_header": "Status", "actions_header": "Actions", "star_student_status": "★ Star Student", "feature_button": "Feature", "edit_button": "Edit", "delete_button": "Delete", "edit_modal_title": "Edit User: {{username}}", "cancel_button": "Cancel", "save_button": "Save Changes",  "delete_button": "Delete",
+        "manage_users": { "title": "User Management", "username_header": "Username", "role_header": "Role", "status_header": "Status", "actions_header": "Actions", "star_student_status": "★ Star Student", "feature_button": "Feature", "edit_button": "Edit", "edit_modal_title": "Edit User: {{username}}", "cancel_button": "Cancel", "save_button": "Save Changes",  "delete_button": "Delete",
             "delete_confirm_title": "Are you sure?",
             "delete_confirm_text": "You won't be able to revert this!",
             "delete_success_title": "Deleted!",
@@ -186,7 +232,7 @@
             "delete_success_text": "The resource has been removed.",
             "delete_error_title": "Error!",
             "delete_error_text": "Failed to delete the resource."
- },
+   },
         "manage_badges": { 
             "add_title": "Create New Badge",
              "name_label": "Badge Name", 
@@ -221,8 +267,71 @@
         "due_date_label": "Due Date (Optional)",
         "select_circle_label": "Select Circle",
         "submit_button": "Create Assignment",
-        "success_message": "Assignment created successfully!"
+        "success_message": "Assignment created successfully!",
+        "select_section": "Select Section",
+        "assign_to": "Assign to"
     },
+    "app_review_page": {
+        "loading_applications": "Loading applications...",
+        "error_load_applications": "Failed to load applications.",
+        "page_title": "Review Student Applications",
+        "no_pending_applications": "There are no pending applications to review.",
+        "button_approve": "Approve & Create Credentials",
+        
+        "app_card_program": "Program:",
+        "app_card_applied_on": "Applied on:",
+        
+        "modal_title": "Create Credentials for New Student",
+        
+        "form_intro": "Please create the credentials for this new student. You will need to send these to them via WhatsApp.",
+        "form_username_label": "Username",
+        "form_password_label": "Temporary Password",
+        "form_error_generic": "Failed to approve application.",
+        "form_button_cancel": "Cancel",
+        "form_button_approving": "Approving...",
+        "form_button_approve": "Approve & Create User",
+        
+        "alert_success_title": "User Created Successfully!",
+        "alert_success_message_prefix": "Please copy and send these credentials to the user:",
+        "alert_success_username": "Username:",
+        "alert_success_password": "Password:"
+      },
+      "enrollment_page": {
+        "enter_data_in_arabic": "Please enter all data in Arabic",
+        "discount_info": "Special discount for residents of: Türkiye, Jordan, Egypt, Iraq, Palestine, Lebanon. From $110 to $65 only.",
+        "semester_fees": "Semester subscription fees in other countries: $110.",
+        "agree_to_fees": "I agree to the fees",
+        
+        "name_and_surname": "Name and Surname",
+        "gender": "Gender",
+        "male": "Male",
+        "female": "Female",
+        "name_of_the_father": "Name of the Father",
+        "name_of_the_mother": "Name of the mother",
+        "choose_a_program": "Choose a Program",
+        "reading_7_plus": "Reading (7+)",
+        "reading_under_7": "Reading (Under 7)",
+        "memorization": "Memorization",
+        "reciting_non_arabs": "Reciting (for Non-Arabs)",
+        "country_of_residence": "Country of residence?",
+        "the_city_name": "The city name",
+        "nationality": "Nationality",
+        "email": "Email",
+        "enter_phone_number": "Enter phone number",
+        
+        "how_did_you_learn": "How did you learn about the organization?",
+        "social_media": "Social media",
+        "relatives": "Relatives",
+        "from_a_student": "From a student at the institution",
+        "other": "Other",
+        
+        "session_duration_note": "The session duration is one hour and a quarter for 6 students.",
+        "submitting": "Submitting...",
+        "send": "Send",
+        
+        "alert_agree_fees": "You must agree to the fees to proceed.",
+        "alert_error_generic": "An error occurred. Please check your information and try again."
+      },
     "forgot_password_page": {
         "title": "Forgot Your Password?",
         "instructions": "Enter the email associated with your account and we'll send a reset link.",
@@ -275,7 +384,204 @@
             "manage_users": "Manage Users",
             "create_circle": "Create a Circle",
             "manage_library": "Manage Library",
-            "manage_badges": "Manage Badges"
+            "manage_badges": "Manage Badges",
+            "curriculum_builder": "Curriculum Builder", 
+            "review_applications": "Review Applications", 
+            "teacher_attendance": "Teacher Attendance",
+            "teacher_payroll": "Teacher Payroll", 
+            "manage_templates": "Manage Templates", 
+            "academic_calendar": "Academic Calendar", 
+            "desc_manage_users": "Add, edit, and deactivate users.",
+            "desc_create_circle": "Set up new classes and assign teachers.",
+            "desc_curriculum_builder": "Design and structure the syllabus.",
+            "desc_review_applications": "Process new student enrollments.",
+            "desc_teacher_attendance": "Monitor teacher attendance records.",
+            "desc_teacher_payroll": "Manage and process teacher salaries.",
+            "desc_manage_library": "Upload and categorize digital assets.",
+            "desc_manage_templates": "Edit and manage system-wide templates.",
+            "desc_manage_badges": "Create and assign achievement badges.",
+            "desc_academic_calendar": "View and manage the academic year schedule."
+         
         }
-    }
+    },
+    "manage_templates_page": {
+        "loading_templates": "Loading templates...",
+        "page_title": "Manage Certificate Templates",
+        
+     
+        "upload_section_title": "Upload a New Template",
+        "program_label": "Program",
+        "file_label": "Template File (PDF or Image)",
+        "button_uploading": "Uploading...",
+        "button_upload": "Upload Template",
+      
+        "existing_section_title": "Existing Templates",
+        "button_view": "View Current",
+        "button_delete": "Delete",
+        
+        
+        "program_reciting": "Reciting",
+        "program_memorizing": "Memorizing",
+        "program_reading_7_plus": "Reading (7+)",
+        "program_reading_under_7": "Reading (<7)",
+        
+       
+        "alert_no_file_title": "No File",
+        "alert_no_file_message": "Please select a template file to upload.",
+        "alert_upload_success": "Certificate template uploaded successfully.",
+        "alert_delete_success": "Template deleted successfully.",
+        "alert_delete_confirm_title": "Delete Template?",
+        "alert_delete_confirm_message_prefix": "Are you sure you want to delete the template for the",
+        "alert_delete_confirm_message_suffix": "program?",
+        "alert_error_title": "Error!",
+        "alert_upload_error": "Failed to upload template.",
+        "alert_delete_error": "Failed to delete template."
+      },
+    "payroll_page": {
+        "loading_data": "Loading teacher data...",
+        "page_title": "Teacher Payroll Calculator",
+        "select_teacher_label": "Select Teacher",
+        "start_date_label": "Start Date",
+        "end_date_label": "End Date",
+        "button_calculating": "Calculating...",
+        "button_generate_report": "Generate Report",            
+        "report_title_prefix": "Payroll Report for",
+        "total_hours_title": "Total Hours Worked",
+        "total_earnings_title": "Total Earnings",        
+        "breakdown_title": "Detailed Breakdown",
+        "table_header_date": "Date",
+        "table_header_duration": "Duration (Hrs)",
+        "table_header_attendees": "Attendees",
+        "table_header_earnings": "Session Earnings",
+        "alert_missing_info": "Missing Information",
+        "alert_missing_info_message": "Please select a teacher and a full date range.",
+        "alert_error_title": "Error!",
+        "alert_error_message": "Failed to calculate payroll."
+      },
+       "curriculum_builder_page": {
+            "page_title": "Curriculum Builder",
+            "select_program_label": "Select Program to Edit",
+            "loading_sections": "Loading sections...",
+           
+            "program_reading_under_7": "Reading (<7)",
+            "program_reading_7_plus": "Reading (7+)",
+            "program_reciting": "Reciting",
+            "program_memorizing": "Memorizing",
+            
+        
+            "sections_for": "Sections for",
+            "section_description_prefix": "Description:",
+            "assessment_added": "✓ Assessment Added",
+            "button_add_assessment": "+ Add Assessment",
+           
+            "add_section_title": "Add a New Section",
+            "section_title_label": "Section Title",
+            "section_desc_label": "Description (e.g., Pages 1-20)",
+            "button_add_section_prefix": "Add Section to", 
+            
+     
+            "alert_section_success": "New section has been added.",
+            "alert_assessment_success": "Assessment has been added to the section.",
+            "alert_error_title": "Error!",
+            "alert_error_message": "Failed to add section.",
+            "alert_assessment_error": "Failed to add assessment."
+          },
+          "attendance_history_page": {
+            "loading_history": "Loading Attendance History...",
+            "page_title": "Full Attendance History",
+            "taken_by": "Taken by:",
+            "unknown_teacher": "Unknown Teacher",
+            "present_count": "{count} Present",
+            "absent_count": "{count} Absent",
+            "no_attendance": "No attendance has been taken for this circle yet."
+        },
+        "attendance_overview_page": {
+            "loading_activity": "Loading Teacher Activity...",
+            "error_load_data": "Failed to load platform data.",
+            "page_title": "Teacher Attendance Overview",
+            "page_intro": "This page shows the last time attendance was recorded for each circle.",
+            "table_header_circle": "Circle Name",
+            "table_header_teacher": "Assigned Teacher",
+            "table_header_last_attendance": "Last Attendance Taken",
+            "table_header_actions": "Actions",
+            "label_teacher_na": "N/A",
+            "status_never": "Never",
+            "button_view_history": "View History",
+            "button_view": "View",
+            "mobile_label_teacher": "Teacher:",
+            "mobile_label_last_attendance": "Last Attendance:"
+          },
+          "create_circle_pages": {
+            "create_circle": {
+              "title": "Create New Circle",
+              "success_message": "New Circle created successfully!",
+              "name_label": "Circle Name",
+              "url_label": "Live Class URL (Optional)",
+              "description_label": "Description (Optional)",
+              "schedule_label": "Class Schedule",
+              "add_day_button": "+ Add Day",
+              "teacher_label": "Assign Teacher",
+              "students_label": "Select Students",
+              "submit_button": "Create Circle",
+              "button_creating": "Creating...",
+              "program_reading_7_plus": "Reading (7+)",
+              "program_reading_under_7": "Reading (<7)",
+              "program_reciting": "Reciting",
+              "program_memorizing": "Memorizing",
+              "day_monday": "Monday",
+              "day_tuesday": "Tuesday",
+              "day_wednesday": "Wednesday",
+              "day_thursday": "Thursday",
+              "day_friday": "Friday",
+              "day_saturday": "Saturday",
+              "day_sunday": "Sunday",
+              "alert_missing_fields": "Missing Fields",
+              "alert_missing_fields_message": "Please ensure Name, Program, and Teacher are selected."
+            }
+    },"academic_calendar_page": {
+        "page_title": "Academic Calendar",
+        "form_title": "Add New Calendar Event",
+        "title_label": "Event Title",
+        "title_placeholder": "e.g., Mid-term Exams",
+        "start_date_label": "Start Date",
+        "end_date_label": "End Date",
+        "type_label": "Event Type",
+        "type_reminder": "Reminder",
+        "type_holiday": "Holiday",
+        "type_exam": "Exam",
+        "type_other": "Other",
+        "button_add_event": "Add Event",
+        "status_adding": "Adding Event...",
+        "error_end_before_start": "End date cannot be before the start date.",
+        "error_create_failed": "Failed to create event."
+      },
+      "notification_bell": {
+        "title": "Notifications",
+        "no_notifications": "You have no notifications.",
+        "unread_count_aria_label": "Unread notifications count",
+        "loading_error": "Failed to fetch notifications",
+        "mark_read_error": "Failed to mark notifications as read"
+      },
+      "edit_circle_page": {
+        "loading_details": "Loading circle details...",
+        "error_load_data": "Failed to load circle data.",
+        "page_title": "Edit Circle Details",
+        
+        "name_label": "Circle Name",
+        "url_label": "Live Class URL (Zoom Link)",
+        "description_label": "Description",
+        "schedule_label": "Class Schedule",
+        "button_add_day": "+ Add another day",
+        "button_save_changes": "Save Changes",        
+        "success_message": "Circle updated successfully!",
+        "error_update_failed": "Failed to update circle.",
+        "day_sunday": "Sunday",
+        "day_monday": "Monday",
+        "day_tuesday": "Tuesday",
+        "day_wednesday": "Wednesday",
+        "day_thursday": "Thursday",
+        "day_friday": "Friday",
+        "day_saturday": "Saturday"
+      }
+
 }

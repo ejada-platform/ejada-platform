@@ -3,12 +3,14 @@ import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { showSuccessAlert, showErrorAlert } from '../../services/alert.service';
+import { useTranslation } from 'react-i18next'; // IMPORTED useTranslation
 
 interface Student { _id: string; username: string; }
 interface CircleData { _id: string; name: string; students: Student[]; }
 interface AttendanceRecord { student: string; status: 'Present' | 'Absent' | 'Excused'; }
 
 const TeacherAttendancePage = () => {
+    const { t, i18n } = useTranslation(); // ADDED useTranslation
     const { circleId } = useParams<{ circleId: string }>();
     const { token } = useAuth();
     
@@ -56,34 +58,59 @@ const TeacherAttendancePage = () => {
             const workLogPromise = axios.post('http://localhost:5000/api/worklogs', workLogPayload, config);
 
             await Promise.all([attendancePromise, workLogPromise]);
-            showSuccessAlert('Success!', 'Attendance and work hours have been logged successfully.');
+            // Use translation keys for alerts
+            showSuccessAlert(t('teacher_attendance_page.alert_success_title'), t('teacher_attendance_page.alert_success_message'));
         } catch (err: any) {
-            showErrorAlert('Error!', err.response?.data?.message || 'Failed to save data.');
+            // Use translation keys for alerts
+            showErrorAlert(t('teacher_attendance_page.alert_error_title'), err.response?.data?.message || t('teacher_attendance_page.alert_error_message'));
         }
     };
 
-    if (loading) return <div className="p-8">Loading students...</div>;
-    if (!circle) return <div className="p-8 text-red-500">Circle not found</div>;
+    if (loading) return <div className="p-8">{t('teacher_attendance_page.loading_students')}</div>;
+    if (!circle) return <div className="p-8 text-red-500">{t('teacher_attendance_page.circle_not_found')}</div>;
+
+    // Helper function to translate status strings
+    const translateStatus = (status: AttendanceRecord['status']) => {
+        switch(status) {
+            case 'Present': return t('teacher_attendance_page.status_present');
+            case 'Absent': return t('teacher_attendance_page.status_absent');
+            case 'Excused': return t('teacher_attendance_page.status_excused');
+            default: return status;
+        }
+    };
+    
+    // Helper function for button color classes
+    const getButtonColor = (status: AttendanceRecord['status']) => {
+        switch(status) {
+            case 'Present': return 'bg-green-500';
+            case 'Absent': return 'bg-red-500';
+            case 'Excused': return 'bg-yellow-500';
+            default: return 'bg-gray-200';
+        }
+    };
 
     return (
-        <div className="p-8 max-w-2xl mx-auto">
-            <h1 className="text-3xl font-bold mb-2">Record Session for {circle.name}</h1>
+        <div className="p-8 max-w-2xl mx-auto" dir={i18n.dir()}> {/* Applied RTL */}
+            <h1 className="text-3xl font-bold mb-2">
+                {t('teacher_attendance_page.title_prefix')} {circle.name}
+            </h1>
             <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow space-y-6">
                 <div className="grid md:grid-cols-2 gap-4">
                     <div>
-                        <label className="block font-bold mb-1">Session Date</label>
+                        <label className="block font-bold mb-1">{t('teacher_attendance_page.session_date_label')}</label>
+                        {/* Note: Date input direction is usually managed by the browser based on locale */}
                         <input type="date" value={date} onChange={e => setDate(e.target.value)} className="w-full p-2 border rounded-md" required />
                     </div>
                     <div>
-                        <label className="block font-bold mb-1">Duration (Hours)</label>
+                        <label className="block font-bold mb-1">{t('teacher_attendance_page.duration_label')}</label>
                         <input type="number" step="0.5" min="0.5" value={duration} onChange={e => setDuration(parseFloat(e.target.value))} className="w-full p-2 border rounded-md" required />
                     </div>
                 </div>
                 <div>
-                    <label className="block font-bold mb-1">Lesson Notes (Optional)</label>
+                    <label className="block font-bold mb-1">{t('teacher_attendance_page.notes_label')}</label>
                     <input type="text" value={notes} onChange={e => setNotes(e.target.value)} className="w-full p-2 border rounded-md" />
                 </div>
-                <h3 className="text-xl font-bold pt-4 border-t">Student Attendance</h3>
+                <h3 className="text-xl font-bold pt-4 border-t">{t('teacher_attendance_page.attendance_title')}</h3>
                 <div className="space-y-4">
                     {circle.students.map(student => {
                         const currentStatus = attendance.find(rec => rec.student === student._id)?.status || 'Present';
@@ -93,10 +120,11 @@ const TeacherAttendancePage = () => {
                                 <div className="flex space-x-2">
                                     {['Present', 'Absent', 'Excused'].map(status => {
                                         const typedStatus = status as AttendanceRecord['status'];
+                                        const isCurrent = currentStatus === typedStatus;
                                         return (
                                             <button type="button" key={status} onClick={() => handleStatusChange(student._id, typedStatus)}
-                                                className={`px-3 py-1 text-sm rounded-full ${currentStatus === typedStatus ? 'text-white ' + (status === 'Present' ? 'bg-green-500' : status === 'Absent' ? 'bg-red-500' : 'bg-yellow-500') : 'bg-gray-200 text-gray-700'}`}>
-                                                {status}
+                                                className={`px-3 py-1 text-sm rounded-full ${isCurrent ? 'text-white ' + getButtonColor(typedStatus) : 'bg-gray-200 text-gray-700'}`}>
+                                                {translateStatus(typedStatus)}
                                             </button>
                                         );
                                     })}
@@ -106,7 +134,7 @@ const TeacherAttendancePage = () => {
                     })}
                 </div>
                 <button type="submit" className="w-full mt-6 py-3 px-4 bg-green-800 text-white font-bold rounded-lg hover:opacity-90">
-                    Save Session Record
+                    {t('teacher_attendance_page.save_button')}
                 </button>
             </form>
         </div>

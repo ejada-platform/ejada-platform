@@ -1,22 +1,17 @@
-
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import Slider from 'react-slick';
-
-// --- Imports for Sliders and Icons ---
 import "slick-carousel/slick/slick.css"; 
 import "slick-carousel/slick/slick-theme.css";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faWhatsapp, faInstagram, faYoutube, faFacebook } from '@fortawesome/free-brands-svg-icons';
 import { faPhone, faEnvelope } from '@fortawesome/free-solid-svg-icons'; 
 import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
-// --- THIS IS THE NEW, SIMPLIFIED LIGHTBOX IMPORT ---
 import Lightbox from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css";
 
-// --- NEW COMPONENT for internal page headers ---
 export const PageHeader = ({ title }: { title: string }) => (
     <div className="bg-primary text-light py-12 text-center">
         <h1 className="text-4xl font-bold">{title}</h1>
@@ -43,7 +38,6 @@ const HeroWithStats = () => {
             className="relative bg-cover bg-center text-white py-70 px-8 text-center"
             style={{ backgroundImage: "url('/images/landing.png')" }}
         >
-
             <div className="absolute inset-0 bg-black opacity-60"></div>            
             <div className="relative z-10">
                 <h1 className="text-4xl md:text-6xl font-extrabold">{t('landing_page.hero_title')}</h1>
