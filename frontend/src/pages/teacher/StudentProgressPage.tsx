@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { showSuccessAlert, showErrorAlert } from '../../services/alert.service';
 import Modal from '../../components/Modal';
-import { useTranslation } from 'react-i18next'; // IMPORTED useTranslation
+import { useTranslation } from 'react-i18next';
 
 // --- Type Definitions (No change) ---
 interface Section { _id: string; title: string; description?: string; }
@@ -19,11 +19,11 @@ interface StudentProgress {
 }
 interface AssessmentDetails { _id: string; title: string; }
 
+
 // --- Sub-Component: The Assessment Form inside the Modal ---
 const ConductAssessmentForm = ({ studentId, section, onSuccess, onCancel }: { studentId: string; section: Section; onSuccess: () => void; onCancel: () => void; }) => {
-    const { t, i18n } = useTranslation(); // ADDED useTranslation
+    const { t, i18n } = useTranslation(); 
     const { token } = useAuth();
-    // Use the ENUM strings, but rely on i18n to translate the display
     const [grade, setGrade] = useState<'Passed' | 'Needs Improvement'>('Passed'); 
     const [notes, setNotes] = useState('');
     const [assessment, setAssessment] = useState<AssessmentDetails | null>(null);
@@ -58,7 +58,7 @@ const ConductAssessmentForm = ({ studentId, section, onSuccess, onCancel }: { st
     };
 
     return (
-        <form onSubmit={handleSubmit} className="space-y-4" dir={i18n.dir()}> {/* Added dir={i18n.dir()} */}
+        <form onSubmit={handleSubmit} className="space-y-4" dir={i18n.dir()}> 
             <div>
                 <label className="block font-bold mb-1">{t('student_progress_page.form_grade_label')}</label>
                 <select value={grade} onChange={e => setGrade(e.target.value as any)} className="w-full p-2 border rounded-md bg-white">
@@ -83,7 +83,7 @@ const ConductAssessmentForm = ({ studentId, section, onSuccess, onCancel }: { st
 
 // --- The Main Page Component ---
 const StudentProgressPage = () => {
-    const { t, i18n } = useTranslation(); // ADDED useTranslation
+    const { t, i18n } = useTranslation(); 
     const { studentId } = useParams<{ studentId: string }>();
     const { token } = useAuth();
     const [progress, setProgress] = useState<StudentProgress | null>(null);
@@ -108,17 +108,47 @@ const StudentProgressPage = () => {
         fetchProgress();
     }, [fetchProgress]);
 
+  // Inside StudentProgressPage.tsx
+
+const getTranslatedSectionTitle = (t: (key: string) => string, englishTitle: string | undefined | null) => {
+    // === CRITICAL FIX: CHECK FOR NULL/UNDEFINED/EMPTY STRING ===
+    if (!englishTitle || typeof englishTitle !== 'string' || englishTitle.trim() === '') {
+        return t('student_progress_page.section_title_missing') || ''; // Return a translated message or an empty string
+    }
+    
+    // --- Now we can safely call toLowerCase() and other string methods ---
+
+    const cleanedTitle = englishTitle.trim().toLowerCase(); 
+
+    // The logic below is the final attempt to translate the dynamic string
+    if (cleanedTitle.includes('section')) {
+        // Find the "1-10" part and append it to the translation
+        const rangeMatch = englishTitle.match(/\d+-\d+/);
+        const range = rangeMatch ? ` ${rangeMatch[0]}` : '';
+        
+        // Return the translated generic name plus the range
+        return t('student_progress_page.section_title_reading_section') + range;
+    }
+    
+    // Fallback: Return original
+    return englishTitle;
+};
+    
+    // Apply translation logic before rendering
+    const currentSectionTitle = progress ? getTranslatedSectionTitle(t, progress.currentSection.title) : '';
+
     if (loading) return <div className="p-8 text-center">{t('student_progress_page.loading_progress')}</div>;
     if (!progress) return <div className="p-8 text-center text-red-500">{t('student_progress_page.error_not_found')}</div>;
 
     return (
-        <div className="p-8 max-w-4xl mx-auto" dir={i18n.dir()}> {/* Added dir={i18n.dir()} */}
+        <div className="p-8 max-w-4xl mx-auto" dir={i18n.dir()}> 
             <h1 className="text-3xl font-bold mb-6">{t('student_progress_page.page_title')}</h1>
             
             {/* --- Current Section --- */}
             <div className="bg-white p-6 rounded-lg shadow mb-8">
                 <h2 className="text-2xl font-bold mb-2">{t('student_progress_page.current_section_title')}</h2>
-                <p className="text-xl font-semibold text-primary">{progress.currentSection.title}</p>
+                {/* FIX APPLIED HERE */}
+                <p className="text-xl font-semibold text-primary">{currentSectionTitle}</p>
                 <p className="text-gray-600">{progress.currentSection.description}</p>
                 <button 
                     onClick={() => setIsModalOpen(true)}
@@ -132,20 +162,22 @@ const StudentProgressPage = () => {
             <div>
                 <h2 className="text-2xl font-bold mb-4">{t('student_progress_page.completed_sections_title')}</h2>
                 <div className="space-y-3">
-                    {progress.completedAssessments.length > 0 ? progress.completedAssessments.map(item => (
-                        <div key={item.section._id} className="bg-white p-4 rounded-lg shadow-sm border flex justify-between items-center">
-                            <div>
-                                <p className="font-bold">{item.section.title}</p>
-                                <p className="text-xs text-gray-500">
-                                    {t('student_progress_page.assessed_on')} {new Date(item.assessmentDate).toLocaleDateString(i18n.language)}
-                                </p>
+                    {progress.completedAssessments.length > 0 ? progress.completedAssessments.map(item => {
+                        const completedSectionTitle = getTranslatedSectionTitle(t, item.section.title); // Use helper here too
+                        return (
+                            <div key={item.section._id} className="bg-white p-4 rounded-lg shadow-sm border flex justify-between items-center">
+                                <div>
+                                    <p className="font-bold">{completedSectionTitle}</p>
+                                    <p className="text-xs text-gray-500">
+                                        {t('student_progress_page.assessed_on')} {new Date(item.assessmentDate).toLocaleDateString(i18n.language)}
+                                    </p>
+                                </div>
+                                <span className={`font-semibold px-3 py-1 rounded-full text-sm ${item.grade === 'Passed' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                                    {item.grade === 'Passed' ? t('student_progress_page.grade_passed') : t('student_progress_page.grade_needs_improvement')}
+                                </span>
                             </div>
-                            <span className={`font-semibold px-3 py-1 rounded-full text-sm ${item.grade === 'Passed' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                                {/* Translate the grade value */}
-                                {item.grade === 'Passed' ? t('student_progress_page.grade_passed') : t('student_progress_page.grade_needs_improvement')}
-                            </span>
-                        </div>
-                    )) : <p className="text-gray-500">{t('student_progress_page.no_sections_completed')}</p>}
+                        );
+                    }) : <p className="text-gray-500">{t('student_progress_page.no_sections_completed')}</p>}
                 </div>
             </div>
 
@@ -153,7 +185,7 @@ const StudentProgressPage = () => {
             <Modal
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
-                title={`${t('student_progress_page.modal_assess_title')} ${progress.currentSection.title}`}
+                title={`${t('student_progress_page.modal_assess_title')} ${currentSectionTitle}`}
             >
                 {studentId && (
                     <ConductAssessmentForm 

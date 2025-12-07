@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { useAuth } from '../../context/AuthContext';
 import StarStudent from '../../components/StartStudent';
-import { useTranslation } from 'react-i18next'; // 
+import { useTranslation } from 'react-i18next'; // ADDED useTranslation
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCertificate } from '@fortawesome/free-solid-svg-icons';
 
@@ -46,7 +46,7 @@ const handleDownload = (url: string, filename: string) => {
 };
 
 const MyProgressPage = () => {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation(); // ADDED useTranslation
     const { user, token } = useAuth();
     const [evaluations, setEvaluations] = useState<Evaluation[]>([]);
     const [stats, setStats] = useState<StudentStats | null>(null);
@@ -56,7 +56,7 @@ const MyProgressPage = () => {
 
     const fetchData = useCallback(async () => {
         if (!user || !token) {
-            setError("You must be logged in to view your progress.");
+            setError(t('my_progress_page.error')); // Used translation key
             setLoading(false);
             return;
         }
@@ -73,11 +73,11 @@ const MyProgressPage = () => {
             setError(null);
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (err: any) {
-            setError(t('my_progress_page.error'));
+            setError(t('my_progress_page.error')); // Used translation key
         } finally {
             setLoading(false);
         }
-    }, [user, token, t]);
+    }, [user, token, t]); // Added 't' to dependencies
 
     useEffect(() => {
         fetchData();
@@ -91,11 +91,12 @@ const MyProgressPage = () => {
         ));
     };
 
-    if (loading) return <div className="p-10 text-center">Loading your progress...</div>;
+    // Used translation key for loading and error messages
+    if (loading) return <div className="p-10 text-center">{t('my_progress_page.loading_progress')}</div>;
     if (error) return <div className="p-10 text-center text-red-500">{error}</div>;
 
     return (
-        <div className="p-8 max-w-4xl mx-auto">
+        <div className="p-8 max-w-4xl mx-auto" dir={i18n.dir()}> {/* Applied RTL */}
             <div className="mb-8">
                 <StarStudent />
             </div>
@@ -104,14 +105,17 @@ const MyProgressPage = () => {
 
             {stats && (
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                    {/* Stat Card 1: Average Rating */}
                     <div className="bg-white p-4 rounded-lg shadow text-center">
                         <h3 className="text-lg font-bold text-gray-500">{t('my_progress_page.avg_rating')}</h3>
                         <p className="text-3xl font-bold text-blue-600">{stats.averageRating} / 5</p>
                     </div>
+                    {/* Stat Card 2: Total Submissions */}
                     <div className="bg-white p-4 rounded-lg shadow text-center">
                         <h3 className="text-lg font-bold text-gray-500">{t('my_progress_page.total_submissions')}</h3>
                         <p className="text-3xl font-bold text-green-600">{stats.totalSubmissions}</p>
                     </div>
+                    {/* Stat Card 3: Daily Evaluations */}
                     <div className="bg-white p-4 rounded-lg shadow text-center">
                         <h3 className="text-lg font-bold text-gray-500">{t('my_progress_page.daily_evaluations')}</h3>
                         <p className="text-3xl font-bold text-yellow-600">{stats.totalEvaluations}</p>
@@ -119,24 +123,26 @@ const MyProgressPage = () => {
                 </div>
             )}
 
-             {/* --- NEW CERTIFICATES SECTION --- */}
-             <h2 className="text-2xl font-bold mb-4 mt-8">My Certificates</h2>
+             {/* --- CERTIFICATES SECTION --- */}
+             <h2 className="text-2xl font-bold mb-4 mt-8">{t('my_progress_page.certificates_title')}</h2>
             {certificates.length > 0 ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {certificates.map(cert => (
                         <div key={cert._id} className="bg-white p-4 rounded-lg shadow border-l-4 border-yellow-400 flex items-center">
-                            <FontAwesomeIcon icon={faCertificate} className="text-5xl text-yellow-400 mr-4" />
+                            <FontAwesomeIcon icon={faCertificate} className={`text-5xl text-yellow-400 ${i18n.dir() === 'rtl' ? 'ml-4' : 'mr-4'}`} />
                             <div>
-                                <p className="font-bold text-lg">Certificate of Completion</p>
+                                <p className="font-bold text-lg">{t('my_progress_page.cert_completion')}</p>
                                 <p className="font-semibold text-primary">{cert.program}</p>
-                                <p className="text-sm text-gray-500">Issued on: {new Date(cert.issueDate).toLocaleDateString()}</p>
+                                <p className="text-sm text-gray-500">
+                                    {t('my_progress_page.cert_issued_on')} {new Date(cert.issueDate).toLocaleDateString(i18n.language)}
+                                </p>
                             </div>
 
                             <button 
                                 onClick={() => cert.certificateUrl && handleDownload(cert.certificateUrl, `Ejada_Certificate_${cert.program}`)}
                                 className="bg-green-500 text-white font-bold px-4 py-2 rounded hover:bg-green-600"
                             >
-                                Download Certificate
+                                {t('my_progress_page.cert_download_button')}
                             </button>
 
                         </div>
@@ -144,10 +150,11 @@ const MyProgressPage = () => {
                     ))}
                 </div>
             ) : (
-                <p className="text-blue-500 text-center">You have not earned any certificates yet.</p>
+                <p className="text-blue-500 text-center">{t('my_progress_page.cert_no_certificates')}</p>
             )}
 
 
+            {/* --- EVALUATION HISTORY SECTION --- */}
             <h2 className="text-2xl font-bold mb-4">{t('my_progress_page.history_title')}</h2>
             <div className="space-y-4">
                 {evaluations.length > 0 ? (
@@ -156,12 +163,12 @@ const MyProgressPage = () => {
                             <div className="flex justify-between items-start">
                                 <div>
                                     <p className="text-sm text-gray-500">
-                                        {t('my_progress_page.evaluation_from', { teacher: evaluation.teacher.username })} <strong>{evaluation.teacher.username}</strong>
+                                        {t('my_progress_page.evaluation_from')} <strong>{evaluation.teacher.username}</strong>
                                     </p>
                                     <p className="text-lg font-semibold text-gray-800 mt-1">{evaluation.notes || t('my_progress_page.no_notes')}</p>
                                 </div>
-                                <div className="text-right flex-shrink-0 ml-4">
-                                    <p className="text-sm font-bold">{new Date(evaluation.date).toLocaleDateString()}</p>
+                                <div className={`text-${i18n.dir() === 'rtl' ? 'left' : 'right'} flex-shrink-0 ${i18n.dir() === 'rtl' ? 'mr-4' : 'ml-4'}`}>
+                                    <p className="text-sm font-bold">{new Date(evaluation.date).toLocaleDateString(i18n.language)}</p>
                                     <div className="text-xl mt-1">{renderStars(evaluation.rating)}</div>
                                 </div>
                             </div>

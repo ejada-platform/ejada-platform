@@ -20,15 +20,21 @@ export const showErrorAlert = (title: string, text: string) => {
     });
 };
 
-export const showConfirmationDialog = (title: string, text: string, confirmButtonText: string = 'Yes, do it!') => {
+
+export const showConfirmationDialog = (
+    title: string, 
+    text: string, 
+    confirmButtonText: string, 
+    cancelButtonText: string 
+) => {
     return MySwal.fire({
         title: `<p>${title}</p>`,
         text: text,
         icon: 'warning',
         showCancelButton: true,
-        confirmButtonColor: '#3085d6', // Blue for confirm
-        cancelButtonColor: '#d33',   // Red for cancel
-        confirmButtonText: confirmButtonText,
-        cancelButtonText: 'Cancel',
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: confirmButtonText, 
+        cancelButtonText: cancelButtonText, 
     });
 };

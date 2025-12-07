@@ -386,39 +386,60 @@ return(
 
 const Footer = () => {
     const { t } = useTranslation();
+
     return (
-         <footer className="bg-[#375466] text-white pt-16 pb-8">
+        <footer className="bg-[#375466] text-white pt-16 pb-8">
             <div className="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 text-center md:text-left px-4">
+
                 {/* Column 1: About */}
                 <div>
-                    <h3 className="text-xl font-bold mb-4">Ejadah</h3>
+                    <h3 className="text-xl font-bold mb-4">{t('landing_page.footer_title')}</h3>
                     <p className="text-gray-400">{t('landing_page.footer_about')}</p>
                 </div>
+
                 {/* Column 2: Pages */}
                 <div>
                     <h3 className="text-lg font-bold mb-4">{t('landing_page.footer_pages')}</h3>
                     <ul className="space-y-2">
-                        <li><Link to="/" className="hover:underline text-gray-300">Home</Link></li>
-                        <li><Link to="/library" className="hover:underline text-gray-300">Library</Link></li>
-                        <li><Link to="/support" className="hover:underline text-gray-300">Support</Link></li>
-                        <li><Link to="/tutorials" className="hover:underline text-gray-300">Tutorials</Link></li>
+                        <li>
+                            <Link to="/" className="hover:underline text-gray-300">
+                                {t('landing_page.footer_home')}
+                            </Link>
+                        </li>
+                        <li>
+                            <Link to="/library" className="hover:underline text-gray-300">
+                                {t('landing_page.footer_library')}
+                            </Link>
+                        </li>
+                        <li>
+                            <Link to="/support" className="hover:underline text-gray-300">
+                                {t('landing_page.footer_support')}
+                            </Link>
+                        </li>
+                        <li>
+                            <Link to="/tutorials" className="hover:underline text-gray-300">
+                                {t('landing_page.footer_tutorials')}
+                            </Link>
+                        </li>
                     </ul>
                 </div>
-                 {/* Column 3: Courses */}
-                 <div>
+
+                {/* Column 3: Courses */}
+                <div>
                     <h3 className="text-lg font-bold mb-4">{t('landing_page.footer_courses')}</h3>
                     <ul className="space-y-2">
-                        <li><span className="text-gray-300">Quran Recitation</span></li>
-                        <li><span className="text-gray-300">Tajweed</span></li>
-                        <li><span className="text-gray-300">Arabic Language</span></li>
+                        <li><span className="text-gray-300">{t('landing_page.footer_course_quran')}</span></li>
+                        <li><span className="text-gray-300">{t('landing_page.footer_course_tajweed')}</span></li>
+                        <li><span className="text-gray-300">{t('landing_page.footer_course_arabic')}</span></li>
                     </ul>
                 </div>
-                 {/* Column 4: Contact & Social */}
-                 <div>
+
+                {/* Column 4: Contact & Social */}
+                <div>
                     <h3 className="text-lg font-bold mb-4">{t('landing_page.footer_contact')}</h3>
-                    <p className="text-gray-300">info@ejadah.com</p>
-                    <p className="text-gray-300">+90 531 705 5332</p>
-                    {/* 2. Replace the old <i> tags with the <FontAwesomeIcon> component */}
+                    <p className="text-gray-300">{t('landing_page.footer_email')}</p>
+                    <p className="text-gray-300">{t('landing_page.footer_phone')}</p>
+
                     <div className="flex justify-center md:justify-start space-x-4 mt-4 text-2xl">
                         <a href="#" aria-label="WhatsApp" className="text-gray-400 hover:text-white transition-colors">
                             <FontAwesomeIcon icon={faWhatsapp} />
@@ -426,21 +447,23 @@ const Footer = () => {
                         <a href="#" aria-label="Instagram" className="text-gray-400 hover:text-white transition-colors">
                             <FontAwesomeIcon icon={faInstagram} />
                         </a>
-                         <a href="#" aria-label="YouTube" className="text-gray-400 hover:text-white transition-colors">
+                        <a href="#" aria-label="YouTube" className="text-gray-400 hover:text-white transition-colors">
                             <FontAwesomeIcon icon={faYoutube} />
                         </a>
-                         <a href="#" aria-label="Facebook" className="text-gray-400 hover:text-white transition-colors">
+                        <a href="#" aria-label="Facebook" className="text-gray-400 hover:text-white transition-colors">
                             <FontAwesomeIcon icon={faFacebook} />
                         </a>
                     </div>
                 </div>
             </div>
+
             <div className="border-t border-gray-700 mt-8 pt-6 text-center">
-                 <p>&copy; {new Date().getFullYear()} Ejada Platform. {t('landing_page.footer_text')}</p>
+                <p>&copy; {new Date().getFullYear()} {t('landing_page.footer_brand')}. {t('landing_page.footer_text')}</p>
             </div>
         </footer>
     );
 };
+
 // --- The Main Landing Page Component ---
 const LandingPage = () => {
     return (

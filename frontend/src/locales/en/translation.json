@@ -61,6 +61,17 @@
         "footer_courses": "Courses",
         "footer_contact": "Contact Us",
         "footer_text": "All Rights Reserved.",
+        "footer_title": "Ejada",
+        "footer_home": "Home",
+        "footer_library": "Library",
+        "footer_support": "Support",
+        "footer_tutorials": "Tutorials",
+        "footer_course_quran": "Quran Recitation",
+        "footer_course_tajweed": "Tajweed",
+        "footer_course_arabic": "Arabic Language",
+        "footer_email": "info@ejadah.com",
+        "footer_phone": "+90 531 705 5332",
+        "footer_brand": "Ejada Platform",
         "slider": {
             "watch_on_youtube": "Watch on YouTube"
         }
@@ -110,6 +121,11 @@
         "evaluation_from": "Evaluation from: {{teacher}}",
         "no_notes": "No notes provided.",
         "no_evaluations": "You have no evaluations yet.",
+        "certificates_title": "My Certificates",
+        "cert_completion": "Certificate of Completion",
+        "cert_issued_on": "Issued on:",
+        "cert_download_button": "Download Certificate",
+        "cert_no_certificates": "You have not earned any certificates yet.",
         "loading": "Loading your progress...",
         "error": "Failed to fetch your progress data."
     },
@@ -140,7 +156,10 @@
         "alert_success_title": "Success!",
         "alert_success_message": "Assessment has been recorded.",
         "alert_error_title": "Error!",
-        "alert_error_message": "Failed to record assessment."
+        "alert_error_message": "Failed to record assessment.",
+        "section_title_reading_section": "Reading Section",
+        "section_title_missing": "Section Title Missing", 
+        "section_title_reading_section_1_10": "Reading Section 1-10" 
     },
     "teacher_attendance_page": {
         "loading_students": "Loading students...",
@@ -185,7 +204,13 @@
         "close_button": "Close",
         "evaluation_saved": "Evaluation saved!",
         "no_circles_message": "You are not yet assigned to any educational circles.",
-        "loading": "Loading your circles..."
+        "loading": "Loading your circles...",
+        "star_student_congrats":	"Congratulations! You are the Star Student of this circle!",
+        "schedule_prefix":	"Every",
+        "schedule_at"	: "at",
+        "join_class_slogan":	"Your lesson is waiting!",
+        "make_star_button" :	"Make Star"
+        
     },
     "circle_detail_page": {
         "assignments_title": "Assignments",
@@ -457,31 +482,34 @@
             "desc_manage_templates": "Edit and manage system-wide templates.",
             "desc_manage_badges": "Create and assign achievement badges.",
             "desc_academic_calendar": "View and manage the academic year schedule."
-         
         }
+    },
+    "broadcast_form": {
+        "title": "Send Broadcast Notification",
+        "intro": "Send a notification (e.g., weekly Hadith) to all users.",
+        "placeholder_message": "Your message...",
+        "placeholder_link": "Optional link (e.g., /library)",
+        "button_send": "Send to All Users",
+        "status_sending": "Sending...",
+        "status_failed": "Failed to send broadcast notification."
     },
     "manage_templates_page": {
         "loading_templates": "Loading templates...",
         "page_title": "Manage Certificate Templates",
-        
-     
         "upload_section_title": "Upload a New Template",
         "program_label": "Program",
         "file_label": "Template File (PDF or Image)",
         "button_uploading": "Uploading...",
         "button_upload": "Upload Template",
-      
         "existing_section_title": "Existing Templates",
         "button_view": "View Current",
         "button_delete": "Delete",
-        
-        
+        "button_confirm_action": "!Yes, delete it",
+        "button_cancel_action": "Cancel",
         "program_reciting": "Reciting",
         "program_memorizing": "Memorizing",
         "program_reading_7_plus": "Reading (7+)",
-        "program_reading_under_7": "Reading (<7)",
-        
-       
+        "program_reading_under_7": "Reading (<7)",      
         "alert_no_file_title": "No File",
         "alert_no_file_message": "Please select a template file to upload.",
         "alert_upload_success": "Certificate template uploaded successfully.",

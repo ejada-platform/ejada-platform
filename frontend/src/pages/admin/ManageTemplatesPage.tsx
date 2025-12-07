@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { useAuth } from '../../context/AuthContext';
 import { showSuccessAlert, showErrorAlert, showConfirmationDialog } from '../../services/alert.service';
-import { useTranslation } from 'react-i18next'; // ADDED useTranslation
+import { useTranslation } from 'react-i18next'; 
 
 interface Template {
     program: string;
@@ -18,7 +18,7 @@ const programOptionsMap: { value: string; key: string }[] = [
 ];
 
 const ManageTemplatesPage = () => {
-    const { t, i18n } = useTranslation(); // ADDED useTranslation
+    const { t, i18n } = useTranslation(); 
     const { token } = useAuth();
     const [templates, setTemplates] = useState<Template[]>([]);
     const [loading, setLoading] = useState(true);
@@ -69,15 +69,14 @@ const ManageTemplatesPage = () => {
     };
 
     const handleDelete = async (programValue: string) => {
-        // Find the translated name of the program for the confirmation message
         const programKey = programOptionsMap.find(p => p.value === programValue)?.key;
         const translatedProgramName = programKey ? t(`manage_templates_page.${programKey}`) : programValue;
-
-        // Construct the dynamic confirmation message using the translated strings
         const message = `${t('manage_templates_page.alert_delete_confirm_message_prefix')} ${translatedProgramName} ${t('manage_templates_page.alert_delete_confirm_message_suffix')}`;
-        
-        const result = await showConfirmationDialog(t('manage_templates_page.alert_delete_confirm_title'), message);
-
+        const result = await showConfirmationDialog(
+            t('manage_templates_page.alert_delete_confirm_title'),message,                                              
+            t('manage_templates_page.button_confirm_action'),     
+            t('manage_templates_page.button_cancel_action')       
+        );
         if (result.isConfirmed) {
             try {
                 const config = { headers: { Authorization: `Bearer ${token}` }, data: { program: programValue } };

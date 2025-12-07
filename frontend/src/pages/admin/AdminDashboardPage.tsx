@@ -12,8 +12,10 @@ interface PlatformStats {
     totalHoursLogged: number;
 }
 
+
 // --- ADD A NEW SUB-COMPONENT FOR THE FORM ---
 const BroadcastForm = () => {
+    const { t, i18n } = useTranslation(); 
     const { token } = useAuth();
     const [message, setMessage] = useState('');
     const [link, setLink] = useState('');
@@ -21,28 +23,36 @@ const BroadcastForm = () => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        setStatus('Sending...');
+        setStatus(t('broadcast_form.status_sending'));
         try {
             const config = { headers: { Authorization: `Bearer ${token}` } };
             const payload = { message, link };
-            const { data } = await axios.post('http://localhost:5000/api/notifications/broadcast', payload, config);
-            setStatus(data.message); 
+            const { data } = await axios.post<{ message: string }>('http://localhost:5000/api/notifications/broadcast', payload, config);
+            setStatus(data.message || 'Broadcast Sent Successfully!'); 
             setMessage('');
             setLink('');
         } catch (error) {
-            setStatus('Failed to send broadcast.');
+            setStatus(t('broadcast_form.status_failed'));
         }
     };
 
     return (
-        <div className="bg-white p-6 rounded-lg shadow">
-            <h2 className="text-2xl font-bold mb-4">Send Broadcast Notification</h2>
-            <p className="text-sm text-gray-500 mb-4">Send a notification (e.g., weekly Hadith) to ALL users.</p>
+        <div className="bg-white p-6 rounded-lg shadow" dir={i18n.dir()}>
+            <h2 className="text-2xl font-bold mb-4">{t('broadcast_form.title')}</h2>
+            <p className="text-sm text-gray-500 mb-4">{t('broadcast_form.intro')}</p>
             <form onSubmit={handleSubmit}>
-                <textarea value={message} onChange={e => setMessage(e.target.value)} placeholder="Your message..." className="w-full p-2 border rounded" required rows={3}></textarea>
-                <input type="text" value={link} onChange={e => setLink(e.target.value)} placeholder="Optional link (e.g., /library)" className="w-full p-2 border rounded mt-2" />
+                <textarea value={message} 
+                onChange={e => setMessage(e.target.value)} 
+                placeholder={t('broadcast_form.placeholder_message')} 
+                className="w-full p-2 border rounded" 
+                required rows={3}>
+                </textarea>
+                <input type="text" value={link} 
+                onChange={e => setLink(e.target.value)} 
+                placeholder={t('broadcast_form.placeholder_link')}
+                className="w-full p-2 border rounded mt-2" />
                 <button type="submit" className="w-full mt-4 py-2 px-4 bg-purple-600 text-white font-bold rounded hover:bg-purple-700">
-                    Send to All Users
+                {t('broadcast_form.button_send')}
                 </button>
                 {status && <p className="mt-2 text-center">{status}</p>}
             </form>
@@ -50,12 +60,15 @@ const BroadcastForm = () => {
     );
 };
 
+
+
 const AdminDashboardPage = () => {
     const { t } = useTranslation();
     const { user, token } = useAuth();
     const [stats, setStats] = useState<PlatformStats | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+  
 
     const fetchPlatformStats = useCallback(async () => {
         if (!token) return;
@@ -223,5 +236,6 @@ const AdminDashboardPage = () => {
         </div>        
     );
 };
+
 
 export default AdminDashboardPage;

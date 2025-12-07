@@ -61,6 +61,17 @@
         "footer_courses": "الدورات",
         "footer_contact": "تواصل معنا",
         "footer_text": "جميع الحقوق محفوظة.",
+        "footer_title": "إيجادة",
+        "footer_home": "الرئيسية",
+        "footer_library": "المكتبة",
+        "footer_support": "الدعم",
+        "footer_tutorials": "الدروس",
+        "footer_course_quran": "تلاوة القرآن",
+        "footer_course_tajweed": "التجويد",
+        "footer_course_arabic": "اللغة العربية",
+        "footer_email": "info@ejadah.com",
+        "footer_phone": "+90 531 705 5332",
+        "footer_brand": "منصة إيجادة",
         "slider": {
             "watch_on_youtube": "شاهد على يوتيوب"
         }
@@ -98,7 +109,12 @@
         "no_notes": "لا توجد ملاحظات.",
         "no_evaluations": "ليس لديك أي تقييمات بعد.",
         "loading": "جاري تحميل تقدمك...",
-        "error": "فشل تحميل بيانات التقدم."
+        "error": "فشل تحميل بيانات التقدم.",
+        "certificates_title": "شهاداتي",
+        "cert_completion": "شهادة إتمام",
+        "cert_issued_on": "صدرت بتاريخ:",
+        "cert_download_button": "تنزيل الشهادة",
+        "cert_no_certificates": "لم تحصل على أي شهادات بعد."
     },
     "student_progress_page": {
         "loading_progress": "جاري تحميل تقدم الطالب...",
@@ -120,7 +136,10 @@
         "alert_success_title": "تم بنجاح!",
         "alert_success_message": "تم تسجيل التقييم.",
         "alert_error_title": "خطأ!",
-        "alert_error_message": "فشل في تسجيل التقييم."
+        "alert_error_message": "فشل في تسجيل التقييم.",
+        "section_title_reading_section": "قراءة القسم", 
+        "section_title_missing": "عنوان القسم مفقود", 
+        "section_title_reading_section_1_10": "قراءة القسم 1-10" 
       },
       "teacher_attendance_page": {
         "loading_students": "جاري تحميل الطلاب...",
@@ -172,7 +191,12 @@
         "close_button": "إغلاق",
         "evaluation_saved": "تم حفظ التقييم!",
         "no_circles_message": "لم يتم تعيينك في أي حلقة تعليمية بعد.",
-        "loading": "جاري تحميل حلقاتك..."
+        "loading": "جاري تحميل حلقاتك...",
+        "star_student_congrats":	"تهانينا! أنت الطالب النجم لهذه الحلقة!",
+        "schedule_prefix":	"كل",
+        "schedule_at"	: "الساعة",
+        "join_class_slogan":	"درسك بانتظارك!",
+        "make_star_button" :	"تعيين كنجم"
     },
     "circle_detail_page": {
         "assignments_title": "الواجبات",
@@ -433,7 +457,16 @@
       "desc_manage_templates": "تعديل وإدارة القوالب على مستوى النظام.",
       "desc_manage_badges": "إنشاء وتعيين شارات الإنجاز.",
       "desc_academic_calendar": "عرض وإدارة الجدول الزمني للسنة الأكاديمية."     
-        }     
+    }
+    },
+    "broadcast_form": {
+        "title": "إرسال إشعار عام",
+        "intro": "إرسال إشعار (مثال: حديث أسبوعي) إلى جميع المستخدمين.",
+        "placeholder_message": "رسالتك...",
+        "placeholder_link": "رابط اختياري (مثال: /library)",
+        "button_send": "إرسال إلى جميع المستخدمين",
+        "status_sending": "جاري الإرسال...",
+        "status_failed": "فشل إرسال الإشعار العام."
     },
     "payroll_page": {
               "loading_data": "جاري تحميل بيانات المعلمين...",
@@ -476,6 +509,8 @@
             "existing_section_title": "القوالب الحالية",
             "button_view": "عرض الحالي",
             "button_delete": "حذف",
+            "button_confirm_action": "نعم، احذفه!",
+            "button_cancel_action": "إلغاء",
             "program_reciting": "التجويد",
             "program_memorizing": "الحفظ",
             "program_reading_7_plus": "القراءة (7+)",
