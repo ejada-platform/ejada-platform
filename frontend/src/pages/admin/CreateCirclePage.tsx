@@ -48,6 +48,24 @@ const CreateCirclePage = () => {
 
     const addScheduleEntry = () => setSchedule([...schedule, { day: 'Wednesday', time: '17:00' }]);
     const removeScheduleEntry = (index: number) => setSchedule(schedule.filter((_, i) => i !== index));
+    
+    // Helper to translate the DAY OF WEEK
+    const getTranslatedDay = (day: string) => t(`admin_pages.create_circle.day_${day.toLowerCase()}`);
+    
+    const getTranslatedProgram = (program: string) => {
+    switch (program) {
+        case 'Reading 7+':
+            return t('admin_pages.create_circle.program_reading_7_plus');
+        case 'Reading <7':
+            return t('admin_pages.create_circle.program_reading_under_7');
+        case 'Reciting':
+            return t('admin_pages.create_circle.program_reciting');
+        case 'Memorizing':
+            return t('admin_pages.create_circle.program_memorizing');
+        default:
+            return program; // Fallback
+    }
+};
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!name || !teacher || !program) {
@@ -80,8 +98,6 @@ const CreateCirclePage = () => {
     
     const teacherOptions = users.filter(u => u.role === 'Teacher').map(u => ({ value: u._id, label: u.username }));
     const studentOptions = users.filter(u => u.role === 'Student').map(u => ({ value: u._id, label: u.username }));
-    const getTranslatedDay = (day: string) => t(`admin_pages.create_circle.day_${day.toLowerCase()}`);
-    const getTranslatedProgram = (program: string) => t(`admin_pages.create_circle.program_${program.toLowerCase().replace(/[ <+]/g, '_')}`);
 
     return (
         <div className="p-8 max-w-2xl mx-auto" dir={i18n.dir()}> 
@@ -99,11 +115,13 @@ const CreateCirclePage = () => {
                     <label className="block font-bold mb-1">{t('admin_pages.create_circle.description_label')}</label>
                     <textarea value={description} onChange={e => setDescription(e.target.value)} className="w-full p-2 border rounded-md" />
                 </div>
+                
+                {/* --- CLASS SCHEDULE BLOCK (Includes label fix) --- */}
                 <div>
                     <label className="block font-bold mb-2">{t('admin_pages.create_circle.schedule_label')}</label>
                     {schedule.map((entry, index) => (
                         <div key={index} className="flex items-center space-x-2 mb-2">
-                            {/* Schedule Day Dropdown */}
+                            {/* Schedule Day Dropdown - Uses getTranslatedDay */}
                             <select value={entry.day} onChange={e => handleScheduleChange(index, 'day', e.target.value)} className="p-2 border rounded-md w-1/2 bg-white">
                                 {daysOfWeek.map(day => <option key={day} value={day}>{getTranslatedDay(day)}</option>)}
                             </select>
@@ -113,10 +131,12 @@ const CreateCirclePage = () => {
                     ))}
                     <button type="button" onClick={addScheduleEntry} className="text-sm text-blue-600 hover:underline">{t('admin_pages.create_circle.add_day_button')}</button>
                 </div>
+                
+                {/* --- PROGRAM BLOCK (Includes label fix) --- */}
                 <div>
                     <label className="block font-bold mb-1">{t('admin_pages.create_circle.program_label')}</label>
                     <select value={program} onChange={e => setProgram(e.target.value as any)} className="w-full p-2 border rounded-md bg-white">
-                        {/* Program Dropdown */}
+                        {/* Program Dropdown - Uses getTranslatedProgram */}
                         {programValues.map(p => (
                             <option key={p} value={p}>
                                 {getTranslatedProgram(p)}
@@ -124,6 +144,7 @@ const CreateCirclePage = () => {
                         ))}
                     </select>
                 </div>
+                
                 <div>
                     <label className="block font-bold mb-1">{t('admin_pages.create_circle.teacher_label')}</label>
                     <Select options={teacherOptions} value={teacher} onChange={setTeacher} required />

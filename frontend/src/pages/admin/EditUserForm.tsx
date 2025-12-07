@@ -16,7 +16,7 @@ interface SelectOption {
 }
 
 const EditUserForm = ({ user, onSuccess, onCancel }: EditUserFormProps) => {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const { token } = useAuth();
     const [username, setUsername] = useState(user.username);
     const [role, setRole] = useState(user.role);
@@ -52,14 +52,14 @@ const EditUserForm = ({ user, onSuccess, onCancel }: EditUserFormProps) => {
                         setSelectedChildren([]);
                     }
                 } catch (error) {
-                    setMessage("Failed to load student list.");
+                    setMessage(t('admin_pages.manage_users.load_students_error')); // FIXED
                 } finally {
                     setLoadingStudents(false);
                 }
             };
             fetchStudents();
         }
-    }, [user, token]);
+    }, [user, token, t]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -86,16 +86,16 @@ const EditUserForm = ({ user, onSuccess, onCancel }: EditUserFormProps) => {
 
             await axios.put(`http://localhost:5000/api/users/${user._id}`, payload, config);
             
-            alert('User updated successfully!');
+            alert(t('admin_pages.manage_users.update_success_alert')); // FIXED
             onSuccess();
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (err: any) {
-            setMessage(err.response?.data?.message || 'Failed to update user.');
+            setMessage(err.response?.data?.message || t('admin_pages.manage_users.update_failed_error')); // FIXED
         }
     };
 
     return (
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} dir={i18n.dir()}>
             <div className="mb-4">
                 <label className="block font-bold mb-1">{t('admin_pages.manage_users.username_header')}</label>
                 <input 
@@ -112,15 +112,16 @@ const EditUserForm = ({ user, onSuccess, onCancel }: EditUserFormProps) => {
                     onChange={e => setRole(e.target.value as User['role'])} 
                     className="w-full p-2 border rounded"
                 >
+                    {/* Role Options - Using correct keys */}
                     <option value="Student">{t('register_page.role_student')}</option>
                     <option value="Teacher">{t('register_page.role_teacher')}</option>
-                    <option value="Parent">Parent</option>
-                    <option value="Admin">Admin</option>
+                    <option value="Parent">{t('admin_pages.manage_users.role_parent')}</option> {/* FIXED */}
+                    <option value="Admin">{t('admin_pages.manage_users.role_admin')}</option>   {/* FIXED */}
                 </select>
             </div>
             {role === 'Parent' && (
                 <div className="mb-6">
-                    <label className="block font-bold mb-1">Linked Student Accounts</label>
+                    <label className="block font-bold mb-1">{t('admin_pages.manage_users.linked_students_label')}</label> {/* FIXED */}
                     <Select
                         isMulti
                         isLoading={loadingStudents}
@@ -131,13 +132,13 @@ const EditUserForm = ({ user, onSuccess, onCancel }: EditUserFormProps) => {
                 </div>
             )}
             <div className="mb-6">
-                <label className="block font-bold mb-1">Reset Password (Optional)</label>
+                <label className="block font-bold mb-1">{t('admin_pages.manage_users.reset_password_label')}</label> 
                 <input 
                     type="text" 
                     value={password}
                     onChange={e => setPassword(e.target.value)}
                     className="w-full p-2 border rounded" 
-                    placeholder="Enter new temporary password"
+                    placeholder={t('admin_pages.manage_users.reset_password_placeholder')} 
                 />
             </div>
             <div className="flex justify-end space-x-4">

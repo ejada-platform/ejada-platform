@@ -207,8 +207,64 @@
         "specializations": { "quran": "Quran", "arabic_language": "Arabic Language", "islamic_lessons": "Islamic Lessons" }
     },
     "admin_pages": {
-        "create_circle": { "title": "Create New Educational Circle", "name_label": "Circle Name", "url_label": "Live Class URL (Zoom Link)", "description_label": "Description", "schedule_label": "Class Schedule", "add_day_button": "+ Add another day", "teacher_label": "Select Teacher", "students_label": "Select Students", "submit_button": "Create Circle", "success_message": "Circle created successfully!" },
-        "manage_users": { "title": "User Management", "username_header": "Username", "role_header": "Role", "status_header": "Status", "actions_header": "Actions", "star_student_status": "★ Star Student", "feature_button": "Feature", "edit_button": "Edit", "edit_modal_title": "Edit User: {{username}}", "cancel_button": "Cancel", "save_button": "Save Changes",  "delete_button": "Delete",
+        "create_circle": { 
+            "title": "Create New Educational Circle", 
+            "name_label": "Circle Name", "url_label": "Live Class URL (Zoom Link)", 
+            "description_label": "Description", 
+            "schedule_label": "Class Schedule", 
+            "add_day_button": "+ Add another day", 
+            "teacher_label": "Select Teacher", 
+            "students_label": "Select Students", 
+            "submit_button": "Create Circle", 
+            "success_message": "Circle created successfully!",
+            "program_label": "Program",
+            "program_reading_7_plus": "Reading (7+)",
+            "program_reading_under_7": "Reading (<7)",
+            "program_reciting": "Reciting",
+            "program_memorizing": "Memorizing",
+            "day_monday": "Monday",
+            "day_tuesday": "Tuesday",
+            "day_wednesday": "Wednesday",
+            "day_thursday": "Thursday",
+            "day_friday": "Friday",
+            "day_saturday": "Saturday",
+            "day_sunday": "Sunday",
+            "alert_missing_fields": "Missing Fields",
+            "alert_missing_fields_message": "Please ensure Name, Program, and Teacher are selected." 
+        },
+        "manage_users": { 
+            "title": "User Management", 
+            "username_header": "Username", 
+            "role_header": "Role", 
+            "status_header": "Status", 
+            "actions_header": "Actions", 
+            "role_student": "Student",
+            "role_teacher": "Teacher",
+            "program_reading_7_plus": "Reading (7+)", 
+            "program_reading_under_7": "Reading (<7)",
+            "program_reciting": "Reciting",
+            "program_memorizing": "Memorizing",
+            "cert_form_intro": "Select the program this student has completed. It has been pre-selected based on their enrollment data.",
+            "cert_form_program_label": "Program",
+            "cert_form_button_awarding": "Awarding...",
+            "cert_form_button_award": "Award Certificate",
+      
+            "star_student_status": "★ Star Student", 
+            "feature_button": "Feature", 
+            "edit_button": "Edit", 
+            "edit_modal_title": "Edit User: {{username}}", 
+            "cancel_button": "Cancel", 
+            "save_button": "Save Changes",  
+            "delete_button": "Delete",
+            "award_cert_button": "Award Cert.",
+            "role_parent": "Parent",                        
+            "role_admin": "Admin",                          
+            "linked_students_label": "Linked Student Accounts",  
+            "reset_password_label": "Reset Password (Optional)", 
+            "reset_password_placeholder": "Enter new temporary password", 
+            "load_students_error": "Failed to load student list.",      
+            "update_success_alert": "User updated successfully!",       
+            "update_failed_error": "Failed to update user.",           
             "delete_confirm_title": "Are you sure?",
             "delete_confirm_text": "You won't be able to revert this!",
             "delete_success_title": "Deleted!",
@@ -511,8 +567,8 @@
             "mobile_label_teacher": "Teacher:",
             "mobile_label_last_attendance": "Last Attendance:"
           },
-          "create_circle_pages": {
-            "create_circle": {
+          "create_circle_page": {
+            "create_circle_page": {
               "title": "Create New Circle",
               "success_message": "New Circle created successfully!",
               "name_label": "Circle Name",
@@ -523,20 +579,7 @@
               "teacher_label": "Assign Teacher",
               "students_label": "Select Students",
               "submit_button": "Create Circle",
-              "button_creating": "Creating...",
-              "program_reading_7_plus": "Reading (7+)",
-              "program_reading_under_7": "Reading (<7)",
-              "program_reciting": "Reciting",
-              "program_memorizing": "Memorizing",
-              "day_monday": "Monday",
-              "day_tuesday": "Tuesday",
-              "day_wednesday": "Wednesday",
-              "day_thursday": "Thursday",
-              "day_friday": "Friday",
-              "day_saturday": "Saturday",
-              "day_sunday": "Sunday",
-              "alert_missing_fields": "Missing Fields",
-              "alert_missing_fields_message": "Please ensure Name, Program, and Teacher are selected."
+              "button_creating": "Creating..."
             }
     },"academic_calendar_page": {
         "page_title": "Academic Calendar",
@@ -582,6 +625,28 @@
         "day_thursday": "Thursday",
         "day_friday": "Friday",
         "day_saturday": "Saturday"
+      },
+      "navigation": {
+        "login": "Log In",
+        "logout": "Log Out",
+        "welcome_user": "Welcome, {{username}}",
+        "signing_in": "Signing In...",
+        "home": "Home",
+        "who_we_are": "Who we are",
+        "educational_courses": "Educational courses",
+        "visuals": "Visuals",
+        "our_applications": "Our applications",
+        "platform_slogan": "For Education And Development",
+        "calendar": "Calendar",
+        "library": "Library",
+        "support": "Support",
+        "tutorials": "Tutorials",
+        "my_progress": "My Progress",
+        "my_circles": "My Circles",
+        "manage_users": "Manage Users",
+        "review_applications": "Review Applications",
+        "create_assignment": "New Assignment",
+        "my_work_logs": "My Work Logs"
       }
 
 }

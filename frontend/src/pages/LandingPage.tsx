@@ -55,9 +55,9 @@ const ImageSliderSection = () => {
     const [openVideo, setOpenVideo] = useState<string | null>(null);
 
     const slides = [
-        { img: '/images/slider1.jpeg', youtubeId: 'YOUR_YOUTUBE_ID_1' },
-        { img: '/images/slider2.jpeg', youtubeId: 'YOUR_YOUTUBE_ID_2' },
-        { img: '/images/slider3.jpeg', youtubeId: 'YOUR_YOUTUBE_ID_3' }
+        { img: '/images/slider1.jpeg', youtubeId: 'mbxq88TOxp4' },
+        { img: '/images/slider2.jpeg', youtubeId: 'mbxq88TOxp4' },
+        { img: '/images/slider3.jpeg', youtubeId: 'mbxq88TOxp4' }
     ];
 
     const settings = { dots: true, infinite: true, speed: 500, slidesToShow: 1, slidesToScroll: 1, autoplay: true, autoplaySpeed: 4000, arrows: true };
@@ -83,7 +83,7 @@ const ImageSliderSection = () => {
                 open={!!openVideo}
                 close={() => setOpenVideo(null)}
                 slides={openVideo ? [{ 
-                    type: "video", 
+                    type: "video" as "video", 
                     sources: [{ src: `https://www.youtube.com/embed/${openVideo}?autoplay=1`, type: "video/youtube" }] 
                 }] : [] as any}
                 render={{
@@ -297,7 +297,7 @@ const TestimonialsSection = () => {
         { quote: "The best institution I have known. I recommend that anyone who wants to learn to read and write Arabic and recite the Holy Quran enroll here.", author: "Oussama", rating: 5 },
         { quote: "May Allah bless you and your efforts. The follow-up is very good, and the teacher's teaching and style are distinctive. Thank you very much.", author: "Yamoussa Soumah", rating: 5 },
         { quote: "When we came to Turkey, I was afraid for our children... an institute that teaches Syrian children the Quran... May God reward you.", author: "Hamza Ali", rating: 5 },
-        { quote: "A truly blessed initiative that has helped my family connect with the Quran in a profound way. The teachers are patient and knowledgeable.", author: "Bilal Ibn Talib", rating: 5 }
+        { quote: "A truly blessed initiative that has helped my family connect with the Quran in a profound way. The teachers are patient and knowledgeable.", author: "Bilal Ibn Talib", rating: 4 }
     ];
 
     return (

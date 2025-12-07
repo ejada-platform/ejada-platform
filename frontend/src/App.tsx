@@ -3,10 +3,9 @@ import { useTranslation } from 'react-i18next';
 import { BrowserRouter as Router, Routes, Route, Link, useNavigate } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSignInAlt, faSun, faMoon, faArrowRightToBracket } from '@fortawesome/free-solid-svg-icons';
+import { faSignInAlt, faSun, faMoon, faArrowRightToBracket, faBars, faTimes } from '@fortawesome/free-solid-svg-icons';
 
-
-// Import all pages
+// Import all pages (Assuming correct paths)
 import LoginPage from './pages/LoginPage';
 import StudentDashboard from './pages/student/StudentDashboard';
 import TeacherDashboard from './pages/teacher/TeacherDashboard';
@@ -49,69 +48,59 @@ import CurriculumBuilderPage from './pages/admin/CurriculumBuilderPage';
 import StudentProgressPage from './pages/teacher/StudentProgressPage';
 
 
-// --- 1. LANGUAGE & THEME SWITCHER COMPONENT (Ensures consistent inclusion) ---
-const ThemeSwitcher = () => {
-    const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light');
+// --- THEME/LANGUAGE SWITCHER COMPONENTS (FIXED) ---
 
-    useEffect(() => {
-        if (theme === 'dark') {
-            document.documentElement.classList.add('dark');
-        } else {
-            document.documentElement.classList.remove('dark');
-        }
-        localStorage.setItem('theme', theme);
-    }, [theme]);
+// Simple Toggler Component (now controlled by App.tsx)
+const SimpleThemeToggler = ({ theme, setTheme }: { theme: string, setTheme: (t: string) => void }) => (
+    <button onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')} className="text-xl">
+        <FontAwesomeIcon icon={theme === 'light' ? faMoon : faSun} />
+    </button>
+);
 
-    return (
-        <button onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')} className="text-xl">
-            <FontAwesomeIcon icon={theme === 'light' ? faMoon : faSun} />
-        </button>
-    );
-};
-
-const LanguageThemeBox = ({ i18n, changeLanguage }: { i18n: any, changeLanguage: (lng: string) => void }) => {
-    const { t } = useTranslation();
+// Language/Theme Box (Now accepts theme/setTheme props)
+const LanguageThemeBox = ({ i18n, changeLanguage, theme, setTheme }: { i18n: any, changeLanguage: (lng: string) => void, theme: string, setTheme: (t: string) => void }) => {
+    const dir = i18n.dir();
+    const borderClass = dir === 'rtl' ? 'border-l pl-2' : 'border-r pr-2';
     
     return (
         <div className="flex items-center space-x-2">
-            <div className="border-r pr-2 border-gray-300">
+            <div className={`flex ${borderClass} border-gray-300`}>
                 <button onClick={() => changeLanguage('en')} className={`px-2 py-1 text-sm rounded ${i18n.language.startsWith('en') ? 'bg-gray-200 text-gray-800' : 'hover:bg-gray-100'}`}>EN</button>
                 <button onClick={() => changeLanguage('ar')} className={`px-2 py-1 text-sm rounded ${i18n.language === 'ar' ? 'bg-gray-200 text-gray-800' : 'hover:bg-gray-100'}`}>AR</button>
             </div>
-            <ThemeSwitcher />
+            <SimpleThemeToggler theme={theme} setTheme={setTheme} /> 
         </div>
     );
 };
 
-// --- 2. PUBLIC/LANDING PAGE FLOATING HEADER ---
-const PublicHeaderContent = ({ changeLanguage, i18n }: { changeLanguage: (lng: string) => void, i18n: any }) => {
+// --- PUBLIC/LANDING PAGE FLOATING HEADER ---
+const PublicHeaderContent = ({ changeLanguage, i18n, theme, setTheme }: { changeLanguage: (lng: string) => void, i18n: any, theme: string, setTheme: (t: string) => void }) => {
     const { t } = useTranslation();
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const dir = i18n.dir();
 
     const imageNavLinks = [
-        { href: "/", label: t('Home'), isHome: true },
-        { href: "/#vision", label: t('Who we are') }, 
-        { href: "/#programs", label: t('Educational courses') }, 
-        { href: "/#gallery", label: t('Visuals') }, 
-        { href: "/enroll", label: t('Our applications') }, 
-       // { href: "/library", label: t('Our publications') },
-       // { href: "/#projects", label: t('Our projects') }, 
+        { href: "/", label: t('navigation.home'), isHome: true },
+        { href: "/#vision", label: t('navigation.who_we_are') }, 
+        { href: "/#programs", label: t('navigation.educational_courses') }, 
+        { href: "/#gallery", label: t('navigation.visuals') }, 
+        { href: "/enroll", label: t('navigation.our_applications') }, 
     ];
 
     return (
-        // The main container for the floating, rounded bar
         <div className="max-w-[1200px] mx-auto px-4">
             <div className="bg-white rounded-2xl shadow-2xl p-4 flex justify-between items-center w-full">
                 
                 {/* 1. Log In Button */}
                 <Link 
                     to="/login" 
-                    className="flex items-center space-x-2 bg-blue-700 hover:bg-blue-800 text-white font-semibold py-2 px-6 rounded-lg transition-colors"
+                    className={`flex items-center ${dir === 'rtl' ? 'flex-row-reverse space-x-reverse' : 'space-x-2'} bg-blue-700 hover:bg-blue-800 text-white font-semibold py-2 px-6 rounded-lg transition-colors`}
                 >
                     <FontAwesomeIcon icon={faArrowRightToBracket} className="mr-2" />
-                    <span className="text-lg">{t('Log In')}</span>
+                    <span className="text-lg">{t('navigation.login')}</span>
                 </Link>
 
-                {/* 2. Navigation Links */}
+                {/* 2. Navigation Links (Desktop) */}
                 <nav className="hidden lg:flex items-center space-x-6 text-base font-serif text-gray-800">
                     {imageNavLinks.map((item, index) => {
                         const className = item.isHome ? "font-bold text-blue-700 pb-1 border-b-2 border-blue-700" : "hover:text-blue-700 transition-colors";
@@ -126,21 +115,60 @@ const PublicHeaderContent = ({ changeLanguage, i18n }: { changeLanguage: (lng: s
                             </Link>;
                     })}
                 </nav>
+                
+                {/* 3. Mobile Menu Toggle (Visible on lg:hidden) */}
+                <button className="lg:hidden" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+                    <FontAwesomeIcon icon={faBars} className="w-6 h-6 text-gray-800" />
+                </button>
 
-                {/* 3. Language & Theme Switcher */}
-                <LanguageThemeBox i18n={i18n} changeLanguage={changeLanguage} />
+                {/* 4. Language & Theme Switcher (Desktop) */}
+                <div className="hidden lg:block">
+                     <LanguageThemeBox i18n={i18n} changeLanguage={changeLanguage} theme={theme} setTheme={setTheme} />
+                </div>
             </div>
+
+            {/* Mobile Menu Content (Hamburger) */}
+            {isMenuOpen && (
+                <div className={`absolute top-0 ${dir === 'rtl' ? 'left-0' : 'right-0'} w-full h-screen bg-gray-900 bg-opacity-95 z-50 p-8 pt-20`}>
+                    <button className={`absolute top-4 ${dir === 'rtl' ? 'left-4' : 'right-4'} text-white text-2xl`} onClick={() => setIsMenuOpen(false)}>
+                        <FontAwesomeIcon icon={faTimes} />
+                    </button>
+                    <nav className="flex flex-col space-y-6 text-xl text-white text-center">
+                        {imageNavLinks.map((item, index) => (
+                            <Link 
+                                key={index} 
+                                to={item.href.startsWith('/#') || item.isHome ? item.href : item.href} 
+                                onClick={() => setIsMenuOpen(false)}
+                                className="hover:text-blue-400"
+                            >
+                                {item.label}
+                            </Link>
+                        ))}
+                        <Link 
+                            to="/login" 
+                            onClick={() => setIsMenuOpen(false)}
+                            className="pt-4 border-t border-gray-700 mt-6 text-blue-400"
+                        >
+                            {t('navigation.login')}
+                        </Link>
+                         <div className="pt-4 flex justify-center">
+                            <LanguageThemeBox i18n={i18n} changeLanguage={changeLanguage} theme={theme} setTheme={setTheme} />
+                        </div>
+                    </nav>
+                </div>
+            )}
         </div>
     );
 };
 
 
 // The Responsive Navigation Component
-const Navigation = () => {
+const Navigation = ({ theme, setTheme }: { theme: string, setTheme: (t: string) => void }) => {
     const { t, i18n } = useTranslation();
     const { user, logout, isLoading } = useAuth();
     const navigate = useNavigate();
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const dir = i18n.dir();
 
     const changeLanguage = (lng: string) => {
         i18n.changeLanguage(lng);
@@ -157,12 +185,23 @@ const Navigation = () => {
         setIsMobileMenuOpen(false);
     };
 
-    // Define the protected links
+    // Define the common protected links
     const protectedLinks = [
-        { to: "/calendar", label: t('Calendar') },
-        { to: "/library", label: t('library') },
-        { to: "/support", label: t('Support') },
-        { to: "/tutorials", label: t('Tutorials') },
+        { to: "/calendar", label: t('navigation.calendar') },
+        { to: "/library", label: t('navigation.library') },
+        { to: "/support", label: t('navigation.support') },
+        { to: "/tutorials", label: t('navigation.tutorials') },
+    ];
+    
+    // --- CONSTRUCT THE FULL PROTECTED MENU LINKS ---
+    const allProtectedLinks = [
+        ...protectedLinks,
+        ...(user?.role === 'Student' ? [{ to: "/my-progress", label: t('navigation.my_progress') }] : []),
+        ...(user?.role === 'Student' || user?.role === 'Teacher' ? [{ to: "/my-circles", label: t('navigation.my_circles') }] : []),
+        ...(user?.role === 'Admin' ? [{ to: "/admin/users", label: t('navigation.manage_users') }] : []),
+        ...(user?.role === 'Admin' ? [{ to: "/admin/applications", label: t('navigation.review_applications') }] : []),
+        ...(user?.role === 'Teacher' || user?.role === 'Admin' ? [{ to: "/teacher/create-assignment", label: t('navigation.create_assignment') }] : []),
+        ...(user?.role === 'Teacher' || user?.role === 'Admin' ? [{ to: "/teacher/work-logs", label: t('navigation.my_work_logs') }] : []),
     ];
 
 
@@ -182,7 +221,7 @@ const Navigation = () => {
         return (
             // Stick to top, but add padding to create the 'separation' effect
             <header className="fixed top-0 left-0 w-full z-50 pt-6"> 
-                <PublicHeaderContent changeLanguage={changeLanguage} i18n={i18n} />
+                <PublicHeaderContent changeLanguage={changeLanguage} i18n={i18n} theme={theme} setTheme={setTheme} />
             </header>
         );
     }
@@ -198,55 +237,55 @@ const Navigation = () => {
                 {/* --- DESKTOP NAVIGATION --- */}
                 <nav className="hidden md:flex items-center space-x-4 flex-wrap justify-end">
                     
-                    {/* Common Links */}
-                    {protectedLinks.map(item => (
+                    {/* All Links (Desktop) */}
+                    {allProtectedLinks.map(item => (
                         <Link key={item.to} to={item.to} className="hover:underline">{item.label}</Link>
                     ))}
-
-                    {/* User Role Specific Links */}
-                    {user.role === 'Student' && <Link to="/my-progress" className="font-bold hover:underline">{t('my_progress')}</Link>}
-                    {(user.role === 'Student' || user.role === 'Teacher') && <Link to="/my-circles" className="hover:underline">{t('my_circles')}</Link>}
-                   
-                    {/* Admin Links */}
-                    {user.role === 'Admin' && (<Link to="/admin/users" className="hover:underline">{t('manage_users')}</Link>)}
-                    {user.role === 'Admin' && (<Link to="/admin/applications" className="font-bold hover:underline">{t('review_applications')}</Link>)}
                     
-                    {/* Teacher Links */}
-                    {(user.role === 'Teacher' || user.role === 'Admin') && <Link to="/teacher/create-assignment" className="hover:underline">{t('create_assignment')}</Link>}
-                    {(user.role === 'Teacher' || user.role === 'Admin') && <Link to="/teacher/work-logs" className="font-bold hover:underline">{t('my_work_logs')}</Link>}
-                    
-                    {/* Logout */}
+                    {/* Separator, Welcome, Bell, Logout */}
                     <span className="text-gray-300">|</span>
-                    <span className="font-semibold">{t('welcome_user', { username: user.username })}</span>
+                    <span className="font-semibold">{t('navigation.welcome_user', { username: user.username })}</span>
                     <NotificationBell />
-                    <button onClick={handleLogout} className="bg-[#ada687] hover:bg-[#ada687] text-white font-bold py-2 px-4 rounded">{t('logout')}</button>
+                    <button onClick={handleLogout} className="bg-[#ada687] hover:bg-[#ada687] text-white font-bold py-2 px-4 rounded">{t('navigation.logout')}</button>
                     
                     {/* Language & Theme Switcher (MUST BE VISIBLE) */}
                     <div className="ml-4 text-white">
-                        <LanguageThemeBox i18n={i18n} changeLanguage={changeLanguage} />
+                        <LanguageThemeBox i18n={i18n} changeLanguage={changeLanguage} theme={theme} setTheme={setTheme} />
                     </div>
                 </nav>
 
-                {/* Mobile Menu Toggle */}
+                {/* Mobile Menu Toggle (Hamburger) */}
                 <div className="md:hidden">
                     <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
-                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                        <FontAwesomeIcon icon={isMobileMenuOpen ? faTimes : faBars} className="w-6 h-6" />
                     </button>
                 </div>
             </div>
 
-            {/* Mobile Menu Content (Simplified) */}
+            {/* Mobile Menu Content (Hamburger Dropdown) */}
             {isMobileMenuOpen && (
-                 <nav className="md:hidden mt-4 space-y-2">
-                    {protectedLinks.map(item => (
-                        <Link key={item.to} to={item.to} onClick={handleLinkClick} className="block px-2 py-1 hover:bg-gray-700 rounded">{item.label}</Link>
-                    ))}
-                    <div className="border-t border-gray-700 mt-2 pt-2">
-                        <button onClick={handleLogout} className="w-full text-left bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">{t('logout')}</button>
+                 <nav className="md:hidden absolute top-full left-0 w-full bg-[#375466] shadow-xl p-4 z-40 space-y-3">
+                    {/* Welcome User and Bell */}
+                    <div className="flex justify-between items-center pb-2 border-b border-gray-600">
+                        <span className="font-semibold">{t('navigation.welcome_user', { username: user.username })}</span>
+                        <NotificationBell />
                     </div>
-                    {/* Language/Theme for Mobile */}
-                    <div className="pt-2 flex justify-center text-white">
-                        <LanguageThemeBox i18n={i18n} changeLanguage={changeLanguage} />
+
+                    {/* All Links */}
+                    {allProtectedLinks.map(item => (
+                        <Link key={item.to} to={item.to} onClick={handleLinkClick} className="block px-2 py-2 hover:bg-gray-700 rounded transition-colors">
+                            {item.label}
+                        </Link>
+                    ))}
+                    
+                    {/* Logout and Language */}
+                    <div className="border-t border-gray-700 mt-2 pt-4 flex flex-col space-y-4">
+                        <button onClick={handleLogout} className="w-full text-left bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded transition-colors">
+                            {t('navigation.logout')}
+                        </button>
+                        <div className="pt-2 flex justify-start text-white">
+                            <LanguageThemeBox i18n={i18n} changeLanguage={changeLanguage} theme={theme} setTheme={setTheme} />
+                        </div>
                     </div>
                 </nav>
             )}
@@ -266,16 +305,29 @@ const HomeRouter = () => {
 // Main App Component with all Routes
 function App() {
   const { i18n } = useTranslation();
+  // Centralized Theme State
+  const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light');
 
   useEffect(() => {
+    // 1. I18N/RTL LOGIC
     const documentDirection = i18n.dir(i18n.language);
     document.documentElement.dir = documentDirection;
     document.documentElement.lang = i18n.language;
-  }, [i18n, i18n.language]);
+
+    // 2. THEME LOGIC (Combined)
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+    localStorage.setItem('theme', theme);
+
+  }, [i18n, i18n.language, theme]); // CRITICAL: theme is a dependency
 
   return (
     <Router>
-        <Navigation />
+        {/* Pass theme/setTheme down to Navigation */}
+        <Navigation theme={theme} setTheme={setTheme} /> 
         <main>
             <Routes>
                 {/* Public Routes */}
