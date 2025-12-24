@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth, type User } from '../context/AuthContext';
 import { useTranslation } from 'react-i18next';
+import { t } from 'i18next';
 
 interface LoginResponse extends User {
     token: string;
@@ -13,8 +14,8 @@ interface LoginResponse extends User {
 const BrandingPanel = () => (
     <div className="hidden lg:flex w-1/2 flex-col items-center justify-center bg-gray-100 p-12 text-center">
         <img src="/images/slider1.jpeg" alt="Ejada Logo" className="w-40 h-40 mb-6" />
-        <h2 className="text-3xl font-bold text-gray-800">Ejada Platform</h2>
-        <p className="text-gray-500">For Education And Development</p> {/* NEW KEY: login_page.platform_slogan */}
+        <h2 className="text-3xl font-bold text-gray-800"> {t('login_page.title')}</h2> 
+        <p className="text-gray-500">{t('login_page.platform_slogan') }</p> {/* NEW KEY: login_page.platform_slogan */}
         <div className="mt-8 flex space-x-6">
             <img src="/images/slider3.jpeg" alt="Program 1" className="h-16" />
             <img src="/images/slider2.jpeg" alt="Program 2" className="h-16" />

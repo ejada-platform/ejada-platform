@@ -3,9 +3,9 @@ import { useTranslation } from 'react-i18next';
 import { BrowserRouter as Router, Routes, Route, Link, useNavigate } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSignInAlt, faSun, faMoon, faArrowRightToBracket, faBars, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faSignInAlt, faArrowRightToBracket, faBars, faTimes } from '@fortawesome/free-solid-svg-icons';
 
-// Import all pages (Assuming correct paths)
+// [ ... Import all pages ... ]
 import LoginPage from './pages/LoginPage';
 import StudentDashboard from './pages/student/StudentDashboard';
 import TeacherDashboard from './pages/teacher/TeacherDashboard';
@@ -22,7 +22,6 @@ import AcademicCalendarPage from './pages/AcademicCalendarPage';
 import LandingPage from './pages/LandingPage';
 import EnrollmentPage from './pages/EnrollmentPage';
 import ApplicationReviewPage from './pages/admin/ApplicationReviewPage';
-// Admin Pages
 import CreateCirclePage from './pages/admin/CreateCirclePage';
 import UserManagementPage from './pages/admin/UserManagementPage';
 import ManageLibraryPage from './pages/admin/ManageLibraryPage';
@@ -31,12 +30,10 @@ import AdminDashboardPage from './pages/admin/AdminDashboardPage';
 import AttendanceHistoryPage from './pages/admin/AttendanceHistoryPage';
 import AttendanceOverviewPage from './pages/teacher/AttendanceOverviewPage';
 import TeacherAttendancePage from './pages/teacher/TeacherAttendancePage';
-
 import EditCirclePage from './pages/teacher/EditCirclePage';
 import CreateAssignmentPage from './pages/teacher/CreateAssignmentPage';
 import BookViewerPage from './pages/BookViewerPage';
 import CheckoutSuccessPage from './pages/CheckoutSuccessPage';
-
 import ProtectedRoute from './components/ProtectedRoute';
 import NotificationBell from './components/NotificationBell';
 import ScrollToTopButton from './components/ScrollToTopButton';
@@ -48,33 +45,19 @@ import CurriculumBuilderPage from './pages/admin/CurriculumBuilderPage';
 import StudentProgressPage from './pages/teacher/StudentProgressPage';
 
 
-// --- THEME/LANGUAGE SWITCHER COMPONENTS (FIXED) ---
-
-// Simple Toggler Component (now controlled by App.tsx)
-const SimpleThemeToggler = ({ theme, setTheme }: { theme: string, setTheme: (t: string) => void }) => (
-    <button onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')} className="text-xl">
-        <FontAwesomeIcon icon={theme === 'light' ? faMoon : faSun} />
-    </button>
-);
-
-// Language/Theme Box (Now accepts theme/setTheme props)
-const LanguageThemeBox = ({ i18n, changeLanguage, theme, setTheme }: { i18n: any, changeLanguage: (lng: string) => void, theme: string, setTheme: (t: string) => void }) => {
-    const dir = i18n.dir();
-    const borderClass = dir === 'rtl' ? 'border-l pl-2' : 'border-r pr-2';
-    
+// --- LANGUAGE SWITCHER COMPONENT (Simplified) ---
+const LanguageSwitcher = ({ i18n, changeLanguage }: { i18n: any, changeLanguage: (lng: string) => void }) => {
     return (
         <div className="flex items-center space-x-2">
-            <div className={`flex ${borderClass} border-gray-300`}>
-                <button onClick={() => changeLanguage('en')} className={`px-2 py-1 text-sm rounded ${i18n.language.startsWith('en') ? 'bg-gray-200 text-gray-800' : 'hover:bg-gray-100'}`}>EN</button>
-                <button onClick={() => changeLanguage('ar')} className={`px-2 py-1 text-sm rounded ${i18n.language === 'ar' ? 'bg-gray-200 text-gray-800' : 'hover:bg-gray-100'}`}>AR</button>
-            </div>
-            <SimpleThemeToggler theme={theme} setTheme={setTheme} /> 
+            <button onClick={() => changeLanguage('en')} className={`px-2 py-1 text-sm rounded ${i18n.language.startsWith('en') ? 'bg-gray-200 text-gray-800' : 'text-white hover:bg-gray-700'}`}>EN</button>
+            <span className="text-gray-400">|</span>
+            <button onClick={() => changeLanguage('ar')} className={`px-2 py-1 text-sm rounded ${i18n.language === 'ar' ? 'bg-gray-200 text-gray-800' : 'text-white hover:bg-gray-700'}`}>AR</button>
         </div>
     );
 };
 
 // --- PUBLIC/LANDING PAGE FLOATING HEADER ---
-const PublicHeaderContent = ({ changeLanguage, i18n, theme, setTheme }: { changeLanguage: (lng: string) => void, i18n: any, theme: string, setTheme: (t: string) => void }) => {
+const PublicHeaderContent = ({ changeLanguage, i18n }: { changeLanguage: (lng: string) => void, i18n: any }) => {
     const { t } = useTranslation();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const dir = i18n.dir();
@@ -116,18 +99,22 @@ const PublicHeaderContent = ({ changeLanguage, i18n, theme, setTheme }: { change
                     })}
                 </nav>
                 
-                {/* 3. Mobile Menu Toggle (Visible on lg:hidden) */}
+                {/* 3. Mobile Menu Toggle */}
                 <button className="lg:hidden" onClick={() => setIsMenuOpen(!isMenuOpen)}>
                     <FontAwesomeIcon icon={faBars} className="w-6 h-6 text-gray-800" />
                 </button>
 
-                {/* 4. Language & Theme Switcher (Desktop) */}
-                <div className="hidden lg:block">
-                     <LanguageThemeBox i18n={i18n} changeLanguage={changeLanguage} theme={theme} setTheme={setTheme} />
+                {/* 4. Language Switcher (Desktop - Dark text version for white bg) */}
+                <div className="hidden lg:block text-gray-800">
+                     <div className="flex items-center space-x-2">
+                        <button onClick={() => changeLanguage('en')} className={`px-2 py-1 text-sm rounded ${i18n.language.startsWith('en') ? 'bg-gray-200 font-bold' : 'hover:bg-gray-100'}`}>EN</button>
+                        <span>|</span>
+                        <button onClick={() => changeLanguage('ar')} className={`px-2 py-1 text-sm rounded ${i18n.language === 'ar' ? 'bg-gray-200 font-bold' : 'hover:bg-gray-100'}`}>AR</button>
+                    </div>
                 </div>
             </div>
 
-            {/* Mobile Menu Content (Hamburger) */}
+            {/* Mobile Menu Content */}
             {isMenuOpen && (
                 <div className={`absolute top-0 ${dir === 'rtl' ? 'left-0' : 'right-0'} w-full h-screen bg-gray-900 bg-opacity-95 z-50 p-8 pt-20`}>
                     <button className={`absolute top-4 ${dir === 'rtl' ? 'left-4' : 'right-4'} text-white text-2xl`} onClick={() => setIsMenuOpen(false)}>
@@ -152,7 +139,7 @@ const PublicHeaderContent = ({ changeLanguage, i18n, theme, setTheme }: { change
                             {t('navigation.login')}
                         </Link>
                          <div className="pt-4 flex justify-center">
-                            <LanguageThemeBox i18n={i18n} changeLanguage={changeLanguage} theme={theme} setTheme={setTheme} />
+                            <LanguageSwitcher i18n={i18n} changeLanguage={changeLanguage} />
                         </div>
                     </nav>
                 </div>
@@ -162,8 +149,8 @@ const PublicHeaderContent = ({ changeLanguage, i18n, theme, setTheme }: { change
 };
 
 
-// The Responsive Navigation Component
-const Navigation = ({ theme, setTheme }: { theme: string, setTheme: (t: string) => void }) => {
+// The Responsive Navigation Component (Protected Header)
+const Navigation = () => {
     const { t, i18n } = useTranslation();
     const { user, logout, isLoading } = useAuth();
     const navigate = useNavigate();
@@ -219,9 +206,8 @@ const Navigation = ({ theme, setTheme }: { theme: string, setTheme: (t: string) 
     // --- CONDITIONALLY RENDER THE PUBLIC OR PROTECTED HEADER ---
     if (!user) {
         return (
-            // Stick to top, but add padding to create the 'separation' effect
             <header className="fixed top-0 left-0 w-full z-50 pt-6"> 
-                <PublicHeaderContent changeLanguage={changeLanguage} i18n={i18n} theme={theme} setTheme={setTheme} />
+                <PublicHeaderContent changeLanguage={changeLanguage} i18n={i18n} />
             </header>
         );
     }
@@ -248,9 +234,9 @@ const Navigation = ({ theme, setTheme }: { theme: string, setTheme: (t: string) 
                     <NotificationBell />
                     <button onClick={handleLogout} className="bg-[#ada687] hover:bg-[#ada687] text-white font-bold py-2 px-4 rounded">{t('navigation.logout')}</button>
                     
-                    {/* Language & Theme Switcher (MUST BE VISIBLE) */}
+                    {/* Language Switcher (Desktop) */}
                     <div className="ml-4 text-white">
-                        <LanguageThemeBox i18n={i18n} changeLanguage={changeLanguage} theme={theme} setTheme={setTheme} />
+                        <LanguageSwitcher i18n={i18n} changeLanguage={changeLanguage} />
                     </div>
                 </nav>
 
@@ -284,7 +270,7 @@ const Navigation = ({ theme, setTheme }: { theme: string, setTheme: (t: string) 
                             {t('navigation.logout')}
                         </button>
                         <div className="pt-2 flex justify-start text-white">
-                            <LanguageThemeBox i18n={i18n} changeLanguage={changeLanguage} theme={theme} setTheme={setTheme} />
+                            <LanguageSwitcher i18n={i18n} changeLanguage={changeLanguage} />
                         </div>
                     </div>
                 </nav>
@@ -305,29 +291,17 @@ const HomeRouter = () => {
 // Main App Component with all Routes
 function App() {
   const { i18n } = useTranslation();
-  // Centralized Theme State
-  const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light');
 
+  // Effect only for I18N/RTL (Theme logic removed)
   useEffect(() => {
-    // 1. I18N/RTL LOGIC
     const documentDirection = i18n.dir(i18n.language);
     document.documentElement.dir = documentDirection;
     document.documentElement.lang = i18n.language;
-
-    // 2. THEME LOGIC (Combined)
-    if (theme === 'dark') {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-    localStorage.setItem('theme', theme);
-
-  }, [i18n, i18n.language, theme]); // CRITICAL: theme is a dependency
+  }, [i18n, i18n.language]);
 
   return (
     <Router>
-        {/* Pass theme/setTheme down to Navigation */}
-        <Navigation theme={theme} setTheme={setTheme} /> 
+        <Navigation /> 
         <main>
             <Routes>
                 {/* Public Routes */}

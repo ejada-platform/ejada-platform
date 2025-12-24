@@ -198,6 +198,14 @@
         "join_class_slogan":	"درسك بانتظارك!",
         "make_star_button" :	"تعيين كنجم"
     },
+    "evaluation_form": {
+        "rating_label": "التقييم (1-5)",
+        "notes_label": "ملاحظات اليوم",
+        "notes_placeholder": "مثال: تلاوة ممتازة",
+        "button_save": "حفظ التقييم",
+        "message_success": "تم حفظ التقييم بنجاح!",
+        "message_failed": "فشل في حفظ التقييم."
+      },
     "circle_detail_page": {
         "assignments_title": "الواجبات",
         "assigned_by": "أضيف بواسطة: {{teacher}} في {{date}}",

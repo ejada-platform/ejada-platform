@@ -49,6 +49,7 @@ const EvaluationForm = ({
     circleId: string;
     onEvaluationSuccess: () => void;
 }) => {
+    const { t, i18n } = useTranslation(); 
     const { token } = useAuth();
     const [rating, setRating] = useState(5);
     const [notes, setNotes] = useState('');
@@ -65,12 +66,12 @@ const EvaluationForm = ({
                 payload,
                 config
             );
-            setMessage('Evaluation saved successfully!');
+            setMessage(t('evaluation_form.message_success'));
             setNotes('');
             onEvaluationSuccess();
         } catch (err: any) {
             setMessage(
-                err.response?.data?.message || 'Failed to save evaluation.'
+                err.response?.data?.message || t('evaluation_form.message_failed') 
             );
         }
     };
@@ -79,23 +80,24 @@ const EvaluationForm = ({
         <form
             onSubmit={handleSubmit}
             className="mt-2 p-3 bg-gray-50 rounded-md border"
+            dir={i18n.dir()}
         >
             <div className="flex items-center space-x-4">
                 <div className="flex-1">
                     <label className="block text-xs font-medium text-gray-600">
-                        Notes for today
+                    {t('evaluation_form.notes_label')}
                     </label>
                     <input
                         type="text"
                         value={notes}
                         onChange={(e) => setNotes(e.target.value)}
-                        placeholder="e.g., Excellent recitation"
+                        placeholder={t('evaluation_form.notes_placeholder')}
                         className="w-full mt-1 p-1 border rounded text-sm"
                     />
                 </div>
                 <div>
                     <label className="block text-xs font-medium text-gray-600">
-                        Rating (1-5)
+                    {t('evaluation_form.rating_label')}
                     </label>
                     <input
                         type="number"
@@ -113,7 +115,7 @@ const EvaluationForm = ({
                 type="submit"
                 className="mt-2 px-3 py-1 bg-blue-500 text-white text-sm rounded hover:bg-blue-600"
             >
-                Save Evaluation
+                {t('evaluation_form.button_save')}
             </button>
             {message && <p className="text-xs mt-2">{message}</p>}
         </form>
@@ -396,55 +398,55 @@ const MyCirclesPage = () => {
                                                                             </button>
                                                                         )}
 
-                                                                        <button
-                                                                            onClick={() =>
-                                                                                handleEvaluateClick(
-                                                                                    student._id
-                                                                                )
-                                                                            }
-                                                                            className="px-3 py-1 bg-blue-500 text-gray-800 text-sm rounded hover:bg-blue-400"
+                                             <button
+                                                 onClick={() =>
+                                                     handleEvaluateClick(
+                                                         student._id
+                                                     )
+                                                 }
+                                                 className="px-3 py-1 bg-blue-500 text-gray-800 text-sm rounded hover:bg-blue-400"
                                                                         >
-                                                                            {evaluatingStudentId ===
-                                                                            student._id
-                                                                                ? t(
-                                                                                      'my_circles_page.close_button'
-                                                                                  )
-                                                                                : t(
-                                                                                      'my_circles_page.evaluate_button'
-                                                                                  )}
-                                                                        </button>
-                                                                    </div>
+                                                {evaluatingStudentId ===
+                                                student._id
+                                                    ? t(
+                                                 'my_circles_page.close_button'
+                                             )
+                                           : t(
+                                                 'my_circles_page.evaluate_button'
+                                                                         )}
+                                                               </button>
+                                                           </div>
 
-                                                                    {evaluatingStudentId ===
-                                                                        student._id && (
-                                                                        <EvaluationForm
-                                                                            studentId={
-                                                                                student._id
-                                                                            }
-                                                                            circleId={
-                                                                                circle._id
-                                                                            }
-                                                                            onEvaluationSuccess={() => {
-                                                                                showSuccessAlert(
-                                                                                    t(
-                                                                                        'my_circles_page.evaluation_saved'
-                                                                                    ),
+                                           {evaluatingStudentId ===
+                                               student._id && (
+                                               <EvaluationForm
+                                           studentId={
+                                               student._id
+                                           }
+                                           circleId={
+                                        circle._id
+                                            }
+                                            onEvaluationSuccess={() => {
+                                                showSuccessAlert(
+                                                    t(
+                                                        'my_circles_page.evaluation_saved'
+                                                    ),
                                                                                     ''
-                                                                                );
-                                                                                setEvaluatingStudentId(
-                                                                                    null
-                                                                                );
-                                                                            }}
-                                                                        />
-                                                                    )}
-                                                                </li>
-                                                            )
-                                                        )}
-                                                    </ul>
-                                                </div>
-                                            )}
+                                                    );
+                                                    setEvaluatingStudentId(
+                                                        null
+                                                    );
+                                                }}
+                                            />
+                                        )}
+                                        </li>
+                                        )
+                                        )}
+                                        </ul>
+                                        </div>
+                                        )}
                                     </>
-                                )}
+                                    )}
                             </div>
                         );
                     })

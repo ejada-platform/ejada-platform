@@ -205,13 +205,22 @@
         "evaluation_saved": "Evaluation saved!",
         "no_circles_message": "You are not yet assigned to any educational circles.",
         "loading": "Loading your circles...",
-        "star_student_congrats":	"Congratulations! You are the Star Student of this circle!",
-        "schedule_prefix":	"Every",
+        "star_student_congrats": "Congratulations! You are the Star Student of this circle!",
+        "schedule_prefix": "Every",
         "schedule_at"	: "at",
-        "join_class_slogan":	"Your lesson is waiting!",
-        "make_star_button" :	"Make Star"
-        
+        "join_class_slogan": "Your lesson is waiting!",
+        "make_star_button" : "Make Star"
     },
+    
+        "evaluation_form": {
+          "rating_label": "Rating (1-5)",
+          "notes_label": "Notes for today",
+          "notes_placeholder": "e.g., Excellent recitation",
+          "button_save": "Save Evaluation",
+          "message_success": "Evaluation saved successfully!",
+          "message_failed": "Failed to save evaluation."
+        }
+      ,
     "circle_detail_page": {
         "assignments_title": "Assignments",
         "assigned_by": "Assigned by: {{teacher}} on {{date}}",
